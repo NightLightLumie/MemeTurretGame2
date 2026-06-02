@@ -126,9 +126,9 @@ export class Player extends Phaser.GameObjects.Container {
 
 	setDefaultLoadout(){
 		this.loadout = [
-			new Weapon(this.scene, this.scene.handler.getParams(0)),
-			new Weapon(this.scene, this.scene.handler.getParams(1)),
-			new Weapon(this.scene, this.scene.handler.getParams(7)),
+			new Weapon(this.scene, this.scene.masterData.getParams(this.scene.masterData.side.wID), this.scene.masterData.side.augs),
+			new Weapon(this.scene, this.scene.masterData.getParams(this.scene.masterData.primary.wID), this.scene.masterData.primary.augs),
+			new Weapon(this.scene, this.scene.masterData.getParams(this.scene.masterData.secondary.wID), this.scene.masterData.secondary.augs),
 		]
 	}
 
@@ -147,7 +147,7 @@ export class Player extends Phaser.GameObjects.Container {
 		this.gfx.fillPath();
 		*/
 
-		this.ttText.setText("Position: " + this.x + ", " + this.y );
+		//this.ttText.setText("Position: " + this.x + ", " + this.y );
 
         const pointer = this.scene.input.activePointer;
         const worldX = this.scene.cameras.main.getWorldPoint(pointer.x, pointer.y).x;

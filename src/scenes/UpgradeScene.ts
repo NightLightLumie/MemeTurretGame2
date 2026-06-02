@@ -5,6 +5,7 @@ import { Armory } from "@/components/WeaponFunctions/Armory";
 import { GlobalVariables } from "@/components/GlobalVariables";
 import { WeaponButton } from "@/components/WeaponFunctions/WeaponButton";
 import { AugmentUI } from "@/components/WeaponFunctions/AugmentUI";
+import { NextSceneButton } from "@/components/GameFunctions/NextSceneButton";
 
 export class UpgradeScene extends BaseScene {
 	private background: Phaser.GameObjects.Image;
@@ -39,6 +40,8 @@ export class UpgradeScene extends BaseScene {
 	public prim: number = -999999998;
 	public sec: number = -999999997;
 
+	public nxt: NextSceneButton;
+
 	public augUI: AugmentUI;
 	public equippedButtons: WeaponButton[];
 
@@ -60,6 +63,7 @@ export class UpgradeScene extends BaseScene {
 		this.background.setScale(1);
 		this.background.setDepth(0);
 
+		this.nxt = new NextSceneButton(this, 1750, 960);
 
 		this.overlay = this.add.image(0, 0, "topbar");
 		this.overlay.setOrigin(0,0);
@@ -426,7 +430,13 @@ export class UpgradeScene extends BaseScene {
 		});
 	}
 
+	finalizeWeaponSelection(){
+		this.masterData.equipLoadout(this.equippedButtons);	
+	}
 
-
+	progress() {
+		this.finalizeWeaponSelection();	
+		this.scene.start("GameScene", {gameData: this.masterData});
+	}
 	
 }

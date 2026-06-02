@@ -1,6 +1,7 @@
 import { Armory, WeaponEntry } from "./WeaponFunctions/Armory";
 import { WeaponParams } from "./WeaponFunctions/WeaponOperator";
 import { Augment } from "./WeaponFunctions/Weapon";
+import { WeaponButton } from "./WeaponFunctions/WeaponButton";
 
 export class GlobalVariables {
 
@@ -70,7 +71,6 @@ export class GlobalVariables {
     }
 
     getParams(n: number): WeaponParams{
-
         if(this.gunList.has(n)){
             let k = this.gunList.get(n);
             if(k != null) {
@@ -96,6 +96,16 @@ export class GlobalVariables {
             this.curGunID = -999999999
         }
         return this.curGunID;
+    }
+
+    equipLoadout(wl: WeaponButton[]){
+        if (wl.length >= 3){
+            this.side = this.inv.fetchGun(wl[0].gID);
+            this.primary = this.inv.fetchGun(wl[1].gID);
+            this.secondary = this.inv.fetchGun(wl[2].gID);
+        } else {
+            return;
+        }
     }
 
     swapLoadout(){

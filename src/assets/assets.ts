@@ -79,6 +79,11 @@ const images: Image[] = [
 	image('enemies/fragments/e1/f1-6', 'f1-6'),
 	image('enemies/fragments/e1/f1-7', 'f1-7'),
 	image('enemies/fragments/e1/f1-8', 'f1-8'),
+
+	//loot box
+	image('items/box_0', 'box_0'),
+	image('items/arm_r_0', 'arm_r_0'),
+	image('items/arm_l_0', 'arm_l_0'),
 ];
 
 /* Spritesheets */
@@ -92,6 +97,9 @@ const spritesheets: SpriteSheet[] = [
 	spritesheet("ui/aug_button_back", "aug_button_back", 64, 64),
 
 	spritesheet("ui/aug_select_frame", "aug_select_frame", 200, 200),
+	spritesheet("ui/nxtscene", "nxtscene", 300, 200),
+	spritesheet("items/boxlight", "boxlight", 720, 600),
+	spritesheet("anims/boneattack", "boneattack", 128, 128),
 ];
 
 /* Audios */
@@ -110,6 +118,7 @@ const audios: Audio[] = [
 	sound('weapons/gun_4', 'gun_4', 0.5),
 	sound('weapons/gun_7', 'gun_7', 0.5),
 	sound('weapons/equip', 'equip', 0.5),
+	sound('tree/scroll', 'scroll', 0.5),
 
 	sound('weapons/start_reload', 'start_reload', 0.5),
 	sound('weapons/end_reload', 'end_reload', 0.5),

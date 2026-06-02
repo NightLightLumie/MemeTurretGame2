@@ -6,9 +6,9 @@ export class TileChecker {
     public gb: Map<number[], number>;
     public xb: [number,number] = [-200,4200];
     public yb: [number,number] = [-200,3200];
-    public xi: [number,number] = [-2, 42];
-    public yi: [number,number] = [-2, 32];
-    public divider: [number,number] = [100,100];
+    public xi: [number,number] = [-1, 21];
+    public yi: [number,number] = [-1, 16];
+    public divider: [number,number] = [200,200];
 
     constructor(boundx: [number,number], boundy: [number,number], division: [number,number]){
         this.grid = new Map();
@@ -34,7 +34,7 @@ export class TileChecker {
             }
         }
 
-        console.log(this.grid.get("["+12+","+12+"]"))
+        //console.log(this.grid.get("["+12+","+12+"]"))
 
         return;
     }

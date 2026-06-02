@@ -117,4 +117,8 @@ export class BaseScene extends Phaser.Scene {
 	get CY(): number {
 		return this.cameras.main.centerY;
 	}
+
+	progress(){
+		
+	}
 }

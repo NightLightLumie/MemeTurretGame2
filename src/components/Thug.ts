@@ -11,10 +11,14 @@ export class Thug extends Target{
 
     private v: number = 0;
     private a: number = 0;
-    private hp: number = 2000;
+    private hp: number = 600;
     private mod: number = 1;
     private ofss: number = 0;
     private unstackFactor: number = 500;
+
+    protected atype: number = 0;
+    protected cd: number = 0;
+    protected maxcd: number = 1000;
 
 
     private tpr: number[] = [];
@@ -77,7 +81,7 @@ export class Thug extends Target{
         this.x += (this.mod*this.v*tmod*Math.cos(this.a)*d/1000);
         this.y += (this.mod*this.v*tmod*Math.sin(this.a)*d/1000);
         //this.refactor();
-        this.txt.setText("{" + this.unstack[0] + ", "+ this.unstack[1] + "}");
+        //this.txt.setText("{" + this.unstack[0] + ", "+ this.unstack[1] + "}");
         this.x += (this.unstack[0]*this.unstackFactor*d/1000);
         this.y += (this.unstack[1]*this.unstackFactor*d/1000);
         this.unstack = [0,0];
@@ -178,6 +182,10 @@ export class Thug extends Target{
         if(this.hp <= 0) {
             this.die();
         }
+    }
+
+    attack(){
+
     }
 
     takePierceDamage(n: number, p: number, wID: number){

@@ -7,6 +7,7 @@ const images: Image[] = [
 	image('backgrounds/background', 'background'),
 	image('backgrounds/placeholderbkg', 'tempbkg'),
 	image('backgrounds/upgradebkg', 'upgradebkg'),
+	image('backgrounds/augbkg', 'augbkg'),
 	image('backgrounds/upgradeoverlay', 'upgradeoverlay'),
 	image('backgrounds/bottombar', 'bottombar'),
 	image('backgrounds/midbar', 'midbar'),
@@ -96,6 +97,9 @@ const spritesheets: SpriteSheet[] = [
 	spritesheet("ui/aug_button_frame", "aug_button_frame", 64, 64),
 	spritesheet("ui/aug_button_back", "aug_button_back", 64, 64),
 
+	spritesheet("ui/upgradebtn", "upgradebtn", 400, 300),
+	spritesheet("ui/closeaugbtn", "closeaugbtn", 400, 300),	
+
 	spritesheet("ui/aug_select_frame", "aug_select_frame", 200, 200),
 	spritesheet("ui/nxtscene", "nxtscene", 300, 200),
 	spritesheet("items/boxlight", "boxlight", 720, 600),
@@ -118,6 +122,8 @@ const audios: Audio[] = [
 	sound('weapons/gun_4', 'gun_4', 0.5),
 	sound('weapons/gun_7', 'gun_7', 0.5),
 	sound('weapons/equip', 'equip', 0.5),
+	
+	sound('tree/turret_hit', 'turret_hit', 0.5),
 	sound('tree/scroll', 'scroll', 0.5),
 
 	sound('weapons/start_reload', 'start_reload', 0.5),

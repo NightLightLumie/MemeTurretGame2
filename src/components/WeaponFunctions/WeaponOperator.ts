@@ -29,7 +29,7 @@ export interface DmgStack{
 //element: 0 = phys, 1 = fire, 2 = thunder, 3 = poison/acid, 4 = ice, 5 = plasma
 export interface WeaponParams{
     type: number; name: string; class: string; dmg: number; spd:number; rof: number; spcd: number; shots: number; pen: number, pcd: number; clip: number; load: number; width: number; rad: number;
-    acc: number; arpen: number[]; crit: number[]; ele: number; augs: number[], customaug: Augment;
+    acc: number; arpen: number[]; crit: number[]; ele: number; onhit: number; augs: number[], customaug: Augment;
 }
 
 export class WeaponOperator{
@@ -38,7 +38,7 @@ export class WeaponOperator{
 //status damage, armor penetration, direct shot chance, ???recoil, onhit damage,
 
     public defaultParam: WeaponParams = {type:0,name:"Lutra",class:"pistol", dmg: 1, spd: 10000, rof: 5, spcd: 10000, shots: 1, pen: 1, pcd: -999, clip: 18, load: 1.5, width: 1, rad: 1, acc: 0,
-     arpen: [0,0], crit: [0,1], ele: 1, augs: [0,1,1,1,1,0,1,0,0,1,0,0,0,0,0,0,0,0,0], customaug: {name: "default", index: 0, level: 0, maxlv: 10, lvcap: 10, desc: ""}};
+     arpen: [0,0], crit: [0,1], ele: 1, onhit: 0, augs: [0,1,1,1,1,0,1,0,0,1,0,0,0,0,0,0,0,0,0], customaug: {name: "default", index: 0, level: 0, maxlv: 10, lvcap: 10, desc: ""}};
     public database: Map<number,WeaponParams> = new Map;
 
 
@@ -65,7 +65,7 @@ export class WeaponOperator{
     copyParam(w: WeaponParams): WeaponParams {
         return {
             type:w.type,name:w.name,class:w.class, dmg:w.dmg, spd:w.spd, rof:w.rof, spcd:w.spcd, shots:w.shots, pen:w.pen, pcd:w.pcd, clip:w.clip, load:w.load,
-             width:w.width, rad:w.rad, acc:w.acc, arpen:w.arpen, crit:w.crit, ele:w.ele, augs:w.augs, customaug:w.customaug}
+             width:w.width, rad:w.rad, acc:w.acc, arpen:w.arpen, crit:w.crit, ele:w.ele, onhit:w.onhit, augs:w.augs, customaug:w.customaug}
     }
 
 
@@ -93,35 +93,35 @@ export class WeaponOperator{
             case 0: { //lutra
                 let ofs = Phaser.Math.DegToRad(-1*w.wp.acc+(Math.random()*2*w.wp.acc));
 				this.p.scene.sound.play("gun_0",{volume: 0.7});
-				this.p.scene.addBullet(new Bullet(this.p.scene,this.p.x+(w.fRad*Math.cos(a)), this.p.y+(w.fRad*Math.sin(a)), w.wp.type, w.wp.spd,a+ofs,w.damage,w.pierce));
+				this.p.scene.addBullet(new Bullet(this.p.scene,this.p.x+(w.fRad*Math.cos(a)), this.p.y+(w.fRad*Math.sin(a)), w.wp.type, w.wp.spd,a+ofs,w.damage,w.pierce, w));
                 break;
 
             } case 1: { //windmill
                 let ofs = Phaser.Math.DegToRad(-1*w.wp.acc+(Math.random()*2*w.wp.acc));
 				this.p.scene.sound.play("gun_1",{volume: 0.7});
-				this.p.scene.addBullet(new Bullet(this.p.scene,this.p.x+(w.fRad*Math.cos(a)), this.p.y+(w.fRad*Math.sin(a)), w.wp.type, w.wp.spd,a+ofs,w.damage,w.pierce));
+				this.p.scene.addBullet(new Bullet(this.p.scene,this.p.x+(w.fRad*Math.cos(a)), this.p.y+(w.fRad*Math.sin(a)), w.wp.type, w.wp.spd,a+ofs,w.damage,w.pierce, w));
                 break; 
             } case 3: { //broadhead
                 let ofs = Phaser.Math.DegToRad(-1*w.wp.acc+(Math.random()*2*w.wp.acc));
 				this.p.scene.sound.play("gun_3",{volume: 0.7});
-				this.p.scene.addBullet(new Bullet(this.p.scene,this.p.x+(w.fRad*Math.cos(a)), this.p.y+(w.fRad*Math.sin(a)), w.wp.type, w.wp.spd,a+ofs,w.damage,w.pierce));
+				this.p.scene.addBullet(new Bullet(this.p.scene,this.p.x+(w.fRad*Math.cos(a)), this.p.y+(w.fRad*Math.sin(a)), w.wp.type, w.wp.spd,a+ofs,w.damage,w.pierce, w));
                 break; 
             } case 4: { //bjuron
                 let ofs = Phaser.Math.DegToRad(-1*w.wp.acc+(Math.random()*2*w.wp.acc));
 				this.p.scene.sound.play("gun_4",{volume: 0.7});
-				this.p.scene.addBullet(new Bullet(this.p.scene,this.p.x+(w.fRad*Math.cos(a)), this.p.y+(w.fRad*Math.sin(a)), w.wp.type, w.wp.spd,a+ofs,w.damage,w.pierce));
+				this.p.scene.addBullet(new Bullet(this.p.scene,this.p.x+(w.fRad*Math.cos(a)), this.p.y+(w.fRad*Math.sin(a)), w.wp.type, w.wp.spd,a+ofs,w.damage,w.pierce, w));
                 break; 
             } case 7: { //ottertail
                 let ofs = Phaser.Math.DegToRad(-1*w.wp.acc+(Math.random()*2*w.wp.acc));
 				this.p.scene.sound.play("gun_7",{volume: 0.7});
-				this.p.scene.addBullet(new Bullet(this.p.scene,this.p.x+(w.fRad*Math.cos(a)), this.p.y+(w.fRad*Math.sin(a)), w.wp.type, w.wp.spd,a+ofs,w.damage,w.pierce));
+				this.p.scene.addBullet(new Bullet(this.p.scene,this.p.x+(w.fRad*Math.cos(a)), this.p.y+(w.fRad*Math.sin(a)), w.wp.type, w.wp.spd,a+ofs,w.damage,w.pierce, w));
                 break; 
             } case 2: { //ANTEK
                 let ofs = Phaser.Math.DegToRad(-1*w.wp.acc+(Math.random()*2*w.wp.acc));
 				this.p.scene.sound.play("machinegun",{volume: 0.7});
                 for(let r = 0; r < w.wp.shots; r++) {
                     ofs = Phaser.Math.DegToRad(-1*w.wp.acc+(Math.random()*2*w.wp.acc));
-                    this.p.scene.addBullet(new Bullet(this.p.scene,this.p.x+(w.fRad*Math.cos(a)), this.p.y+(w.fRad*Math.sin(a)), w.wp.type, w.wp.spd,a+ofs,w.damage,w.pierce));
+                    this.p.scene.addBullet(new Bullet(this.p.scene,this.p.x+(w.fRad*Math.cos(a)), this.p.y+(w.fRad*Math.sin(a)), w.wp.type, w.wp.spd,a+ofs,w.damage,w.pierce, w));
                 }
                 break; 
             } 
@@ -132,7 +132,7 @@ export class WeaponOperator{
 
     }
 
-    processSpecial(t: Target, wp: number){
+    processSpecial(t: Target, wp: number, w: Weapon){
         let wr = this.getParams(wp);
 
         switch(wp){
@@ -145,7 +145,7 @@ export class WeaponOperator{
                         mm.drawsize+=0.15;
                     }
                 } else {
-                    t.addStack(wp, {type: wp, damage: wr.dmg*10, curhits: 1, maxhits: 7, image: this.p.scene.add.image(0,0,"stackcircle"),drawsize: 0.8, bop: false,
+                    t.addStack(wp, {type: wp, damage: (wr.dmg*10)*(1+(0.15*w.specialStat)), curhits: 1, maxhits: 7, image: this.p.scene.add.image(0,0,"stackcircle"),drawsize: 0.8, bop: false,
                     alpha: 1, sound: "stackexplode", explode:"hit_spark"});
                     //console.log("ADD STACK: ");
                     //console.log(t.stackLog);

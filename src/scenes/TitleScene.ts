@@ -68,11 +68,11 @@ export class TitleScene extends BaseScene {
 		this.character.y += 1000;
 
 		this.title = this.addText({
-			x: 0.25 * this.W,
+			x: 0.5 * this.W,
 			y: 0.7 * this.H,
 			size: 160,
 			color: "#000",
-			text: "Game Title",
+			text: "MemeTurretGame2",
 		});
 		this.title.setOrigin(0.5);
 		this.title.setStroke("#FFF", 8);

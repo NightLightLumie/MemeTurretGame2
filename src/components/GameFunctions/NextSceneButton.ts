@@ -5,7 +5,7 @@ import { BaseScene } from "@/scenes/BaseScene";
 
 export class NextSceneButton extends Button{
     public scene: BaseScene;
-    public sp: Phaser.GameObjects.Image
+    public sp: Phaser.GameObjects.Image;
     constructor(scene: BaseScene, x: number, y: number){
         super(scene, x, y);
         this.scene = scene;

@@ -118,6 +118,9 @@ export class WeaponButton extends Button {
 		event: Phaser.Types.Input.EventData
 	) {
         super.onDown(pointer, localX, localY, event);
+        if(this.scene.locked){
+            return;
+        }
         this.dragging = false;
         this.scene.cancelDrag();
 
@@ -135,6 +138,9 @@ export class WeaponButton extends Button {
 	}
 
     updateDrag(x:number,y:number){
+        if(this.scene.locked){
+            return;
+        }
         if(this.dragging){
             if(Math.sqrt(Math.pow(y-this.y,2)+Math.pow(x-this.x,2)) > 200){
                 this.scene.startDrag(this);
@@ -153,6 +159,9 @@ export class WeaponButton extends Button {
 		event: Phaser.Types.Input.EventData
 	) {
 		super.onUp(pointer,localX,localY,event);
+        if(this.scene.locked){
+            return;
+        }
         if(this.dragging){
             this.scene.snap();
         }
@@ -188,6 +197,19 @@ export class WeaponButton extends Button {
             this.scene.sound.play("shift",{volume: 0.5});
         }
 
+    }
+
+    lock(){
+        if(!this.moving){
+            this.back.disableInteractive();
+        } else {
+            console.log("Attempted unsafe button lock.");
+            return;
+        }
+    }
+
+    unlock(){
+        this.back.setInteractive();
     }
 
     onDrag(pointer: Phaser.Input.Pointer, dragX: number, dragY: number): void {

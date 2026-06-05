@@ -12,6 +12,7 @@ export class Target extends Phaser.GameObjects.Container{
     public unstack: number[] = [0,0];
     public overlap: boolean = false;
     public colrad: number = 75;
+    protected seeking: boolean = false;
 
     public tID: number = 0;
     //public pID: number = 0;
@@ -52,6 +53,16 @@ export class Target extends Phaser.GameObjects.Container{
             //console.log(this.stackLog);
             return false;
         }
+    }
+
+    checkSeek(n: number, limit: number){
+        if(n < limit){
+            this.seeking = true;
+        }
+    }
+
+    unSeek(){
+        this.seeking = false;
     }
 
     checkBulletLog(n: number): boolean{

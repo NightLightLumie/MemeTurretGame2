@@ -17,15 +17,31 @@ export class BoneEffect extends Effect{
     public velocityX: number = 0;
     public velocityY: number = 0;
     public spAngle: number;
-    private fadeTime: number = 500;
+    private fadeTime: number = 250;
     private ofs: number[];
+    public owner: Player;
 
     constructor(scene: BaseScene, x: number, y: number, p: Player){
         super(scene, x, y);
-        this.frameLength = 100;
+
+
+        this.scene = scene;
+		this.sp = this.scene.add.sprite(0, 0, "boneattack");
+		this.sp.setOrigin(0.5, 0.5);
+        this.sp.setScale(1.5,1.5);
+        this.sp.setAngle(0);
+        this.isLooped = false;
+        this.frameLength = 25;
         this.startingFrame = 0;
         this.currentFrame = 0;
         this.totalFrames = 4;
+        this.sp.setFrame(this.startingFrame);
+        this.add(this.sp);
+        this.setDepth(2);
+        this.owner = p;
+        this.ofs = [(-1+(Math.random()*2))*0.5*p.radius, (-1+(Math.random()*2))*0.5*p.radius];
+        this.x = this.owner.x+this.ofs[0];
+        this.y = this.owner.y+this.ofs[1];
     }
 
     setVelocityX(v: number){
@@ -45,25 +61,30 @@ export class BoneEffect extends Effect{
         if(this.deleteFlag){
             return;
         }
-        if (this.timer <= this.frameLength) {
+        if(this.timer <= this.frameLength) {
             this.timer += d;
-            this.x += this.velocityX*d*0.001;
-            this.y += this.velocityY*d*0.001;
+            this.ofs[0] += this.velocityX*d*0.001;
+            this.ofs[1] += this.velocityY*d*0.001;
+            this.x = this.owner.x+this.ofs[0];
+            this.y = this.owner.y+this.ofs[1];
             if (this.timer >= this.frameLength) {
                 this.timer = 0;
                 if(this.currentFrame < (this.totalFrames-1)) {
                     this.currentFrame++;
                     this.sp.setFrame(this.currentFrame);
-                } else if (this.currentFrame >= (this.totalFrames-1)) {
-                    if(this.isLooped) {
-                        this.currentFrame = 0;
-                        this.sp.setFrame(this.currentFrame);
-                    } else {
-                        this.deleteFlag = true;
-                        this.sp.setAlpha(0);
-                    }
                 }
-                
+        }
+        if (this.currentFrame >= (this.totalFrames-1)) {
+                if(this.fadeTime > 0) {
+                    this.fadeTime -= d;
+                    if(this.fadeTime <= 0){
+                        this.fadeTime = 0;
+                    }
+                    this.sp.setAlpha(this.fadeTime/250);
+                } else {
+                    this.deleteFlag = true;
+                    this.sp.setAlpha(0);
+                }
             }
         }
     }

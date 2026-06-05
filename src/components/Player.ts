@@ -42,7 +42,7 @@ export class Player extends Phaser.GameObjects.Container {
 	private cd: number = 0;
 	private maxCD: number = 250;
 	private gfx: Phaser.GameObjects.Graphics;
-
+	public health: number = 2000;
 	public loadout: [Weapon,Weapon,Weapon];
 	public activeWeapon: number = 0;
 
@@ -342,6 +342,10 @@ export class Player extends Phaser.GameObjects.Container {
 
 	renderWeapon(){
 
+	}
+
+	takeHit(){
+		
 	}
 
 	doABarrelRoll() {

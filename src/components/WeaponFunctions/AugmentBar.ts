@@ -1,6 +1,7 @@
 import { UpgradeScene } from "@/scenes/UpgradeScene";
 import { AugmentButton } from "../AugmentButton";
 import { Augment } from "./Weapon";
+import { AugmentUI } from "./AugmentUI";
 
 export class AugmentBar extends Phaser.GameObjects.Container{
     public scene: UpgradeScene;
@@ -9,20 +10,34 @@ export class AugmentBar extends Phaser.GameObjects.Container{
     public bars: Phaser.GameObjects.Sprite[];
     private st: number = -268;
     private ofs: number = 52;
-    constructor(scene:UpgradeScene,x:number,y:number, aug: Augment){
+    private index: number = 0;
+    private owner: AugmentUI;
+    private originalPos: number[];
+    constructor(scene:UpgradeScene, own: AugmentUI, x:number,y:number, aug: Augment, index: number = 0){
         super(scene,x,y);
+        this.owner = own;
+        this.index = index;
         this.scene = scene;
         this.ref = aug;
-        this.augbutton = new AugmentButton(this.scene,this.st-72,0);
+        this.originalPos = [x,y];
+        this.augbutton = new AugmentButton(this.scene,this,this.st-72,0);
         this.augbutton.load(this.ref.index)
         this.add(this.augbutton);
         this.bars = [];
         this.fillBar();
     }
 
+    activate(){
+        
+    }
+
     set(a: Augment){
         this.ref = a;
         this.redraw();
+    }
+
+    passivate(){
+        this.augbutton.passivate();
     }
 
     fillBar(){
@@ -48,7 +63,20 @@ export class AugmentBar extends Phaser.GameObjects.Container{
         }
     }
 
+    relightBars(){
+        for(let i = 0; i < this.bars.length; i++) {
+            if(i < this.ref.level) {
+                this.bars[i].setFrame(1)
+            } else if (i < this.ref.maxlv) {
+                this.bars[i].setFrame(0);
+            } else {
+                this.bars[i].setFrame(2);
+            }
+        }
+    }
+
     redraw(){
+        this.bars = [];
         for(let i = 0; i < this.ref.lvcap; i++){
             if(i >= this.bars.length) { //if we didn't already print a bar, do so now
                 if(i < 10){
@@ -69,5 +97,9 @@ export class AugmentBar extends Phaser.GameObjects.Container{
 
             
         }
+    }
+
+    openScreen(mode: string){
+        this.owner.openAugScreen(mode,this.index);
     }
 }

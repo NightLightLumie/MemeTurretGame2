@@ -45,6 +45,8 @@ export class UpgradeScene extends BaseScene {
 	public augUI: AugmentUI;
 	public equippedButtons: WeaponButton[];
 
+	public locked: boolean = false;
+
 	constructor() {
 		super({ key: "UpgradeScene" });
 	}
@@ -147,6 +149,8 @@ export class UpgradeScene extends BaseScene {
 				this.lockout = 0;
 			}
 		}
+
+		this.augUI.update(time,delta);
 	}
 
 	initButtons(){
@@ -180,6 +184,26 @@ export class UpgradeScene extends BaseScene {
 		this.add.existing(w);
 		w.setDepth(5);
 		this.buttonList.push(w);
+	}
+
+	checkSafe(): boolean{
+		if(this.dragging || (this.lockout > 0)){
+			return false;
+		} else {
+			return true;
+		}
+	}
+
+	lockButtons(){
+		this.buttonList.forEach((r)=> {
+			r.lock();
+		});
+	}
+
+	unlockButtons(){
+		this.buttonList.forEach((r)=> {
+			r.unlock();
+		});	
 	}
 
 	scrollDown(){

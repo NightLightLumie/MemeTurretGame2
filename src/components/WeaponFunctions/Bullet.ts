@@ -8,6 +8,7 @@ import { Target } from "../Target";
 import { BasicEffect } from "../BasicEffect";
 import { HitInfo } from "./WeaponOperator";
 import { Tracer } from "./Tracer";
+import { Weapon } from "./Weapon";
 
 export class Bullet extends Phaser.GameObjects.Container{
     public dir: number = 0;
@@ -53,15 +54,17 @@ export class Bullet extends Phaser.GameObjects.Container{
 
     private a: number = 0;
     public pID: number = 0;
+    private owner: Weapon;
 
     public sprSc: number[] = [64,64];
 
     public scene: GameScene;
-    constructor(scene:GameScene,x:number,y:number, wp: number, v:number,a:number,dmg: number, pen: number){
+    constructor(scene:GameScene,x:number,y:number, wp: number, v:number,a:number,dmg: number, pen: number, own: Weapon){
         super(scene,x,y);
         this.scene=scene;
 
         this.weaponID = wp;
+        this.owner = own;
         this.pierce = pen;
         this.dmg = dmg;
 
@@ -207,7 +210,7 @@ export class Bullet extends Phaser.GameObjects.Container{
         for(let n = 0; n < this.thits.length; n++){
             if(rp >= 0){
                 this.thits[n].tg.takePierceDamage(this.dmg,this.pID,this.weaponID);
-                this.scene.handler.processSpecial(this.thits[n].tg,this.weaponID);
+                this.scene.handler.processSpecial(this.thits[n].tg,this.weaponID, this.owner);
                 base += 0.05;
                 this.thits[n].tg.hitStun = 20;
                 if(Math.random() < 0.5){
@@ -256,7 +259,7 @@ export class Bullet extends Phaser.GameObjects.Container{
             }
 
             this.thits[ix].tg.takeDamage(this.dmg);
-            this.scene.handler.processSpecial(this.thits[ix].tg,this.weaponID);
+            this.scene.handler.processSpecial(this.thits[ix].tg,this.weaponID, this.owner);
             this.scene.sound.play("oof",{volume:0.2});
             this.thits[ix].tg.hitStun = 20;
             this.hX = this.thits[ix].vt.x;

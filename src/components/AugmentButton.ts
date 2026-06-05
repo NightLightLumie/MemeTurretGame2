@@ -1,5 +1,6 @@
 import { UpgradeScene } from "@/scenes/UpgradeScene";
 import { Button } from "./WeaponFunctions/Button";
+import { AugmentBar } from "./WeaponFunctions/AugmentBar";
 
 export class AugmentButton extends Button {
     public scene: UpgradeScene;
@@ -11,11 +12,13 @@ export class AugmentButton extends Button {
     private mode: number = 0; 
     private static EMPTY: number = 0;
     private static UPGRADE: number = 1;
+    private owner: AugmentBar;
+    private passive: boolean = false;
 
-    constructor(scene:UpgradeScene, x: number, y: number){
+    constructor(scene:UpgradeScene, own: AugmentBar, x: number, y: number){
         super(scene,x,y);
         this.scene = scene;
-
+        this.owner = own;
         this.back = this.scene.add.sprite(0,0,"aug_button_back");
         this.over = this.scene.add.sprite(0,0,"aug_button_frame");
         this.img = this.scene.add.image(0,0,"aug_0");
@@ -49,7 +52,36 @@ export class AugmentButton extends Button {
 		event: Phaser.Types.Input.EventData
 	) {
         super.onDown(pointer, localX, localY, event);
+        if(this.passive){
+            return;
+        }
+        this.passivate();
+        this.openScreen();
 	}
+
+    passivate(){
+        this.passive = true;
+        this.back.setInteractive(false);
+    }
+
+    unpassive(){
+        this.passive = false;
+        this.back.setInteractive(true);
+    }
+
+    openScreen(){
+        if(!this.scene.checkSafe()){
+            console.log("Unsafe screen open.");
+            return;
+        }
+        if(this.mode = AugmentButton.EMPTY) {
+            this.owner.openScreen("add");
+        } else if (this.mode = AugmentButton.UPGRADE) {
+            this.owner.openScreen("upgrade");
+        } else {
+            console.log("Invalid upgrade button command.");
+        }
+    }
 
 
 }

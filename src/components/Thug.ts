@@ -4,6 +4,7 @@ import { GibEffect } from "./GibEffect";
 import { WeaponData } from "./WeaponFunctions/Weapon";
 import { DmgStack, HitLog } from "./WeaponFunctions/WeaponOperator";
 import { BasicEffect } from "./BasicEffect";
+import { BoneEffect } from "./Graphics/BoneEffect";
 
 export class Thug extends Target{
 
@@ -11,7 +12,7 @@ export class Thug extends Target{
 
     private v: number = 0;
     private a: number = 0;
-    private hp: number = 600;
+    private hp: number = 3600;
     private mod: number = 1;
     private ofss: number = 0;
     private unstackFactor: number = 500;
@@ -25,26 +26,30 @@ export class Thug extends Target{
     private tdisp: Phaser.GameObjects.Container;
     private txt: Phaser.GameObjects.Text;
 
+    private aCD: number[] = [0, 1000];
+    private aRange: number = 20;
+
     private boundState: number = 0;
+
+    protected seekType: string = "x";
+    protected seekRad: number = 800;
 
     public gx: Phaser.GameObjects.Graphics;
 
-    constructor(scene:GameScene,x:number,y:number){
+    constructor(scene:GameScene,x:number,y:number, mode: string = "x", ofs: number = 0, seek: string = "x"){
         super(scene,x,y);
         this.spr = this.scene.add.sprite(0,0,"enemy_1");
         this.spr.setOrigin(0.5,0.5);
         this.v = 200+(Math.random()*200);
-        //this.v = 0;
-        this.a = Math.atan2(540-this.y,960-this.x)-Phaser.Math.DegToRad(20)+(Math.random()*Phaser.Math.DegToRad(40));
-        this.spr.setAngle((180/Math.PI)*this.a);
+        this.initializeAngle(mode, ofs);
         this.add(this.spr);
-        this.ofss = Math.random()*2*Math.PI;
-        this.bLog = new Map();
+        this.ofss = Math.random()*2*Math.PI; //random offset for oscillating motion
+        this.bLog = new Map(); //log for pierce shots
         this.tID = this.scene.getTargetID();
         this.tdisp = new Phaser.GameObjects.Container(this.scene,0,0);
         this.add(this.tdisp);
         this.tdisp.setDepth(10);
-        this.stackLog = new Map();
+        this.stackLog = new Map(); //logs of stacks for procs
         this.gx = this.scene.add.graphics();
         this.gx.fillStyle(0x008080,0.85);
         this.add(this.gx);
@@ -64,6 +69,35 @@ export class Thug extends Target{
         }
         //this.pID = this.scene.getProjID();
     }
+
+    initializeAngle(input: string, offset: number = 0){
+        let ofs = (-1*offset)+(Math.random()*2*offset);
+        let theta = 0;
+        switch(input){
+            case "x": {
+                if(this. x > 0) {
+                    theta = 180+ofs;
+                    this.setAngle(theta);
+                    this.a = theta*(Math.PI/180);
+                } else {
+                    theta = 0+ofs;
+                    this.setAngle(theta);
+                    this.a = theta*(Math.PI/180);
+                }
+                break;
+            } case "r": {
+                theta = (this.playerAngle()*(180/Math.PI)) + ofs;
+                this.setAngle(theta);
+                this.a = theta*(Math.PI/180);
+                break;
+            } default: {
+                break;
+            }
+        }
+
+    }
+
+
     update(t:number,d:number){
         super.update(t,d);
         if(this.hitStun <= 0){
@@ -85,22 +119,55 @@ export class Thug extends Target{
         this.x += (this.unstack[0]*this.unstackFactor*d/1000);
         this.y += (this.unstack[1]*this.unstackFactor*d/1000);
         this.unstack = [0,0];
+        this.seek(t,d);
 
-        let c = this.playerDist();
-        if(c < 800){
-            this.a = Math.atan2(this.scene.player.y-this.y,this.scene.player.x-this.x);
-            if(c < (this.radius+this.scene.player.radius)){
-                let dc = Math.atan2(this.y-this.scene.player.y,this.x-this.scene.player.x);
-                this.x = this.scene.player.x+((this.scene.player.radius+this.radius)*Math.cos(dc));
-                this.y = this.scene.player.y+((this.scene.player.radius+this.radius)*Math.sin(dc));   
-            }
-        }
-
-
-        this.spr.setAngle((180/Math.PI)*this.a);
+        this.setAngle((180/Math.PI)*this.a);
 
         this.updateLogs(t,d);
         this.updateBounds();
+
+    }
+
+    seek(t: number, d: number){
+        let c = 0;
+        let ap = 0;
+        switch(this.seekType){
+            case "r": {
+                if(!this.seeking) {
+                    c = this.playerDist();
+                    this.checkSeek(c, 1600);
+
+                } else {
+                    this.a = this.playerAngle();
+                    this.attack(t,d);
+                    this.playerCollide();
+                }
+                break;
+            } case "x": {
+                if(!this.seeking){
+                    c = Math.abs(this.x-this.scene.player.x);
+                    this.checkSeek(c, 1600);
+                } else {
+                    this.a = this.playerAngle();
+                    this.attack(t,d);
+                    this.playerCollide();
+                }
+                break;
+            } default: {
+                this.a = this.playerAngle();
+                break;
+            }
+        }
+    }
+
+    playerCollide(){
+        let r  = this.playerDist();
+        let ct = 0;
+        if(r < (this.radius+this.scene.player.radius)){
+            ct = Math.atan2(this.y-this.scene.player.y,this.x-this.scene.player.x);
+            this.x = this.scene.player.x+((this.scene.player.radius+this.radius)*Math.cos(ct));
+            this.y = this.scene.player.y+((this.scene.player.radius+this.radius)*Math.sin(ct));   
+        }
 
     }
 
@@ -177,6 +244,10 @@ export class Thug extends Target{
         return Math.sqrt(Math.pow(this.scene.player.x-this.x,2)+Math.pow(this.scene.player.y-this.y,2));
     }
 
+    playerAngle(): number {
+        return Math.atan2(this.scene.player.y-this.y,this.scene.player.x-this.x);
+    }
+
     takeDamage(n: number){
         this.hp -= n;
         if(this.hp <= 0) {
@@ -184,8 +255,20 @@ export class Thug extends Target{
         }
     }
 
-    attack(){
-
+    attack(t: number, d: number){
+        if(this.aCD[0] <= 0) {
+            if(this.playerDist() < (this.scene.player.radius+this.radius+this.aRange))
+            {
+                this.scene.sound.play("turret_hit", {volume: 0.5});
+                this.scene.addPlayerEffect(new BoneEffect(this.scene, this.scene.player.x, this.scene.player.y, this.scene.player));
+                this.aCD[0] = this.aCD[1];   
+            }
+        } else {
+            this.aCD[0] -= d;
+            if(this.aCD[0] <= 0) {
+                this.aCD[0] = 0;
+            }
+        }
     }
 
     takePierceDamage(n: number, p: number, wID: number){

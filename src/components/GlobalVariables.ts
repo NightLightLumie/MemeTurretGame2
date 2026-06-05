@@ -8,7 +8,7 @@ export class GlobalVariables {
     public curGunID: number = -999999999;
     public inv: Armory;
     public defaultParam: WeaponParams = {type:0,name:"Lutra",class:"pistol", dmg: 1, spd: 10000, rof: 5, spcd: 10000, shots: 1, pen: 1, pcd: -999, clip: 18, load: 1.5, width: 1, rad: 1, acc: 0,
-     arpen: [0,0], crit: [0,1], ele: 1, augs: [0,1,1,1,1,0,1,0,0,1,0,0,0,0,0,0,0,0,0], customaug: {name: "default", index: 0, level: 0, maxlv: 10, lvcap: 10, desc: ""}};
+     arpen: [0,0], crit: [0,1], ele: 1, onhit:0, augs: [0,1,1,1,1,0,1,0,0,1,0,0,0,0,0,0,0,0,0], customaug: {name: "default", index: 0, level: 0, maxlv: 10, lvcap: 10, desc: ""}};
 
 
     public augList: Augment[] = [
@@ -16,45 +16,56 @@ export class GlobalVariables {
         {name: "Impact", index: 1, level: 0, maxlv: 10, lvcap: 10, desc: "Increased base damage."}, //base damage, +10% each
         {name: "Barrage", index: 2, level: 0, maxlv: 10, lvcap: 10, desc: "Increased rate of fire."}, //RoF, +10% each
         {name: "Magazine", index: 3, level: 0, maxlv: 10, lvcap: 10, desc: "Additional magazine capacity."}, //Capacity, +10% each
+        
         {name: "Swiftload", index: 4, level: 0, maxlv: 10, lvcap: 10, desc: "Reduced reload speed."}, //Reload, -5% each
         {name: "Melter", index: 5, level: 0, maxlv: 10, lvcap: 10, desc: "Additional damage over time."}, //DoT damage, +10% each
         {name: "Flaying", index: 6, level: 0, maxlv: 10, lvcap: 10, desc: "Ignores a portion of resistances."}, //Armor pen, +5% each
         {name: "Razor Shot", index: 7, level: 0, maxlv: 10, lvcap: 10, desc: "Increased on-hit damage."}, //On hit damage, +10% each
+        
         {name: "Demolition", index: 8, level: 0, maxlv: 10, lvcap: 10, desc: "Enlarged blast radius."}, //Blast radius, +5% each
         {name: "Penetrator", index: 9, level: 0, maxlv: 10, lvcap: 10, desc: "Increases penetration capability."}, //Pierce, +10% each
         {name: "Concentration", index: 10, level: 0, maxlv: 10, lvcap: 10, desc: "Narrowed accuracy cone."}, //Accuracy cone, -5% each
         {name: "Critical Eye", index: 11, level: 0, maxlv: 10, lvcap: 10, desc: "Additional base critical hit chance."}, //Crit chance, +2.5% each
+        
         {name: "Merciless", index: 12, level: 0, maxlv: 10, lvcap: 10, desc: "Increased critical hit damage."}, //Crit damage, +10% each
         {name: "Trickshot", index: 13, level: 0, maxlv: 10, lvcap: 10, desc: "Additional direct hit chance."}, //Direct shot (+50% dmg) chance, +5% each
         {name: "Focus", index: 14, level: 0, maxlv: 10, lvcap: 10, desc: "Increased special shot recharge and rate of fire."}, //Special ammo recharge rate and RoF, +10% each
         {name: "Tactician", index: 15, level: 0, maxlv: 10, lvcap: 10, desc: "Increased special shot damage."}, //Special ammo damage, +10% each
+        
         {name: "Power Assist", index: 16, level: 0, maxlv: 10, lvcap: 10, desc: "Reduced movement penalty."}, //reduces movement penalty, -5% each
         {name: "Slayer", index: 17, level: 0, maxlv: 10, lvcap: 10, desc: "Increased damage to bosses and elite enemies."}, //Boss and elite damage, +2.5% each
         {name: "CUSTOM", index: 18, level: 0, maxlv: 10, lvcap: 10, desc: ""},
-
     ];
 
 
+    /*
+        augs for: 
+        generic anything -      [0,1,1,1, 1,0,1,1, 0,1,1,1, 1,1,0,0, 1,1,0]
+        dot weapons -           [0,1,1,1, 1,1,1,1, 0,1,1,1, 1,1,0,0, 1,1,0]
+        blast weapons(nocrit) - [0,1,1,1, 1,0,1,1, 1,1,1,0, 0,1,0,0, 1,1,0]
+        blast weapons(crit)   - [0,1,1,1, 1,0,1,1, 1,1,1,0, 0,1,0,0, 1,1,0]
+        snipers -               [0,1,1,1, 1,0,1,1, 0,1,0,1, 1,1,0,0, 1,1,0]  
+    */
     public gunList: Map<number,WeaponParams> = new Map([
         //starting weps
-        [0, {type:0,name:"Lutra",class:"pistol", dmg: 125, spd: 20000, rof: 5, spcd: 10000, shots: 1, pen: 1, pcd: 20, clip: 18, load: 1.5, width: 1, rad: 1,
-         acc: 2, arpen: [0,0], crit: [0,1], ele: 1, augs: [0,1,1,1,1,0,1,0,0,1,0,0,0,0,0,0,0,0,0], customaug: {name: "default", index: 0, level: 0, maxlv: 10, lvcap: 10, desc: ""}}],
-        [1, {type:1,name:"Windmill",class:"smg", dmg: 110, spd: 20000, rof: 8, spcd: 10000, shots: 1, pen: 1, pcd: -999, clip: 32, load: 1.5, width: 1, rad: 1,
-         acc: 7.5, arpen: [0,0], crit: [0,1], ele: 1, augs: [0,1,1,1,1,0,1,0,0,1,0,0,0,0,0,0,0,0,0], customaug: {name: "default", index: 0, level: 0, maxlv: 10, lvcap: 10, desc: ""}}],
-        [2, {type:2,name:"ANTIK",class:"shotgun", dmg: 90, spd: 20000, rof: 2.5, spcd: 10000, shots: 6, pen: 1, pcd: -999, clip: 8, load: 2.5, width: 1, rad: 1,
-         acc: 15, arpen: [0,0], crit: [0,1], ele: 1, augs: [0,1,1,1,1,0,1,0,0,1,0,0,0,0,0,0,0,0,0], customaug: {name: "default", index: 0, level: 0, maxlv: 10, lvcap: 10, desc: ""}}],
+        [0, {type:0,name:"Lutra",class:"pistol", dmg: 115, spd: 20000, rof: 5, spcd: 10000, shots: 1, pen: 1, pcd: 20, clip: 18, load: 1.5, width: 1, rad: 1,
+         acc: 2, arpen: [0,0], crit: [0,1], ele: 1, onhit: 0, augs: [0,1,1,1, 1,0,1,1, 0,1,1,1, 1,1,0,0, 1,1,0], customaug: {name: "default", index: 0, level: 0, maxlv: 10, lvcap: 10, desc: ""}}],
+        [1, {type:1,name:"Windmill",class:"smg", dmg: 95, spd: 20000, rof: 8, spcd: 10000, shots: 1, pen: 1, pcd: -999, clip: 32, load: 1.5, width: 1, rad: 1,
+         acc: 6.5, arpen: [0,0], crit: [0,1], ele: 1, onhit: 0, augs: [0,1,1,1, 1,0,1,1, 0,1,1,1, 1,1,0,0, 1,1,0], customaug: {name: "default", index: 0, level: 0, maxlv: 10, lvcap: 10, desc: ""}}],
+        [2, {type:2,name:"ANTIK",class:"shotgun", dmg: 105, spd: 20000, rof: 2.5, spcd: 10000, shots: 6, pen: 1.5, pcd: -999, clip: 8, load: 2.5, width: 1, rad: 1,
+         acc: 15, arpen: [0,0], crit: [0,1], ele: 1, onhit: 0, augs: [0,1,1,1, 1,0,1,1, 0,1,1,1, 1,1,0,0, 1,1,0], customaug: {name: "default", index: 0, level: 0, maxlv: 10, lvcap: 10, desc: ""}}],
         
         [3, {type:3,name:"Broadhead",class:"sniper", dmg: 765, spd: 50000, rof: 1.5, spcd: 10000, shots: 1, pen: 5, pcd: -999, clip: 5, load: 1.75, width: 1, rad: 100,
-         acc: 0, arpen: [0,0], crit: [0,1], ele: 1, augs: [0,1,1,1,1,0,1,0,0,1,0,0,0,0,0,0,0,0,0], customaug: {name: "default", index: 0, level: 0, maxlv: 10, lvcap: 10, desc: ""}}],
+         acc: 0, arpen: [0,0], crit: [0,1], ele: 1, onhit: 0, augs: [0,1,1,1, 1,0,1,1, 0,1,0,1, 1,1,0,0, 1,1,0], customaug: {name: "default", index: 0, level: 0, maxlv: 10, lvcap: 10, desc: ""}}],
         [4, {type:4,name:"BJURÖN",class:"assault", dmg: 175, spd: 28000, rof: 6, spcd: 10000, shots: 1, pen: 2, pcd: -999, clip: 40, load: 2, width: 1, rad: 1,
-         acc: 4, arpen: [0,0], crit: [0,1], ele: 1, augs: [0,1,1,1,1,0,1,0,0,1,0,0,0,0,0,0,0,0,0], customaug: {name: "default", index: 0, level: 0, maxlv: 10, lvcap: 10, desc: ""}}],
+         acc: 4, arpen: [0,0], crit: [0,1], ele: 1, onhit: 0, augs: [0,1,1,1, 1,0,1,1, 0,1,1,1, 1,1,0,0, 1,1,0], customaug: {name: "default", index: 0, level: 0, maxlv: 10, lvcap: 10, desc: ""}}],
         [5, {type:5,name:"Mako",class:"lmg", dmg: 215, spd: 28000, rof: 7.5, spcd: 10000, shots: 1, pen: 3, pcd: -999, clip: 5, load: 3.5, rad: 1,
-         width: 1, acc: 15, arpen: [0,0], crit: [0,1], ele: 1, augs: [0,1,1,1,1,0,1,0,0,1,0,0,0,0,0,0,0,0,0], customaug: {name: "default", index: 0, level: 0, maxlv: 10, lvcap: 10, desc: ""}}],
+         width: 1, acc: 15, arpen: [0,0], crit: [0,1], ele: 1, onhit: 0, augs: [0,1,1,1, 1,0,1,1, 0,1,1,1, 1,1,0,0, 1,1,0], customaug: {name: "default", index: 0, level: 0, maxlv: 10, lvcap: 10, desc: ""}}],
         [6, {type:6,name:"LOSSNEN",class:"rocket", dmg: 1125, spd: 28000, rof: 0.5, spcd: 10000, shots: 6, pen: 3, pcd: -999, clip: 5, load: 3.5, width: 20, rad: 1,
-         acc: 15, arpen: [0,0], crit: [0,1], ele: 1, augs: [0,1,1,1,1,0,1,0,0,1,0,0,0,0,0,0,0,0,0], customaug: {name: "default", index: 0, level: 0, maxlv: 10, lvcap: 10, desc: ""}}],
+         acc: 15, arpen: [0,0], crit: [0,1], ele: 1, onhit: 0, augs: [0,1,1,1, 1,0,1,1, 1,1,1,0, 0,1,0,0, 1,1,0], customaug: {name: "default", index: 0, level: 0, maxlv: 10, lvcap: 10, desc: ""}}],
 
         [7, {type:7,name:"Ottertail",class:"smg", dmg: 185, spd: 22000, rof: 12, spcd: 10000, shots: 1, pen: 2, pcd: -999, clip: 42, load: 1.75, width: 1, rad: 1,
-         acc: 9, arpen: [0,0], crit: [0,1], ele: 1, augs: [0,1,1,1,1,0,1,0,0,1,0,0,0,0,0,0,0,0,0], customaug: {name: "default", index: 0, level: 0, maxlv: 10, lvcap: 10, desc: ""}}],
+         acc: 9, arpen: [0,0], crit: [0,1], ele: 1, onhit: 0, augs: [0,1,1,1, 1,0,1,1, 0,1,1,1, 1,1,0,0, 1,1,1], customaug: {name: "Spiral Shots", index: 18, level: 0, maxlv: 10, lvcap: 10, desc: "Increased stack damage of Romp. +20% per upgrade."}}],
  
     ]);
 
@@ -63,7 +74,7 @@ export class GlobalVariables {
     public secondary: WeaponEntry;
 
     constructor(){
-        this.inv = new Armory();
+        this.inv = new Armory(this);
         this.side = this.inv.fetchGun(-999999999);
         this.primary = this.inv.fetchGun(-999999998);
         this.secondary = this.inv.fetchGun(-999999997);
@@ -87,7 +98,31 @@ export class GlobalVariables {
     copyParam(w: WeaponParams): WeaponParams {
         return {
             type:w.type,name:w.name,class:w.class, dmg:w.dmg, spd:w.spd, rof:w.rof, spcd:w.spcd, shots:w.shots, pen:w.pen, pcd:w.pcd, clip:w.clip, load:w.load,
-             width:w.width, rad:w.rad, acc:w.acc, arpen:w.arpen, crit:w.crit, ele:w.ele, augs:w.augs, customaug:w.customaug}
+             width:w.width, rad:w.rad, acc:w.acc, arpen:w.arpen, crit:w.crit, ele:w.ele, augs:w.augs, onhit:w.onhit, customaug:w.customaug};
+    }
+
+    checkAugCompatibility(w: number, aug: number): boolean{
+        if(this.gunList.has(w)){
+            let kt = this.gunList.get(w);
+            if(kt != null){
+                if((aug >= 0) && (aug <= kt.augs.length)) {
+                    if(kt.augs[aug] > 0) {
+                        return true;
+                    } else {
+                        return false;
+                    }
+                } else {
+                    console.log("No augment with this index exists for augment check, or the augment table for this weapon is filled incorrectly.");
+                    return false;
+                }
+            } else {
+                console.log("Null entry in weapon list for augment check.");
+                return false;
+            }
+        } else {
+            console.log("No weapon with this ID exists for augment check.");
+            return false;
+        }
     }
 
     getGunID(): number{
@@ -106,6 +141,10 @@ export class GlobalVariables {
         } else {
             return;
         }
+    }
+
+    replaceAugs(id: number, index: number, ref: Augment[]){
+        this.inv.replaceAugs(id,index,ref);
     }
 
     swapLoadout(){

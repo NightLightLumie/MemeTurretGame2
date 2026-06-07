@@ -45,6 +45,11 @@ const images: Image[] = [
 	image('weapons/gun_3', 'gun_3'),
 	image('weapons/gun_4', 'gun_4'),
 	image('weapons/gun_7', 'gun_7'),
+	image('weapons/gun_8', 'gun_8'),
+
+
+
+
 	image('weapons/aug_0', 'aug_0'),
 	image('weapons/aug_1', 'aug_1'),
 	image('weapons/aug_2', 'aug_2'),

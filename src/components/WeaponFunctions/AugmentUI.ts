@@ -122,10 +122,15 @@ export class AugmentUI extends Phaser.GameObjects.Container{
         switch (mode){
             case "upgrade": {
                 this.scene.lockButtons();
-                this.swapScreen(index);
+                this.swapScreen();
                 this.hideOtherBars(index);
+                this.augscreen.engageUpgradeMode(index);
                 break;
             } case "add": {
+                this.scene.lockButtons();
+                this.swapScreen();
+                this.hideAllBars();
+                this.augscreen.engageAddMode(index);
                 break;
             } default: {
                 break;
@@ -138,10 +143,12 @@ export class AugmentUI extends Phaser.GameObjects.Container{
             case "upgrade": {
                 this.hideAugScreen();
                 this.dispBars.setDepth(15);
+                this.gunJargon.setVisible(true);
                 this.refreshBars();
                 this.scene.unlockButtons();
                 break;
             } case "add": {
+                this.refreshBars();
                 break;
             } default: {
                 break;
@@ -154,9 +161,9 @@ export class AugmentUI extends Phaser.GameObjects.Container{
         this.augscreen.setDepth(30);
     }
 
-    swapScreen(ix: number){
-        this.augscreen.engageUpgradeMode(ix);
+    swapScreen(){
         this.augscreen.setVisible(true);
+        this.gunJargon.setVisible(false);
         this.augscreen.setDepth(40);
         this.dispBars.setDepth(35);
     }
@@ -174,6 +181,13 @@ export class AugmentUI extends Phaser.GameObjects.Container{
             }
         } else {
             console.log("No augment with this index exists for opening augment screen.");
+        }
+    }
+
+    hideAllBars(){
+        for(let ii = 0; ii < this.augBars.length; ii++){
+            this.augBars[ii].passivate();
+            this.augBars[ii].setVisible(false);
         }
     }
 

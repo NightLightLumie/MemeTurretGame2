@@ -58,6 +58,9 @@ export class GameScene extends BaseScene {
 	private boundary: [number,number,number,number] = [-5000,5000,-5000,5000];
 	private division: [number,number] = [250,250];
 	private chunks: TileChecker;
+	private paused: boolean = false;
+	private upgrading: boolean = false;
+	
 
 	private ls: LineSegment;
 
@@ -189,19 +192,19 @@ export class GameScene extends BaseScene {
 		const pointer = this.input.activePointer;
 		const worldX = this.cameras.main.getWorldPoint(pointer.x, pointer.y).x;
  		const worldY = this.cameras.main.getWorldPoint(pointer.x, pointer.y).y;
-		//this.tyText.setPosition(worldX,worldY+80);
-		//this.tyText.setText("Pointer: " + worldX + ", " + worldY);
-		this.player.update(time, delta);
-		this.ls.hitCheck(this.player);
-		this.ls.update(time,delta);
-		//this.spawnEnemies(time,delta);
-		this.cLevel.update(time,delta);
-		this.updateTargets(time,delta);
-		this.updateBullets(time,delta);
-		this.updateEffects(time,delta);
-		this.unstackEnemies();
-		this.gUI.update(time,delta);
-
+		if(!this.paused){
+			//this.tyText.setPosition(worldX,worldY+80);
+			//this.tyText.setText("Pointer: " + worldX + ", " + worldY);
+			this.player.update(time, delta);
+			this.ls.hitCheck(this.player);
+			this.ls.update(time,delta);
+			this.cLevel.update(time,delta);
+			this.updateTargets(time,delta);
+			this.updateBullets(time,delta);
+			this.updateEffects(time,delta);
+			this.unstackEnemies();
+			this.gUI.update(time,delta);
+		}
 	}
 
 	spawnEnemies(num:number = 2, cmd:string = "x", etype:string = "thug", difficulty:number = 0): boolean{

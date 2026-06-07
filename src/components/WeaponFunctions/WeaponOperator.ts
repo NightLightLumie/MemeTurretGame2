@@ -90,12 +90,12 @@ export class WeaponOperator{
         }
         w.updateAmmo(1);
         switch(w.type){
-            case 0: { //lutra
+            case 8:{}
+            case 0: { //lutra, NTR-141
                 let ofs = Phaser.Math.DegToRad(-1*w.wp.acc+(Math.random()*2*w.wp.acc));
 				this.p.scene.sound.play("gun_0",{volume: 0.7});
 				this.p.scene.addBullet(new Bullet(this.p.scene,this.p.x+(w.fRad*Math.cos(a)), this.p.y+(w.fRad*Math.sin(a)), w.wp.type, w.wp.spd,a+ofs,w.damage,w.pierce, w));
                 break;
-
             } case 1: { //windmill
                 let ofs = Phaser.Math.DegToRad(-1*w.wp.acc+(Math.random()*2*w.wp.acc));
 				this.p.scene.sound.play("gun_1",{volume: 0.7});

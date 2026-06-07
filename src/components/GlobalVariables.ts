@@ -7,6 +7,8 @@ export class GlobalVariables {
 
     public curGunID: number = -999999999;
     public inv: Armory;
+    public maxAugOverLevel: number = 13;
+    public maxAugLevel: number = 10;
     public defaultParam: WeaponParams = {type:0,name:"Lutra",class:"pistol", dmg: 1, spd: 10000, rof: 5, spcd: 10000, shots: 1, pen: 1, pcd: -999, clip: 18, load: 1.5, width: 1, rad: 1, acc: 0,
      arpen: [0,0], crit: [0,1], ele: 1, onhit:0, augs: [0,1,1,1,1,0,1,0,0,1,0,0,0,0,0,0,0,0,0], customaug: {name: "default", index: 0, level: 0, maxlv: 10, lvcap: 10, desc: ""}};
 
@@ -66,7 +68,9 @@ export class GlobalVariables {
 
         [7, {type:7,name:"Ottertail",class:"smg", dmg: 185, spd: 22000, rof: 12, spcd: 10000, shots: 1, pen: 2, pcd: -999, clip: 42, load: 1.75, width: 1, rad: 1,
          acc: 9, arpen: [0,0], crit: [0,1], ele: 1, onhit: 0, augs: [0,1,1,1, 1,0,1,1, 0,1,1,1, 1,1,0,0, 1,1,1], customaug: {name: "Spiral Shots", index: 18, level: 0, maxlv: 10, lvcap: 10, desc: "Increased stack damage of Romp. +20% per upgrade."}}],
- 
+        [8, {type:8,name:"NTR-141",class:"pistol", dmg: 60, spd: 20000, rof: 16, spcd: 10000, shots: 1, pen: 1, pcd: 20, clip: 21, load: 1.75, width: 1, rad: 1,
+         acc: 2, arpen: [0,0], crit: [0,1], ele: 1, onhit: 0, augs: [0,1,1,1, 1,0,1,1, 0,1,1,1, 1,1,0,0, 1,1,0], customaug: {name: "default", index: 0, level: 0, maxlv: 10, lvcap: 10, desc: ""}}],
+
     ]);
 
     public side: WeaponEntry;
@@ -145,6 +149,15 @@ export class GlobalVariables {
 
     replaceAugs(id: number, index: number, ref: Augment[]){
         this.inv.replaceAugs(id,index,ref);
+    }
+
+    copyAug(id: number): Augment{
+        if((id >= 0) && (id < this.augList.length)){
+            return this.inv.copyAug(this.augList[id]);
+        } else {
+            console.log("No augment with the specified id exists to copy.");
+            return {name: "default", index: 0, level: 0, maxlv: 10, lvcap: 10, desc: ""};
+        }
     }
 
     swapLoadout(){

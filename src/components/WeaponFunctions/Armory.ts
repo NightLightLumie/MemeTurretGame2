@@ -25,8 +25,12 @@ export class Armory {
                 {name: "Penetrator", index: 9, level: 6, maxlv: 8, lvcap: 10, desc: "Increases penetration capability."},
                 {name: "default", index: 0, level: 0, maxlv: 10, lvcap: 10, desc: ""}]}],//keep these three defaults the same
 
-            [-999999996, {gID: -999999996, wID: 3, augs: []}],
-            [-999999995, {gID: -999999995, wID: 4, augs: []}],
+            [-999999996, {gID: -999999996, wID: 4, augs: []}],
+            [-999999995, {gID: -999999995, wID: 8, augs: [{name: "default", index: 0, level: 0, maxlv: 10, lvcap: 10, desc: ""},
+                {name: "default", index: 0, level: 0, maxlv: 10, lvcap: 10, desc: ""},
+                {name: "default", index: 0, level: 0, maxlv: 10, lvcap: 10, desc: ""},
+                {name: "default", index: 0, level: 0, maxlv: 10, lvcap: 10, desc: ""}
+            ]}],
             [-999999994, {gID: -999999994, wID: 2, augs: []}],
             [-999999993, {gID: -999999994, wID: 7, augs: [this.generateAugment(2,5,13,13), this.generateAugment(4,13,13,13), this.generateSpecialAugment(7,1,10,10), this.generateAugment(3,10,10,10), ]}],
         ]);
@@ -63,6 +67,21 @@ export class Armory {
             console.log("No augment with the specified index is found for creation. Check Armory.ts and GlobalVariables.ts.");
             return {name: "default", index: 0, level: 0, maxlv: 10, lvcap: 10, desc: ""};
         }
+
+    }
+
+
+    /*
+
+    rollRandomAugment(tab: number[]): Augment{
+        let ap = [];
+        for let
+
+    }
+
+    */
+
+    createRandomGun(){
 
     }
 

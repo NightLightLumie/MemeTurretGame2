@@ -3,26 +3,39 @@ import { Button } from "../WeaponFunctions/Button";
 import { image } from "@/assets/util";
 import { BaseScene } from "@/scenes/BaseScene";
 import { AugmentScreen } from "../WeaponFunctions/AugmentScreen";
+import { Augment } from "../WeaponFunctions/Weapon";
 
-export class AugmentControlButton extends Button{
+export class AugmentSelectButton extends Button{
     public scene: BaseScene;
-    public sp: Phaser.GameObjects.Sprite;
+    private sp: Phaser.GameObjects.Sprite;
+    private img: Phaser.GameObjects.Image;
+    private bkg: Phaser.GameObjects.Image;
     public owner: AugmentScreen;
-    public mode: string = "close";
+    public aug: Augment;
     private internalCooldown: number[] = [0,250];
     private index: number = 0;
-    constructor(scene: BaseScene, own:AugmentScreen, spr: string, x: number, y: number, mode: string = "close"){
+    constructor(scene: BaseScene, own:AugmentScreen, x: number, y: number, aug: Augment, allowed: boolean = false){
         super(scene, x, y);
         this.scene = scene;
         this.owner = own;
-        this.mode = mode;
-        this.sp = this.scene.add.sprite(0,0,spr);
+        this.aug = aug;
+        this.bkg = this.scene.add.image(0,0,"aug_select_back");
+        this.add(this.bkg);
+        this.bkg.setAlpha(0.5);
+        this.sp = this.scene.add.sprite(0,0,"aug_select_frame");
         this.add(this.sp);
+        this.img = this.scene.add.image(0,0,"aug_"+this.aug.index);
+        this.img.setScale(1.5,1.5);
+        this.add(this.img);
         this.scene.add.existing(this);
         this.sp.setOrigin(0.5, 0.5);
         this.bindInteractive(this.sp);
         this.setInteractive();
         this.setScale(1,1);
+
+        if(!allowed){
+            this.rest();
+        }
     }
 
     onDown(pointer: Phaser.Input.Pointer, localX: number, localY: number, event: Phaser.Types.Input.EventData): void {
@@ -30,30 +43,25 @@ export class AugmentControlButton extends Button{
         this.trigger();
     }
 
+    onOver(pointer: Phaser.Input.Pointer, localX: number, localY: number, event: Phaser.Types.Input.EventData): void {
+        this.sp.setFrame(1);
+        this.bkg.setAlpha(1);
+        this.owner.updateAugText(this.aug);
+    }
+
+    onOut(){
+        this.sp.setFrame(0);
+        this.bkg.setAlpha(0.5);
+        this.owner.clearText();
+    }
+
     trigger(){
-        switch(this.mode){
-            case "upgrade": {
-                if(this.internalCooldown[0] <= 0)
-                {
-                    this.owner.upgrade();
-                } else {
-                    this.rest();
-                    this.internalCooldown[0] = this.internalCooldown[1];
-                }
-                break;
-            } case "add": {
-                break;
-            } case "close": {
-                this.owner.closeUpgradeMode();
-                break;
-            } default: {
-                break;
-            }
-        }
+        this.owner.replaceEmptyAugment(this.aug);
+        this.owner.closeAddMode();
     }
 
     rest(){
-        this.setAlpha(0.5);
+        this.setAlpha(0.25);
         this.sp.disableInteractive();
         this.disableInteractive();
     }
@@ -71,13 +79,6 @@ export class AugmentControlButton extends Button{
     }
 
     update(t: number, d: number){
-        if(this.internalCooldown[0] > 0) {
-            this.internalCooldown[0] -= d;
-            if(this.internalCooldown[0] <= 0) {
-                this.internalCooldown[0] = 0;
-                this.unveil();
-            }
-        }
     }
 
 }

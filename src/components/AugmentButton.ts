@@ -74,9 +74,10 @@ export class AugmentButton extends Button {
             console.log("Unsafe screen open.");
             return;
         }
-        if(this.mode = AugmentButton.EMPTY) {
+        if(this.mode == AugmentButton.EMPTY) {
             this.owner.openScreen("add");
-        } else if (this.mode = AugmentButton.UPGRADE) {
+            console.log("adding new augment");
+        } else if (this.mode == AugmentButton.UPGRADE) {
             this.owner.openScreen("upgrade");
         } else {
             console.log("Invalid upgrade button command.");

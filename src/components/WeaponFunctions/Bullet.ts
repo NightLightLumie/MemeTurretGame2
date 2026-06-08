@@ -10,6 +10,11 @@ import { HitInfo } from "./WeaponOperator";
 import { Tracer } from "./Tracer";
 import { Weapon } from "./Weapon";
 
+export interface BonusCommand {
+    cmd: string,
+    amt: number,
+}
+
 export class Bullet extends Phaser.GameObjects.Container{
     public dir: number = 0;
 
@@ -59,7 +64,16 @@ export class Bullet extends Phaser.GameObjects.Container{
     public sprSc: number[] = [64,64];
 
     public scene: GameScene;
-    constructor(scene:GameScene,x:number,y:number, wp: number, v:number,a:number,dmg: number, pen: number, own: Weapon){
+    public linkedBullets: Bullet[] = [];
+
+    public directHit: number = 1;
+    public crit: number = 1;
+    public bonuscrit: number = 0;
+    public forcecrit: boolean = false;
+
+    public cmds: BonusCommand[] = [];
+
+    constructor(scene:GameScene,x:number,y:number, wp: number, v:number,a:number,dmg: number, pen: number, own: Weapon, cmds: BonusCommand[] = []){
         super(scene,x,y);
         this.scene=scene;
 
@@ -69,7 +83,7 @@ export class Bullet extends Phaser.GameObjects.Container{
         this.dmg = dmg;
 
         this.thits = [];
-
+        this.cmds = cmds;
         this.a = a;
 
         this.pX = x-(0.1*Math.cos(a));
@@ -90,7 +104,51 @@ export class Bullet extends Phaser.GameObjects.Container{
         this.add(this.spr);
         
         this.pID = this.scene.getProjID();
+        this.calculateCrit();
         //add to display done in game for layer reasons
+
+    }
+
+    parseBonusCommand(b: BonusCommand){
+        switch(b.cmd){
+            case "critup": {
+                this.bonuscrit += b.amt;
+                break;
+            } default: {
+                break;
+            }
+        }
+    }
+
+    addLinkedBullets(b:Bullet){
+
+    }
+
+    calculateCrit(){
+        if(this.forcecrit){
+            this.crit = this.owner.crit[1];
+            this.dmg *= this.crit;
+            //this.handleLinkedBullets();  
+        } else if(Math.random() < (this.owner.crit[0]+this.bonuscrit)){
+            this.crit = this.owner.crit[1];
+            this.dmg *= this.crit;
+            this.handleLinkedBullets();
+        }
+    }
+
+    handleLinkedBullets(){
+        switch(this.owner.type){
+            case 9: {
+                this.linkedBullets.forEach((b)=>{
+                    if(b != null){
+                        b.forcecrit = true;
+                    }
+                });
+                break;
+            } default: {
+                break;
+            }
+        }
 
     }
 
@@ -204,21 +262,22 @@ export class Bullet extends Phaser.GameObjects.Container{
         let rx = this.pierce - rp;
 
 
-        let base = 0.2;
+        //let base = 0.2;
         let xr = -1;
 
         for(let n = 0; n < this.thits.length; n++){
             if(rp >= 0){
-                this.thits[n].tg.takePierceDamage(this.dmg,this.pID,this.weaponID);
-                this.scene.handler.processSpecial(this.thits[n].tg,this.weaponID, this.owner);
-                base += 0.05;
+                if(this.thits[n].tg.takePierceDamage(this.dmg,this.pID,this.weaponID)){
+                    rp--;
+                    this.scene.handler.processSpecial(this.thits[n].tg,this.weaponID, this.owner, this.dmg);
+                }
+                //base += 0.05;
                 this.thits[n].tg.hitStun = 20;
                 if(Math.random() < 0.5){
                     xr *= -1;
                 }
                 this.scene.sound.play("oof",{volume:0.2});
                 this.scene.addHitEffect(new BasicEffect(this.scene,"splash",this.thits[n].vt.x,this.thits[n].vt.y,4,100,false,0,this.a,[1.75+Math.random()*2.5,xr*(1.25+Math.random()*1.25)]));
-                rp--;
                 if(rp <= 0) {
                     if(rx > 0){
                         //fractional pierce calculation
@@ -259,7 +318,7 @@ export class Bullet extends Phaser.GameObjects.Container{
             }
 
             this.thits[ix].tg.takeDamage(this.dmg);
-            this.scene.handler.processSpecial(this.thits[ix].tg,this.weaponID, this.owner);
+            this.scene.handler.processSpecial(this.thits[ix].tg,this.weaponID, this.owner, this.dmg);
             this.scene.sound.play("oof",{volume:0.2});
             this.thits[ix].tg.hitStun = 20;
             this.hX = this.thits[ix].vt.x;

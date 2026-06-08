@@ -22,6 +22,14 @@ export interface WeaponData {
 
 }
 
+export interface BurstTracker{
+    amt: number;
+    curCD: number;
+    maxCD: number;
+    special: boolean;
+    ignoreAmmo: boolean;
+}
+
 export class Weapon {
 
     public scene: BaseScene;
@@ -69,8 +77,16 @@ export class Weapon {
     public augVars: number[];
     public augModifier: number[];
 
+    public arpen: number[] = [0,0];
+    public acc: number = 0;
+
     public specialStat: number = 0;
 
+    public crit: number[] = [0,0];
+    private killtracker: number[] = [0,0];
+    public pvalue: number[] = [0,0,0,0,0,0];
+
+    public rof: number = 0;
 
 
 
@@ -83,8 +99,6 @@ export class Weapon {
         //console.log(this.wp.name + " COOLDOWN: " + this.maxCD);
         this.loadAugment();
         this.loadGunValues();
-
-
         this.bursts = [];
 
     }
@@ -114,15 +128,70 @@ export class Weapon {
     loadGunValues(){
         this.type = this.wp.type;
         this.damage = this.wp.dmg*(1+(0.1*this.augVars[1]));
-        this.maxCD = 1000/(this.wp.rof*(1+(0.1*this.augVars[2])));
+        this.rof = (this.wp.rof*(1+(0.1*this.augVars[2])));
+        this.maxCD = 1/this.rof;
         this.pierce = this.wp.pen*(1+(0.1*this.augVars[9]));
         this.pcd = this.wp.pcd;
         this.img = ("gun_"+this.wp.type);
         this.curAmmo = Math.round(this.wp.clip)*((1+(0.1*this.augVars[3])));
         this.maxAmmo = Math.round(this.wp.clip)*(1+(0.1*this.augVars[3]));
-        this.maxLoad = (1-(0.05*this.augVars[4]))*this.wp.load*1000;
+        this.maxLoad = (1/(1+(0.1*this.augVars[4])))*this.wp.load*1000;
         this.onHit = 0;
         this.specialStat = this.augVars[18];
+        this.arpen = [this.wp.arpen[0]+(this.augVars[6]), this.wp.arpen[1]+(this.augVars[6]*0.05)];
+        this.acc = this.wp.acc*(1/(1+(0.1*this.augVars[10])));
+        this.crit[0] = this.wp.crit[0]+(0.025*this.augVars[11]);
+        this.crit[1] = this.wp.crit[1]+(0.1*this.augVars[12]);
+    }
+
+    initiatePassive(name: string){
+        switch(name){
+            case "Shear": {} case "Quality and Quantity": {}
+            case "Hi-Point": {
+                this.parseBasePassives(name);
+                break;
+            } case "Full Tilt": {
+                this.maxAmmo = Math.round(this.maxAmmo *= 1.25);
+                this.killtracker = [0,8];
+                this.maxCD = 1/(this.rof*(1+0.1+(0.05*this.killtracker[2])));
+                break;
+            } case "Snaggletooth": {
+                this.pvalue[0] += 0.5
+                this.pvalue[1] += 0.25;
+                break;
+            } case "Domination": {
+                this.pvalue[0] += 0.3;
+                this.pvalue[1] += 0.3;
+                break;
+            } case "Romp": {
+                this.pvalue[0] += 1;
+                break;
+            } case "Otter Space": {
+                this.pvalue[0] += 1;
+                break;
+            } default: {
+                break;
+            }
+        }
+    }
+
+    parseBasePassives(name: string){
+        switch(name){
+            case "Hi-Point": {
+                this.damage*=1.15;
+                this.pierce += 1*(1+(0.1*this.augVars[9]));
+                break;
+            } case "Quality and Quantity": {
+                this.onHit += 12;
+                break;
+            } case "Shear": {
+                this.maxCD = 1/(this.rof+2);
+                this.pierce += 1;
+                break;
+            } default: {
+                break;
+            }
+        }
     }
 
     canShoot(): boolean{
@@ -178,6 +247,10 @@ export class Weapon {
 
     }
 
+    updatePassives(){
+        
+    }
+
     updateCooldown(){
         if(Math.abs(this.overflow) < this.maxCD){
             this.cooldown = this.overflow+this.maxCD;
@@ -201,7 +274,7 @@ export class Weapon {
         this.overflow = Math.abs(this.overflow);
         if(this.overflow > this.maxCD){
             this.stored += Math.trunc(this.overflow/this.maxCD);
-            this.overflow -= this.stored;
+            this.overflow -= (this.stored*this.maxCD);
             this.cooldown = this.maxCD - this.overflow;
             if(this.cooldown < 0){
                 this.cooldown = 0.0001;

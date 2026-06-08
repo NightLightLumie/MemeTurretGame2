@@ -6,6 +6,17 @@ export interface WeaponEntry{
     gID: number;
     wID: number;
     augs: Augment[];
+    passives: PassiveAbility[];
+}
+
+export interface PassiveAbility{
+    name: string;
+    desc: string;
+    activated: boolean;
+}
+
+export interface LootEntry{
+
 }
 
 
@@ -15,25 +26,28 @@ export class Armory {
     public gunList: Map<number,WeaponEntry>;
     public reference: GlobalVariables;
 
+    
     constructor(ref: GlobalVariables) {
         this.reference = ref;
         this.gunList = new Map([
-            [-999999999, {gID: -999999999, wID: 0, augs: [{name: "Impact", index: 1, level: 5, maxlv: 8, lvcap: 10, desc: "Increased base damage."}]}],
-            [-999999998, {gID: -999999998, wID: 1, augs: []}],
+            [-999999999, {gID: -999999999, wID: 0, augs: [{name: "Impact", index: 1, level: 5, maxlv: 8, lvcap: 10, desc: "Increased base damage."}], passives: []}],
+            [-999999998, {gID: -999999998, wID: 1, augs: [], passives: []}],
             [-999999997, {gID: -999999997, wID: 2, augs: [{name: "Impact", index: 1, level: 12, maxlv: 13, lvcap: 13, desc: "Increased base damage."},
                 {name: "Barrage", index: 2, level: 8, maxlv: 10, lvcap: 10, desc: "Increased rate of fire."},    
                 {name: "Penetrator", index: 9, level: 6, maxlv: 8, lvcap: 10, desc: "Increases penetration capability."},
-                {name: "default", index: 0, level: 0, maxlv: 10, lvcap: 10, desc: ""}]}],//keep these three defaults the same
+                {name: "default", index: 0, level: 0, maxlv: 10, lvcap: 10, desc: ""}], passives:[]}],//keep these three defaults the same
 
-            [-999999996, {gID: -999999996, wID: 4, augs: []}],
+            [-999999996, {gID: -999999996, wID: 4, augs: [], passives: []}],
             [-999999995, {gID: -999999995, wID: 8, augs: [{name: "default", index: 0, level: 0, maxlv: 10, lvcap: 10, desc: ""},
                 {name: "default", index: 0, level: 0, maxlv: 10, lvcap: 10, desc: ""},
                 {name: "default", index: 0, level: 0, maxlv: 10, lvcap: 10, desc: ""},
                 {name: "default", index: 0, level: 0, maxlv: 10, lvcap: 10, desc: ""}
-            ]}],
-            [-999999994, {gID: -999999994, wID: 2, augs: []}],
-            [-999999993, {gID: -999999994, wID: 7, augs: [this.generateAugment(2,5,13,13), this.generateAugment(4,13,13,13), this.generateSpecialAugment(7,1,10,10), this.generateAugment(3,10,10,10), ]}],
+            ], passives: []}],
+            [-999999994, {gID: -999999994, wID: 2, augs: [], passives: []}],
+            [-999999993, {gID: -999999994, wID: 7, augs: [this.generateAugment(2,5,13,13), this.generateAugment(4,13,13,13), this.generateSpecialAugment(7,1,10,10), this.generateAugment(3,10,10,10), ], passives: []}],
         ]);
+
+
     }
     /*
         {name: "default", index: 0, level: 0, maxlv: 10, lvcap: 10, desc: ""},
@@ -67,7 +81,6 @@ export class Armory {
             console.log("No augment with the specified index is found for creation. Check Armory.ts and GlobalVariables.ts.");
             return {name: "default", index: 0, level: 0, maxlv: 10, lvcap: 10, desc: ""};
         }
-
     }
 
 
@@ -132,11 +145,11 @@ export class Armory {
                 return this.copy(this.gunList.get(id)!);
             } else {
                 console.log("NULL ENTRY IN GUN LIST: " + id);
-                return {gID: -999999999, wID: 0, augs: []};
+                return {gID: -999999999, wID: 0, augs: [], passives: []};
             }
         } else {
             console.log("INVALID GUN FETCH ID: " + id);
-            return {gID: -999999999, wID: 0, augs: []};
+            return {gID: -999999999, wID: 0, augs: [], passives: []};
         }
         /*
         for(let n = 0; n < this.myGuns.length; n++){
@@ -150,11 +163,26 @@ export class Armory {
        
     }
 
+    augmentToArray(data: Augment[]): number[] {
+        let np = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
+
+        data.forEach((a)=> {
+            if((a.index < np.length) && (a.index >= 0)){
+                np[a.index] += a.level;
+            } else {
+                console.log("Augment out of bounds for Weapon.");
+            }
+        });
+
+        return np;
+    }
+
     copy(w: WeaponEntry): WeaponEntry{
         return {
             gID: w.gID,
             wID: w.wID,
             augs: w.augs,
+            passives: w.passives,
         }
     }
 

@@ -31,8 +31,8 @@ export class Target extends Phaser.GameObjects.Container{
 
     }
 
-    takePierceDamage(n: number, p: number, wID: number){
-
+    takePierceDamage(n: number, p: number, wID: number): boolean{
+        return false;
     }
 
     addStack(pd: number, ap: DmgStack){

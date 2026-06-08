@@ -102,6 +102,16 @@ export class AugmentScreen extends Phaser.GameObjects.Container{
         this.updateText();
     }
 
+    engageMacguffinMode(){
+        this.curMode = "macguffin";
+        this.closebtn.unveil();
+        this.printOverAugButtons();
+    }
+
+    printOverAugButtons(){
+
+    }
+
     engageAddMode(ix: number){
         this.curMode = "add";
         this.augindex = ix;

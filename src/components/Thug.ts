@@ -193,7 +193,18 @@ export class Thug extends Target{
         });
 
         this.tpr = [];
-        this.stackLog.forEach((value: DmgStack, key: number) => {
+        this.updateStacks();
+
+        for(let nr = 0; nr < this.tpr.length; nr++) {
+            //console.log("deleted stack: " + this.tpr[nr]);
+            this.stackLog.delete(this.tpr[nr]);
+        }
+        this.tpr = [];
+    }
+
+    updateStacks(){
+            let tmpr = 0;
+            this.stackLog.forEach((value: DmgStack, key: number) => {
             if(value.bop) {
                 value.image.setScale(value.drawsize*3);
                 value.bop = false;
@@ -202,25 +213,27 @@ export class Thug extends Target{
             }
             //console.log("hits: " + value.curhits);
             if(value.curhits >= value.maxhits) {
+                tmpr = value.curhits-value.maxhits;
                 value.image.setAlpha(1);
                 this.takeDamage(value.damage);
                 //console.log("boom");
                 this.scene.sound.play(value.sound,{volume: 0.75});
                 this.scene.addHitEffect(new BasicEffect(this.scene,"hit_spark",this.x,this.y,3,100,false,0,Math.random()*360));
-                this.tpr.push(key);
-                value.image.destroy();
+                if(tmpr >= 0){
+                    value.curhits = tmpr;
+                    value.bop = true;
+                    value.drawsize = 0.8;
+                } else {
+                    this.tpr.push(key);
+                    value.image.destroy();
+                }
             } else {
                 value.image.setAlpha(0.5+(0.5*(value.curhits/value.maxhits)));
                 value.image.setTint(Phaser.Display.Color.GetColor(255*(value.curhits/value.maxhits),255*(value.curhits/value.maxhits),255));
             }
         });
-
-        for(let nr = 0; nr < this.tpr.length; nr++) {
-            //console.log("deleted stack: " + this.tpr[nr]);
-            this.stackLog.delete(this.tpr[nr]);
-        }
-        this.tpr = [];
     }
+
 
     updateBounds(){
         switch(this.boundState){
@@ -271,11 +284,23 @@ export class Thug extends Target{
         }
     }
 
-    takePierceDamage(n: number, p: number, wID: number){
-        this.hp -= n;
+    takePierceDamage(n: number, p: number, wID: number): boolean{
+        if(this.bLog.has(p)){
+            let tr = this.bLog.get(p);
+            if(tr != null) {
+                if((tr.cooldown > 0) || (tr.cooldown <= -999)){
+                    return false;
+                } else {
+                    this.hp -= n;
+                }
+            } else {
+                this.hp -= n;
+            }
+        }
         let mm = this.scene.handler.getParams(wID);
         if(this.hp <= 0) {
             this.die();
+            return true;
         } else {
             if(this.bLog.has(p)){
                 let ii = this.bLog.get(p);
@@ -284,6 +309,7 @@ export class Thug extends Target{
                 }
             }
             this.bLog.set(p,{cooldown: mm.pcd, weaponID: wID});
+            return true;
         }
     }
 

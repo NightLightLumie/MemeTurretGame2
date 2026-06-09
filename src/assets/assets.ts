@@ -127,8 +127,10 @@ const audios: Audio[] = [
 	sound('weapons/gun_4', 'gun_4', 0.5),
 	sound('weapons/gun_7', 'gun_7', 0.5),
 	sound('weapons/gun_8', 'gun_8', 0.5),
-	sound('weapons/equip', 'equip', 0.5),
 	
+	sound('weapons/equip', 'equip', 0.5),
+	sound('weapons/crit', 'crit', 0.5),
+
 	sound('tree/turret_hit', 'turret_hit', 0.5),
 	sound('tree/scroll', 'scroll', 0.5),
 

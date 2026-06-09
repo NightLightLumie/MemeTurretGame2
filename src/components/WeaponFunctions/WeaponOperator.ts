@@ -82,7 +82,7 @@ export class WeaponOperator{
         }
 
         
-        if((!recur) && (w.curAmmo >= 2)){ //take care of overflow shots
+        if((!recur) && (w.curAmmo >= 2)){ //take care of overflow shots, if the firing interval is lower than the tick rate of the computer
             if((w.stored > 0) && (w.curAmmo >= 2)) {
                 let rr = w.stored;
                 console.log("STORED SHOTS: " + w.stored);

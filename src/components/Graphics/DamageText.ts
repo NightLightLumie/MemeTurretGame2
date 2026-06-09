@@ -1,7 +1,7 @@
 import { GameScene } from "@/scenes/GameScene";
 import { Effect } from "../Effect";
 
-export class TextEffect extends Effect{
+export class DamageText extends Effect{
     public scene: GameScene;
     public timer: number = 0;
     public maxTimer: number = 0;
@@ -23,10 +23,21 @@ export class TextEffect extends Effect{
     private negative: number = -1;
     private amp: number = 1;
 
-    constructor(scene:GameScene, x: number, y: number, txt: string, color1: string = "yellow", size: number = 30, flash: boolean = false, 
-    color2: string = "red", fadeTime: number = 800, flashTime: number = 100, valence: number = 1, amplitude: number = 1) {
+    constructor(scene:GameScene, x: number, y: number, txt: string, crit: boolean = false) {
         super(scene,x,y);
         this.scene = scene;
+        let flash = true;
+        let color1 = "yellow";
+        let color2 = "red";
+        let valence = 1;
+        let amplitude = 1;
+        let fadeTime = 500;
+        let flashTime = 50;
+        let size = 250;
+        if(crit){
+            size = 50;
+            color1 = "aqua";
+        }
         this.myText = this.scene.addText({
 			x: 0,
 			y: 0,
@@ -48,13 +59,10 @@ export class TextEffect extends Effect{
         this.fadeTime = fadeTime;
         this.maxFadeTime = fadeTime;
         this.add(this.myText);
-        this.scene.add.existing(this);
-        this.setDepth(1);
         this.dmod = 75*Math.random();
         this.amod = 2*Math.random();
         this.negative = valence;
         this.amp = amplitude;
-        this.setDepth(2);
     }
 
     update(d: number, t: number) {

@@ -9,6 +9,7 @@ import { BasicEffect } from "../BasicEffect";
 import { HitInfo } from "./WeaponOperator";
 import { Tracer } from "./Tracer";
 import { Weapon } from "./Weapon";
+import { DamageText } from "../Graphics/DamageText";
 
 export interface BonusCommand {
     cmd: string,
@@ -255,6 +256,13 @@ export class Bullet extends Phaser.GameObjects.Container{
         }
     }
 
+    playHitSounds(){
+        this.scene.sound.play("oof",{volume:0.2});
+        if(this.crit > 1){
+            this.scene.sound.play("oof",{volume:0.25});
+        }
+    }
+
     parsePierce(){
         //console.log(this.thits);
         this.thits.sort((a,b)=> (this.getDist(a.vt)-this.getDist(b.vt))); //sort array of hit enemies
@@ -276,8 +284,17 @@ export class Bullet extends Phaser.GameObjects.Container{
                 if(Math.random() < 0.5){
                     xr *= -1;
                 }
-                this.scene.sound.play("oof",{volume:0.2});
+                this.playHitSounds();
                 this.scene.addHitEffect(new BasicEffect(this.scene,"splash",this.thits[n].vt.x,this.thits[n].vt.y,4,100,false,0,this.a,[1.75+Math.random()*2.5,xr*(1.25+Math.random()*1.25)]));
+                
+                let tr = "";
+                tr += this.dmg;
+                if(this.crit > 1)
+                {
+                    tr += "!";
+                }
+                this.scene.addPlayerEffect(new DamageText(this.scene,this.hX,this.hY,tr));
+
                 if(rp <= 0) {
                     if(rx > 0){
                         //fractional pierce calculation
@@ -319,7 +336,7 @@ export class Bullet extends Phaser.GameObjects.Container{
 
             this.thits[ix].tg.takeDamage(this.dmg);
             this.scene.handler.processSpecial(this.thits[ix].tg,this.weaponID, this.owner, this.dmg);
-            this.scene.sound.play("oof",{volume:0.2});
+            this.playHitSounds();
             this.thits[ix].tg.hitStun = 20;
             this.hX = this.thits[ix].vt.x;
             this.hY = this.thits[ix].vt.y;
@@ -331,7 +348,15 @@ export class Bullet extends Phaser.GameObjects.Container{
                 xr *= -1;
             }
             this.scene.addHitEffect(new BasicEffect(this.scene,"splash",this.hX,this.hY,4,100,false,0,this.a,[1.75+Math.random()*2.5,xr*(1.25+Math.random()*1.25)]));
-
+            
+            let tr = "";
+            tr += this.dmg;
+            if(this.crit > 1)
+            {
+                tr += "!";
+            }
+            this.scene.addHitEffect(new DamageText(this.scene,this.hX,this.hY,tr));
+            
             this.thits = [];
         }
     }

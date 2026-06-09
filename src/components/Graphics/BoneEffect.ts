@@ -23,8 +23,6 @@ export class BoneEffect extends Effect{
 
     constructor(scene: BaseScene, x: number, y: number, p: Player){
         super(scene, x, y);
-
-
         this.scene = scene;
 		this.sp = this.scene.add.sprite(0, 0, "boneattack");
 		this.sp.setOrigin(0.5, 0.5);

@@ -1,5 +1,6 @@
 import { GlobalVariables } from "../GlobalVariables";
 import { Augment, Weapon } from "./Weapon";
+import { WeaponParams } from "./WeaponOperator";
 import { WeaponSlot } from "./WeaponSlot";
 
 export interface WeaponEntry{
@@ -30,21 +31,21 @@ export class Armory {
     constructor(ref: GlobalVariables) {
         this.reference = ref;
         this.gunList = new Map([
-            [-999999999, {gID: -999999999, wID: 0, augs: [{name: "Impact", index: 1, level: 5, maxlv: 8, lvcap: 10, desc: "Increased base damage."}], passives: []}],
-            [-999999998, {gID: -999999998, wID: 1, augs: [], passives: []}],
+            [-999999999, {gID: -999999999, wID: 0, augs: [{name: "Impact", index: 1, level: 5, maxlv: 8, lvcap: 10, desc: "Increased base damage."}], passives: this.reference.getGunPassives(0)}],
+            [-999999998, {gID: -999999998, wID: 1, augs: [], passives: this.reference.getGunPassives(1)}],
             [-999999997, {gID: -999999997, wID: 2, augs: [{name: "Impact", index: 1, level: 12, maxlv: 13, lvcap: 13, desc: "Increased base damage."},
                 {name: "Barrage", index: 2, level: 8, maxlv: 10, lvcap: 10, desc: "Increased rate of fire."},    
                 {name: "Penetrator", index: 9, level: 6, maxlv: 8, lvcap: 10, desc: "Increases penetration capability."},
-                {name: "default", index: 0, level: 0, maxlv: 10, lvcap: 10, desc: ""}], passives:[]}],//keep these three defaults the same
+                {name: "default", index: 0, level: 0, maxlv: 10, lvcap: 10, desc: ""}], passives: this.reference.getGunPassives(2)}],//keep these three defaults the same
 
-            [-999999996, {gID: -999999996, wID: 4, augs: [], passives: []}],
+            [-999999996, {gID: -999999996, wID: 4, augs: [], passives: this.reference.getGunPassives(4)}],
             [-999999995, {gID: -999999995, wID: 8, augs: [{name: "default", index: 0, level: 0, maxlv: 10, lvcap: 10, desc: ""},
                 {name: "default", index: 0, level: 0, maxlv: 10, lvcap: 10, desc: ""},
                 {name: "default", index: 0, level: 0, maxlv: 10, lvcap: 10, desc: ""},
-                {name: "default", index: 0, level: 0, maxlv: 10, lvcap: 10, desc: ""}
-            ], passives: []}],
-            [-999999994, {gID: -999999994, wID: 2, augs: [], passives: []}],
-            [-999999993, {gID: -999999994, wID: 7, augs: [this.generateAugment(2,5,13,13), this.generateAugment(4,13,13,13), this.generateSpecialAugment(7,1,10,10), this.generateAugment(3,10,10,10), ], passives: []}],
+                {name: "default", index: 0, level: 0, maxlv: 10, lvcap: 10, desc: ""},
+            ], passives: this.reference.getGunPassives(9)}],
+            [-999999994, {gID: -999999994, wID: 2, augs: [], passives: this.reference.getGunPassives(2)}],
+            [-999999993, {gID: -999999994, wID: 7, augs: [this.generateAugment(0,0,13,13), this.generateAugment(0,0,13,13), this.generateSpecialAugment(7,1,13,13), this.generateAugment(0,0,13,13), ], passives: this.reference.getGunPassives(7)}],
         ]);
 
 
@@ -73,7 +74,11 @@ export class Armory {
     generateAugment(ix: number, lv: number, mxlv: number, lvcap: number): Augment{
         if((ix < this.reference.augList.length) && (ix >= 0)){
             let rt = this.copyAug(this.reference.augList[ix]);
-            rt.level = lv;
+            if(ix == 0){
+                rt.level = 0;
+            } else {
+                rt.level = lv;
+            }
             rt.maxlv = mxlv;
             rt.lvcap = lvcap;
             return rt;
@@ -84,6 +89,17 @@ export class Armory {
     }
 
 
+
+    addNewGun(wp: WeaponParams, auglist: Augment[]){
+        let gun = {
+            gID: this.curID+1,
+            wID: wp.type,
+            augs: auglist,
+            passives: wp.passives,
+        }
+        this.addGun(gun.gID,gun);
+        this.curID++;
+    }
     /*
 
     rollRandomAugment(tab: number[]): Augment{
@@ -94,9 +110,6 @@ export class Armory {
 
     */
 
-    createRandomGun(){
-
-    }
 
     generateSpecialAugment(wp: number, lv: number, mxlv: number, lvcap: number): Augment{
         if(this.reference.gunList.has(wp)){

@@ -136,23 +136,42 @@ export class GunDataDisplay extends Phaser.GameObjects.Container{
         this.acc.setText("Accuracy Cone: " + (2*e.acc*(1/(1+(0.1*ag[10])))).toFixed(2) + " degrees");
         this.crit.setText("Crit Chance/Damage: " + (e.crit[0]+(2.5*ag[11])) + "% / " + (100*(e.crit[1]+(0.1*ag[12]))).toFixed(2) + "%");
         this.arpen.setText("Armor Penetration: " + (e.arpen[0]+(ag[6])) + " / " + (100*(e.arpen[1]+(ag[6]*0.05))) + "%");
-        this.pstitle.setText("Passive Abilities: ");
-        let pst = "";
-        for(let px = 0; px < e.passives.length; px++){
-            if(e.passives[px].activated) {
-                pst += (""+e.passives[px].name+": "+e.passives[px].desc);
-                switch(e.passives[px].name){
-                    case "Romp": {
-                        pst+= (""+(10*(1+(ag[18]*0.15))).toFixed(2) + "x the base damage.");
-                        break;
-                    } default: {
-                        break;
+        if(tmp.passives.length > 0){
+            let pst = "";
+            let count = 0;
+            for(let px = 0; px < tmp.passives.length; px++){
+                if(tmp.passives[px].activated) {
+                    pst += (""+tmp.passives[px].name+": "+tmp.passives[px].desc);
+                    count++;
+                    switch(tmp.passives[px].name){
+                        case "Romp": {
+                            pst+= (""+(10*(1+(ag[18]*0.15))).toFixed(2) + "x the base damage.");
+                            break;
+                        } default: {
+                            break;
+                        }
                     }
+                    pst+= (""+"\n"+"\n");
+                } else if (count <= 0) {
+                    pst += (""+"\n"+"\n");
+                    pst += (""+"???");
+                    pst+= (""+"\n"+"\n");
+                } else {
+                    pst += (""+"???");
+                    pst+= (""+"\n"+"\n");
                 }
-                pst+= (""+"\n"+"\n");
             }
+            this.psdesc.setText(pst);
+            if(count > 0) {
+                this.pstitle.setText("Passive Abilities: ");
+            } else {
+                this.pstitle.setText("Passive Abilities Not Unlocked ");
+            }
+        } else {
+            this.pstitle.setText("");
+            this.psdesc.setText("");
         }
-        this.psdesc.setText(pst);
+
         return tmp;
    
     }

@@ -96,7 +96,8 @@ export class Weapon {
         this.augs = augments;
         this.augVars = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
         this.augModifier = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
-        //console.log(this.wp.name + " COOLDOWN: " + this.maxCD);
+        //console.log(this.wp.name + " COOLDOWN: " + this.maxCD);\
+        this.loadPassives();
         this.loadAugment();
         this.loadGunValues();
         this.bursts = [];
@@ -124,6 +125,17 @@ export class Weapon {
         {name: "Slayer", index: 17, level: 0, maxlv: 10, lvcap: 10, desc: "Increased damage to bosses and elite enemies."}, //Boss and elite damage, +2.5% each
         {name: "CUSTOM", index: 18, level: 0, maxlv: 10, lvcap: 10, desc: ""},
 */
+    loadPassives(){
+        if(this.wp.passives.length <= 0){
+            return;
+        } else {
+            this.wp.passives.forEach((p) => {
+                if(p.activated) {
+                    this.initiatePassive(p.name);
+                }
+            })
+        }
+    }
 
     loadGunValues(){
         this.type = this.wp.type;
@@ -227,9 +239,8 @@ export class Weapon {
     update(t:number, d:number){
         if(this.cooldown > 0) { //fixme better overflow tracking, if it gets too close this will gradually just converge to zero
             this.cooldown -= d;
-            if(this.cooldown < 0){
+            if(this.cooldown <= 0){
                 this.overflow = this.cooldown;
-                this.cooldown = 0;
             }
         }
 
@@ -252,8 +263,8 @@ export class Weapon {
     }
 
     updateCooldown(){
-        if(Math.abs(this.overflow) < this.maxCD){
-            this.cooldown = this.overflow+this.maxCD;
+        if(Math.abs(this.overflow) < (this.maxCD*1000)){
+            this.cooldown = this.overflow+(this.maxCD*1000);
             //console.log(this.wp.name + "CURRENT COOLDOWN: " + this.cooldown);
             this.overflow = 0;
         } else {
@@ -272,10 +283,10 @@ export class Weapon {
 
     handleOverflow(){
         this.overflow = Math.abs(this.overflow);
-        if(this.overflow > this.maxCD){
-            this.stored += Math.trunc(this.overflow/this.maxCD);
-            this.overflow -= (this.stored*this.maxCD);
-            this.cooldown = this.maxCD - this.overflow;
+        if(this.overflow > (this.maxCD*1000)){
+            this.stored += Math.trunc(this.overflow/(this.maxCD*1000));
+            this.overflow -= (this.stored*this.maxCD*1000);
+            this.cooldown = (this.maxCD*1000) - this.overflow;
             if(this.cooldown < 0){
                 this.cooldown = 0.0001;
             }

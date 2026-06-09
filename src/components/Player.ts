@@ -125,11 +125,18 @@ export class Player extends Phaser.GameObjects.Container {
 	}
 
 	setDefaultLoadout(){
+		let a = this.scene.masterData.getParams(this.scene.masterData.side.wID);
+		let b = this.scene.masterData.getParams(this.scene.masterData.primary.wID);
+		let c = this.scene.masterData.getParams(this.scene.masterData.secondary.wID);
+		console.log("Sidearm: " + a.type);
+		console.log("Primary: " + b.type);
+		console.log("Secondary: " + c.type);
 		this.loadout = [
-			new Weapon(this.scene, this.scene.masterData.getParams(this.scene.masterData.side.wID), this.scene.masterData.side.augs),
-			new Weapon(this.scene, this.scene.masterData.getParams(this.scene.masterData.primary.wID), this.scene.masterData.primary.augs),
-			new Weapon(this.scene, this.scene.masterData.getParams(this.scene.masterData.secondary.wID), this.scene.masterData.secondary.augs),
+			new Weapon(this.scene, a, this.scene.masterData.side.augs),
+			new Weapon(this.scene, b, this.scene.masterData.primary.augs),
+			new Weapon(this.scene, c, this.scene.masterData.secondary.augs),
 		]
+
 	}
 
 	fetchLoadout(){

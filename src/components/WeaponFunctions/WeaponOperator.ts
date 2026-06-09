@@ -81,9 +81,11 @@ export class WeaponOperator{
             }
         }
 
-        if(!recur){ //take care of overflow shots
-            if(w.stored > 0) {
+        
+        if((!recur) && (w.curAmmo >= 2)){ //take care of overflow shots
+            if((w.stored > 0) && (w.curAmmo >= 2)) {
                 let rr = w.stored;
+                console.log("STORED SHOTS: " + w.stored);
                 for(let n = 0; n < rr; n++) {
                     this.shoot(a,w,true,false);
                 }
@@ -92,17 +94,22 @@ export class WeaponOperator{
         } else {
             w.stored -= 1;
         }
+        
         w.updateAmmo(1);
         switch(w.type){
-            case 8:{ //NTR-141
-            } case 0: { //lutra
+             case 0: { //lutra
                 let ofs = Phaser.Math.DegToRad(-1*w.acc+(Math.random()*2*w.acc));
 				this.p.scene.sound.play("gun_0",{volume: 0.7});
 				this.p.scene.addBullet(new Bullet(this.p.scene,this.p.x+(w.fRad*Math.cos(a)), this.p.y+(w.fRad*Math.sin(a)), w.wp.type, w.wp.spd,a+ofs,w.damage,w.pierce, w));
                 break;
             } case 1: { //windmill
             } case 3: { //broadhead
+            } case 8: { //NTR-141
             } case 4: { //bjuron
+                let ofs = Phaser.Math.DegToRad(-1*w.acc+(Math.random()*2*w.acc));
+				this.p.scene.sound.play(("gun_"+w.type),{volume: 0.7});
+				this.p.scene.addBullet(new Bullet(this.p.scene,this.p.x+(w.fRad*Math.cos(a)), this.p.y+(w.fRad*Math.sin(a)), w.wp.type, w.wp.spd,a+ofs,w.damage,w.pierce, w));
+                break;
             } case 7: { //ottertail
                 let ofs = Phaser.Math.DegToRad(-1*w.acc+(Math.random()*2*w.acc));
 				this.p.scene.sound.play(("gun_"+w.type),{volume: 0.7});
@@ -116,14 +123,16 @@ export class WeaponOperator{
                     this.p.scene.addBullet(new Bullet(this.p.scene,this.p.x+(w.fRad*Math.cos(a)), this.p.y+(w.fRad*Math.sin(a)), w.wp.type, w.wp.spd,a+ofs,w.damage,w.pierce, w));
                 }
                 break; 
-            } case 9: { //2-fanged wolf
+            } case 9: { 
+                //2-fanged wolf
+                console.log("WOLF SHOOT");
                 let ofs = Phaser.Math.DegToRad(-1*w.acc+(Math.random()*2*w.acc));
 				this.p.scene.sound.play(("gun_1"),{volume: 0.7});
                 let bx = this.p.x+(w.fRad*Math.cos(a));
                 let by = this.p.y+(w.fRad*Math.sin(a));
 
-                let aa = new Bullet(this.p.scene,bx+(10*Math.cos(a+(Math.PI/2))), by+(10*Math.sin(a+(Math.PI/2))), w.wp.type, w.wp.spd,a+ofs,w.damage,w.pierce, w);
-                let bb = new Bullet(this.p.scene,bx-(10*Math.cos(a+(Math.PI/2))), by-(10*Math.sin(a+(Math.PI/2))), w.wp.type, w.wp.spd,a+ofs,w.damage,w.pierce, w);
+                let aa = new Bullet(this.p.scene,bx+(10*Math.cos(a+(Math.PI/2))), by+(15*Math.sin(a+(Math.PI/2))), w.wp.type, w.wp.spd,a+ofs,w.damage,w.pierce, w);
+                let bb = new Bullet(this.p.scene,bx-(10*Math.cos(a+(Math.PI/2))), by-(15*Math.sin(a+(Math.PI/2))), w.wp.type, w.wp.spd,a+ofs,w.damage,w.pierce, w);
                 aa.addLinkedBullets(bb);
                 bb.addLinkedBullets(aa);
 				this.p.scene.addBullet(aa);
@@ -138,7 +147,7 @@ export class WeaponOperator{
                     cc.addLinkedBullets(aa);
     				this.p.scene.addBullet(cc);
                 }
-                break; 
+                break;
             }
             default: {
                 break;

@@ -46,7 +46,7 @@ const images: Image[] = [
 	image('weapons/gun_4', 'gun_4'),
 	image('weapons/gun_7', 'gun_7'),
 	image('weapons/gun_8', 'gun_8'),
-
+	image('weapons/gun_9', 'gun_9'),
 
 
 
@@ -126,6 +126,7 @@ const audios: Audio[] = [
 	sound('weapons/gun_3', 'gun_3', 0.5),
 	sound('weapons/gun_4', 'gun_4', 0.5),
 	sound('weapons/gun_7', 'gun_7', 0.5),
+	sound('weapons/gun_8', 'gun_8', 0.5),
 	sound('weapons/equip', 'equip', 0.5),
 	
 	sound('tree/turret_hit', 'turret_hit', 0.5),

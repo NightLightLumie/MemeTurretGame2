@@ -12,7 +12,7 @@ export class Thug extends Target{
 
     private v: number = 0;
     private a: number = 0;
-    private hp: number = 600;
+    private hp: number = 60000;
     private mod: number = 1;
     private ofss: number = 0;
     private unstackFactor: number = 500;

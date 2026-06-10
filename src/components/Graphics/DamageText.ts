@@ -9,12 +9,12 @@ export class DamageText extends Effect{
     private txt: string;
     public color1: string;
     public color2: string;
-    public fadeTime: number = 800;
-    public maxFadeTime: number = 800;
+    public fadeTime: number = 500;
+    public maxFadeTime: number = 500;
     public deleteFlag = false;
     private isFlashing: boolean = false;
-    private flashTimer: number = 100;
-    private maxFlashTimer: number = 100;
+    private flashTimer: number = 50;
+    private maxFlashTimer: number = 50;
     private colors: string[];
     private index: number = 0;
     private phase: number = 1;
@@ -26,17 +26,18 @@ export class DamageText extends Effect{
     constructor(scene:GameScene, x: number, y: number, txt: string, crit: boolean = false) {
         super(scene,x,y);
         this.scene = scene;
-        let flash = true;
+        let flash = false;
         let color1 = "yellow";
-        let color2 = "red";
+        let color2 = "yellow";
         let valence = 1;
-        let amplitude = 1;
+        let amplitude = 0.5;
         let fadeTime = 500;
         let flashTime = 50;
-        let size = 250;
+        let size = 35;
         if(crit){
-            size = 50;
+            size = 55;
             color1 = "aqua";
+            flash = true;
         }
         this.myText = this.scene.addText({
 			x: 0,
@@ -56,18 +57,24 @@ export class DamageText extends Effect{
         this.color2 = color2;
         this.myText.setColor(color1);
         this.myText.setOrigin(0.5, 0.5);
+
         this.fadeTime = fadeTime;
         this.maxFadeTime = fadeTime;
         this.add(this.myText);
+        this.myText.setPosition(0,0);
         this.dmod = 75*Math.random();
         this.amod = 2*Math.random();
         this.negative = valence;
         this.amp = amplitude;
     }
 
-    update(d: number, t: number) {
+    update(t: number, d: number) {
+        
         this.y -= this.negative*(120*d/1000);
         this.x += this.phase*this.amp*(2+this.amod)*Math.sin(t/(125+this.dmod));
+        
+
+        
         if(this.isFlashing){
             if(this.flashTimer > 0) {
                 this.flashTimer -= d;
@@ -85,6 +92,7 @@ export class DamageText extends Effect{
             this.deleteFlag = true;
         }
         this.myText.setAlpha(this.fadeTime/this.maxFadeTime);
+        
     }
 
     flash(){

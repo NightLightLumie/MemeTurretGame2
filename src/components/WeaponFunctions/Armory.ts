@@ -39,10 +39,10 @@ export class Armory {
                 {name: "default", index: 0, level: 0, maxlv: 10, lvcap: 10, desc: ""}], passives: this.reference.getGunPassives(2)}],//keep these three defaults the same
 
             [-999999996, {gID: -999999996, wID: 4, augs: [], passives: this.reference.getGunPassives(4)}],
-            [-999999995, {gID: -999999995, wID: 8, augs: [{name: "default", index: 0, level: 0, maxlv: 10, lvcap: 10, desc: ""},
-                {name: "default", index: 0, level: 0, maxlv: 10, lvcap: 10, desc: ""},
-                {name: "default", index: 0, level: 0, maxlv: 10, lvcap: 10, desc: ""},
-                {name: "default", index: 0, level: 0, maxlv: 10, lvcap: 10, desc: ""},
+            [-999999995, {gID: -999999995, wID: 9, augs: [{name: "default", index: 0, level: 0, maxlv: 13, lvcap: 13, desc: ""},
+                {name: "default", index: 0, level: 0, maxlv: 13, lvcap: 13, desc: ""},
+                {name: "default", index: 0, level: 0, maxlv: 13, lvcap: 13, desc: ""},
+                {name: "default", index: 0, level: 0, maxlv: 13, lvcap: 13, desc: ""},
             ], passives: this.reference.getGunPassives(9)}],
             [-999999994, {gID: -999999994, wID: 2, augs: [], passives: this.reference.getGunPassives(2)}],
             [-999999993, {gID: -999999994, wID: 7, augs: [this.generateAugment(0,0,13,13), this.generateAugment(0,0,13,13), this.generateSpecialAugment(7,1,13,13), this.generateAugment(0,0,13,13), ], passives: this.reference.getGunPassives(7)}],
@@ -98,6 +98,18 @@ export class Armory {
             passives: wp.passives,
         }
         this.addGun(gun.gID,gun);
+        this.curID++;
+    }
+
+    storeNewGun(wp: WeaponParams, auglist: Augment[]): number{
+        let gun = {
+            gID: this.curID+1,
+            wID: wp.type,
+            augs: auglist,
+            passives: wp.passives,
+        }
+        this.addGun(gun.gID,gun);
+        return gun.gID;
         this.curID++;
     }
     /*

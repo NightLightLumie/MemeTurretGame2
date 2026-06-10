@@ -13,6 +13,8 @@ export class BaseScene extends Phaser.Scene {
 	protected flashRect: Phaser.GameObjects.Rectangle | null;
 	protected cameraShakeValue: number;
 
+	protected sounds: string[] = [];
+
 	constructor(config: Phaser.Types.Scenes.SettingsConfig) {
 		super(config);
 		this.cameraShakeValue = 0;
@@ -116,6 +118,15 @@ export class BaseScene extends Phaser.Scene {
 	// Returns vertical center of screen
 	get CY(): number {
 		return this.cameras.main.centerY;
+	}
+
+	playSound(n: string, v: number){
+		if(this.sounds.includes(n)){
+			return;
+		} else {
+			this.sound.play(n,{volume: v});
+			this.sounds.push(n);
+		}
 	}
 
 	progress(){

@@ -8,11 +8,13 @@ const images: Image[] = [
 	image('backgrounds/placeholderbkg', 'tempbkg'),
 	image('backgrounds/upgradebkg', 'upgradebkg'),
 	image('backgrounds/augbkg', 'augbkg'),
+	image('backgrounds/lootbkg', 'lootbkg'),
 	image('backgrounds/upgradeoverlay', 'upgradeoverlay'),
 	image('backgrounds/bottombar', 'bottombar'),
 	image('backgrounds/midbar', 'midbar'),
 	image('backgrounds/topbar', 'topbar'),
 	image('backgrounds/redlines', 'redlines'),
+	image('backgrounds/rip', 'rip'),
 
 	// Characters
 	image('characters/player', 'player'),
@@ -37,6 +39,7 @@ const images: Image[] = [
 	image('characters/gungun', 'gungun'),
 	image('characters/heart', 'heart'),
 	image('characters/pbullet', 'pbullet'),
+	image('characters/super', 'super'),
 
 	// Weapons
 	image('weapons/gun_0', 'gun_0'),
@@ -44,6 +47,8 @@ const images: Image[] = [
 	image('weapons/gun_2', 'gun_2'),
 	image('weapons/gun_3', 'gun_3'),
 	image('weapons/gun_4', 'gun_4'),
+	image('weapons/gun_5', 'gun_5'),
+	image('weapons/gun_6', 'gun_6'),
 	image('weapons/gun_7', 'gun_7'),
 	image('weapons/gun_8', 'gun_8'),
 	image('weapons/gun_9', 'gun_9'),
@@ -115,6 +120,9 @@ const spritesheets: SpriteSheet[] = [
 const audios: Audio[] = [
 	music('title', 'm_main_menu'),
 	music('first', 'm_first'),
+	music('gameover', 'm_gameover'),
+	music('lv1', 'm_lv1'),
+	music('lv2', 'm_lv2'),
 	sound('tree/rustle', 't_rustle', 0.5),
 	sound('enemies/oof', 'oof', 0.5),
 	sound('enemies/dead', 'dead', 0.5),
@@ -127,12 +135,15 @@ const audios: Audio[] = [
 	sound('weapons/gun_4', 'gun_4', 0.5),
 	sound('weapons/gun_7', 'gun_7', 0.5),
 	sound('weapons/gun_8', 'gun_8', 0.5),
-	
+
 	sound('weapons/equip', 'equip', 0.5),
 	sound('weapons/crit', 'crit', 0.5),
 
 	sound('tree/turret_hit', 'turret_hit', 0.5),
+	sound('tree/turret_dead', 'turret_dead', 0.5),
 	sound('tree/scroll', 'scroll', 0.5),
+
+	sound('tree/darksouls', 'darksouls', 0.5),
 
 	sound('weapons/start_reload', 'start_reload', 0.5),
 	sound('weapons/end_reload', 'end_reload', 0.5),

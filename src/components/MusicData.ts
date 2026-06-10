@@ -31,6 +31,27 @@ const Data = {
 		start: 41860 / 48000 + overlap,
 		end: 2854884 / 48000 + overlap,
 	},
+	m_gameover:{
+		offset: 0,
+		bpm: 206,
+		start: 0,
+		end: 3036160 / 44100,
+	},
+	m_lv1: {
+		offset: 0,
+		bpm:206,
+		loop: true,
+		start: 0,
+		end: 8743936 / 44100,
+	},
+	m_lv2: {
+		offset: 0,
+		bpm: 206,
+		loop: true,
+		start: 0,
+		end: 11948032 / 44100,
+
+	}
 };
 
 export type MusicKey = keyof typeof Data;

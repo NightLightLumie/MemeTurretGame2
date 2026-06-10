@@ -14,6 +14,7 @@ export class BasicEffect extends Effect {
     public velocityX: number = 0;
     public velocityY: number = 0;
     public spAngle: number;
+    public tText: Phaser.GameObjects.Text;
 
 	// private hover: boolean;
 	constructor(scene: GameScene, value: string, x: number, y: number, tFrames: number, fLen: number = 100, loop: boolean = false, sFrame: number = 0, angle: number = 0, scale: number[] = [1,1]) {
@@ -32,6 +33,15 @@ export class BasicEffect extends Effect {
         this.sp.setFrame(this.startingFrame);
         this.add(this.sp);
         this.setDepth(2);
+
+        this.tText = this.scene.addText({
+			x: 0,
+			y: 0,
+			size: 35,
+			color: "teal",
+			text: "",
+		});
+        this.add(this.tText);
        // scene.add.existing(this.sp);
 	}
 

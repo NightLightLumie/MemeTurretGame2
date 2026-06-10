@@ -35,6 +35,7 @@ export class Thug extends Target{
     protected seekRad: number = 800;
 
     public gx: Phaser.GameObjects.Graphics;
+    private radOfs: number = 0;
 
     constructor(scene:GameScene,x:number,y:number, mode: string = "x", ofs: number = 0, seek: string = "x"){
         super(scene,x,y);
@@ -73,6 +74,7 @@ export class Thug extends Target{
     initializeAngle(input: string, offset: number = 0){
         let ofs = (-1*offset)+(Math.random()*2*offset);
         let theta = 0;
+        this.radOfs = Math.random()*200000;
         switch(input){
             case "x": {
                 if(this. x > 0) {
@@ -108,8 +110,12 @@ export class Thug extends Target{
             this.hitStun -= d;
             this.mod = 0;
         }
-        //this.x += 50;
-        let rmod = 1+(Math.sin(this.ofss+(t/200)));
+        //this.x += 50;]
+        this.radOfs += d;
+        if(this.radOfs > 200000){
+            this.radOfs -= 200000;
+        }
+        let rmod = 1+(Math.sin(this.ofss+(this.radOfs/400)));
         let tmod = 0.25+(rmod*.75);
         this.spr.setScale(0.8+(rmod/5),1+((1-rmod)/10));
         this.x += (this.mod*this.v*tmod*Math.cos(this.a)*d/1000);
@@ -275,6 +281,7 @@ export class Thug extends Target{
                 this.scene.sound.play("turret_hit", {volume: 0.5});
                 this.scene.addPlayerEffect(new BoneEffect(this.scene, this.scene.player.x, this.scene.player.y, this.scene.player));
                 this.aCD[0] = this.aCD[1];   
+                this.scene.player.takeDamage(100);
             }
         } else {
             this.aCD[0] -= d;
@@ -296,6 +303,8 @@ export class Thug extends Target{
             } else {
                 this.hp -= n;
             }
+        } else {
+            this.hp -= n;  
         }
         let mm = this.scene.handler.getParams(wID);
         if(this.hp <= 0) {
@@ -306,9 +315,11 @@ export class Thug extends Target{
                 let ii = this.bLog.get(p);
                 if(ii != null){
                     ii.cooldown = mm.pcd;
+                    this.bLog.set(p, ii);
                 }
+            } else {
+                this.bLog.set(p,{cooldown: mm.pcd, weaponID: wID});
             }
-            this.bLog.set(p,{cooldown: mm.pcd, weaponID: wID});
             return true;
         }
     }

@@ -14,9 +14,13 @@ import { DotTracker } from "@/components/DotTracker";
 import { TileChecker } from "@/components/TileChecker";
 import { LevelParser } from "@/components/GameFunctions/LevelParser";
 import { Levels } from "@/components/GameFunctions/Levels";
+import { Music } from "@/components/Music";
+import { MusicKey } from "@/components/MusicData";
+import { NextSceneButton } from "@/components/GameFunctions/NextSceneButton";
 
 export class GameScene extends BaseScene {
 	private background: Phaser.GameObjects.Image;
+	private endScreen: Phaser.GameObjects.Image;
 	public player: Player;
 	private ui: UI;
 
@@ -60,7 +64,13 @@ export class GameScene extends BaseScene {
 	private chunks: TileChecker;
 	private paused: boolean = false;
 	private upgrading: boolean = false;
-	
+	private dead: boolean = false;
+	private stageMusic: Phaser.Sound.WebAudioSound;
+	private dTimer: number[] = [250,250];
+	private eTimer: number[] = [1000,1000];
+	private ended: boolean = false;
+
+	private nextButton: NextSceneButton;
 
 	private ls: LineSegment;
 
@@ -78,10 +88,19 @@ export class GameScene extends BaseScene {
 	create(): void {
 		this.fade(false, 200, 0x000000);
 
+		this.stageMusic = new Music(this,"m_lv1",{volume:0.4});
+		this.stageMusic.play();
 		this.background = this.add.image(0, 0, "tempbkg");
 		this.background.setOrigin(0.5,0.5);
 		this.background.setScale(4);
 		this.background.setDepth(-10);
+
+		this.endScreen = this.add.image(0, 0, "rip");
+		this.endScreen.setOrigin(0.5,0.5);
+		this.endScreen.setScale(2);
+		this.endScreen.setDepth(100);
+		this.endScreen.setAlpha(0);
+
 		this.cameras.main.setBounds(-5000,-5000,10000,10000);
 		this.cameras.main.setZoom(0.5,0.5);
 		this.chunks = new TileChecker([-6200,6200], [-6200,6200],[250,250]);
@@ -174,6 +193,11 @@ export class GameScene extends BaseScene {
 		this.cLevel.load(0);
 		this.spawnTestObjects();
 
+		this.nextButton = new NextSceneButton(this,0,0);
+		this.nextButton.setScale(2,2);
+		this.nextButton.setDepth(300);
+		this.nextButton.hide();
+
 	}
 
 	spawnTestObjects(){
@@ -188,10 +212,33 @@ export class GameScene extends BaseScene {
 		*/
 	}
 
+	die(){
+		this.dead = true;
+		this.paused = true;
+		this.endScreen.setPosition(this.player.x,this.player.y);
+		this.sound.play("turret_dead", {volume: 0.5});
+		this.swapMusic("m_gameover");
+		this.sound.play("darksouls", {volume:0.5});
+		this.nextButton.setPosition(this.player.x, this.player.y + 600);
+		this.nextButton.veil();
+	}
+
 	update(time: number, delta: number) {
 		const pointer = this.input.activePointer;
 		const worldX = this.cameras.main.getWorldPoint(pointer.x, pointer.y).x;
  		const worldY = this.cameras.main.getWorldPoint(pointer.x, pointer.y).y;
+		if(this.dead){
+			if(this.eTimer[0] > 0){
+				this.eTimer[0] -= delta;
+				if(this.eTimer[0] <= 0){
+					this.eTimer[0] = 0;
+					this.endScreen.setAlpha(1);
+					this.nextButton.unveil();
+				} else {
+					this.endScreen.setAlpha(1-(this.eTimer[0]/this.eTimer[1]));
+				}
+			}
+		}
 		if(!this.paused){
 			//this.tyText.setPosition(worldX,worldY+80);
 			//this.tyText.setText("Pointer: " + worldX + ", " + worldY);
@@ -204,6 +251,7 @@ export class GameScene extends BaseScene {
 			this.updateEffects(time,delta);
 			this.unstackEnemies();
 			this.gUI.update(time,delta);
+			this.sounds = [];
 		}
 	}
 
@@ -487,10 +535,18 @@ export class GameScene extends BaseScene {
 		return this.tID;
 	}
 
+	swapMusic(m: MusicKey){
+		this.stageMusic.stop();
+		this.stageMusic = new Music(this, m, { volume: 0.4 });
+		this.stageMusic.play();
+	}
+
 	progress(){
+		this.stageMusic.stop();
+		this.sound.stopAll();
 		this.addEvent(1050, () => {
 			//this.musicTitle.stop();
-			this.scene.start("UpgradeScene", {gameData: this.masterData});
+			this.scene.start("LootScene", {gameData: this.masterData});
 		});
 	}
 }

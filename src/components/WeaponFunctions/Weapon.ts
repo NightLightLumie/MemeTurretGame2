@@ -148,7 +148,7 @@ export class Weapon {
         this.curAmmo = Math.round(this.wp.clip)*((1+(0.1*this.augVars[3])));
         this.maxAmmo = Math.round(this.wp.clip)*(1+(0.1*this.augVars[3]));
         this.maxLoad = (1/(1+(0.1*this.augVars[4])))*this.wp.load*1000;
-        this.onHit = 0;
+        this.onHit = (this.wp.onhit*(1+(0.1*this.augVars[7])))+(5*this.augVars[7]);
         this.specialStat = this.augVars[18];
         this.arpen = [this.wp.arpen[0]+(this.augVars[6]), this.wp.arpen[1]+(this.augVars[6]*0.05)];
         this.acc = this.wp.acc*(1/(1+(0.1*this.augVars[10])));
@@ -169,11 +169,11 @@ export class Weapon {
                 break;
             } case "Snaggletooth": {
                 this.pvalue[0] += 0.5
-                this.pvalue[1] += 0.25;
+                this.pvalue[1] += 0.35;
                 break;
             } case "Domination": {
-                this.pvalue[0] += 0.3;
-                this.pvalue[1] += 0.3;
+                this.pvalue[0] += 0.35;
+                this.pvalue[1] += 0.35;
                 break;
             } case "Romp": {
                 this.pvalue[0] += 1;

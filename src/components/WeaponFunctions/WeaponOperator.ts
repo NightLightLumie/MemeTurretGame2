@@ -27,10 +27,14 @@ export interface DmgStack{
     explode: string;
 }
 
+export interface DotParams{
+
+}
+
 //element: 0 = phys, 1 = fire, 2 = thunder, 3 = poison/acid, 4 = ice, 5 = plasma
 export interface WeaponParams{
     type: number; name: string; class: string; dmg: number; spd:number; rof: number; spcd: number; shots: number; pen: number, pcd: number; clip: number; load: number; width: number; rad: number;
-    acc: number; arpen: number[]; crit: number[]; ele: number; onhit: number; augs: number[]; customaug: Augment; passives: PassiveAbility[];
+    acc: number; arpen: number[]; crit: number[]; ele: number; onhit: number; weight: number; rarity: number; dot: DotParams[]; augs: number[]; customaug: Augment; passives: PassiveAbility[];
 }
 
 export class WeaponOperator{
@@ -39,7 +43,7 @@ export class WeaponOperator{
 //status damage, armor penetration, direct shot chance, ???recoil, onhit damage,
 
     public defaultParam: WeaponParams = {type:0,name:"Lutra",class:"pistol", dmg: 1, spd: 10000, rof: 5, spcd: 10000, shots: 1, pen: 1, pcd: -999, clip: 18, load: 1.5, width: 1, rad: 1, acc: 0,
-     arpen: [0,0], crit: [0,1], ele: 1, onhit: 0, augs: [0,1,1,1,1,0,1,0,0,1,0,0,0,0,0,0,0,0,0], customaug: {name: "default", index: 0, level: 0, maxlv: 10, lvcap: 10, desc: ""}, passives: []};
+     arpen: [0,0], crit: [0,1], ele: 1, onhit: 0, weight: 0, rarity: 1, dot: [], augs: [0,1,1,1,1,0,1,0,0,1,0,0,0,0,0,0,0,0,0], customaug: {name: "default", index: 0, level: 0, maxlv: 10, lvcap: 10, desc: ""}, passives: []};
     //public database: Map<number,WeaponParams> = new Map;
 
 
@@ -69,7 +73,7 @@ export class WeaponOperator{
     copyParam(w: WeaponParams): WeaponParams {
         return {
             type:w.type,name:w.name,class:w.class, dmg:w.dmg, spd:w.spd, rof:w.rof, spcd:w.spcd, shots:w.shots, pen:w.pen, pcd:w.pcd, clip:w.clip, load:w.load,
-             width:w.width, rad:w.rad, acc:w.acc, arpen:w.arpen, crit:w.crit, ele:w.ele, onhit:w.onhit, augs:w.augs, customaug:w.customaug, passives: w.passives};
+             width:w.width, rad:w.rad, acc:w.acc, arpen:w.arpen, crit:w.crit, ele:w.ele, onhit:w.onhit, weight: w.weight, rarity: w.rarity, dot: w.dot, augs:w.augs, customaug:w.customaug, passives: w.passives};
     }
 
 
@@ -125,28 +129,29 @@ export class WeaponOperator{
                 break; 
             } case 9: { 
                 //2-fanged wolf
-                console.log("WOLF SHOOT");
                 let ofs = Phaser.Math.DegToRad(-1*w.acc+(Math.random()*2*w.acc));
 				this.p.scene.sound.play(("gun_1"),{volume: 0.7});
                 let bx = this.p.x+(w.fRad*Math.cos(a));
                 let by = this.p.y+(w.fRad*Math.sin(a));
 
-                let aa = new Bullet(this.p.scene,bx+(10*Math.cos(a+(Math.PI/2))), by+(15*Math.sin(a+(Math.PI/2))), w.wp.type, w.wp.spd,a+ofs,w.damage,w.pierce, w);
-                let bb = new Bullet(this.p.scene,bx-(10*Math.cos(a+(Math.PI/2))), by-(15*Math.sin(a+(Math.PI/2))), w.wp.type, w.wp.spd,a+ofs,w.damage,w.pierce, w);
+                let aa = new Bullet(this.p.scene,bx+(10*Math.cos(a+(Math.PI/2))), by+(15*Math.sin(a+(Math.PI/2))), w.wp.type, w.wp.spd,a+ofs,w.damage,w.pierce, w, [{cmd: "holdcrit", amt: 1}]);
+                let bb = new Bullet(this.p.scene,bx-(10*Math.cos(a+(Math.PI/2))), by-(15*Math.sin(a+(Math.PI/2))), w.wp.type, w.wp.spd,a+ofs,w.damage,w.pierce, w, [{cmd: "holdcrit", amt: 1}]);
                 aa.addLinkedBullets(bb);
                 bb.addLinkedBullets(aa);
 				this.p.scene.addBullet(aa);
 				this.p.scene.addBullet(bb);
-
                 if(Math.random() < w.pvalue[0]){
                     ofs = Phaser.Math.DegToRad(-2*w.acc+(Math.random()*4*w.acc));
-                    let cc = new Bullet(this.p.scene,bx, by, w.wp.type, w.wp.spd,a+ofs,w.damage,w.pierce, w, [{cmd: "bonuscrit", amt: w.pvalue[1]}]);
+                    let cc = new Bullet(this.p.scene,bx, by, w.wp.type, w.wp.spd,a+ofs,w.damage,w.pierce, w, [{cmd: "holdcrit", amt: 1},{cmd: "bonuscrit", amt: w.pvalue[1]}]);
                     aa.addLinkedBullets(cc);
                     bb.addLinkedBullets(cc);
                     cc.addLinkedBullets(aa);
-                    cc.addLinkedBullets(aa);
+                    cc.addLinkedBullets(bb);
     				this.p.scene.addBullet(cc);
+                    cc.recalculateCrit();
                 }
+                aa.recalculateCrit();
+                bb.recalculateCrit();
                 break;
             }
             default: {

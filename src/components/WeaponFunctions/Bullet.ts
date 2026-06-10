@@ -71,6 +71,9 @@ export class Bullet extends Phaser.GameObjects.Container{
     public crit: number = 1;
     public bonuscrit: number = 0;
     public forcecrit: boolean = false;
+    public holdcrit: boolean = false;
+
+    public repeat: number = 0;
 
     public cmds: BonusCommand[] = [];
 
@@ -105,6 +108,9 @@ export class Bullet extends Phaser.GameObjects.Container{
         this.add(this.spr);
         
         this.pID = this.scene.getProjID();
+        cmds.forEach((c)=>{
+            this.parseBonusCommand(c);
+        });
         this.calculateCrit();
         //add to display done in game for layer reasons
 
@@ -112,7 +118,10 @@ export class Bullet extends Phaser.GameObjects.Container{
 
     parseBonusCommand(b: BonusCommand){
         switch(b.cmd){
-            case "critup": {
+            case "holdcrit": {
+                this.holdcrit = true;
+                break;
+            } case "bonuscrit": {
                 this.bonuscrit += b.amt;
                 break;
             } default: {
@@ -122,17 +131,37 @@ export class Bullet extends Phaser.GameObjects.Container{
     }
 
     addLinkedBullets(b:Bullet){
+        this.linkedBullets.push(b);
+    }
 
+    forceCrit(){
+        if(this.crit <= 1){
+            this.crit = this.owner.crit[1];
+            this.dmg *= this.crit;
+            this.forcecrit = true;
+        }
+    }
+
+    recalculateCrit(){
+        this.holdcrit = false; //used only to reset for crit mods
+        this.calculateCrit();
     }
 
     calculateCrit(){
-        if(this.forcecrit){
+        if(this.holdcrit){
+            return;
+        }
+        if(this.crit > 1){
+            //console.log("crit ineligible " + this.crit);
+            return;
             this.crit = this.owner.crit[1];
             this.dmg *= this.crit;
             //this.handleLinkedBullets();  
         } else if(Math.random() < (this.owner.crit[0]+this.bonuscrit)){
+            //console.log("Rolled crit: " + (this.bonuscrit + (this.owner.crit[0])));
             this.crit = this.owner.crit[1];
             this.dmg *= this.crit;
+            //console.log("Bullet links: " + this.handleLinkedBullets.length);
             this.handleLinkedBullets();
         }
     }
@@ -142,7 +171,11 @@ export class Bullet extends Phaser.GameObjects.Container{
             case 9: {
                 this.linkedBullets.forEach((b)=>{
                     if(b != null){
-                        b.forcecrit = true;
+
+                        b.forceCrit();
+                        //console.log("Forced crit to: " + b.crit);
+                    } else {
+                        console.log("BULLET NULL REFERENCE");
                     }
                 });
                 break;
@@ -257,9 +290,9 @@ export class Bullet extends Phaser.GameObjects.Container{
     }
 
     playHitSounds(){
-        this.scene.sound.play("oof",{volume:0.2});
+        this.scene.playSound("oof", 0.5);
         if(this.crit > 1){
-            this.scene.sound.play("oof",{volume:0.25});
+            this.scene.playSound("crit", 0.35);
         }
     }
 
@@ -278,22 +311,25 @@ export class Bullet extends Phaser.GameObjects.Container{
                 if(this.thits[n].tg.takePierceDamage(this.dmg,this.pID,this.weaponID)){
                     rp--;
                     this.scene.handler.processSpecial(this.thits[n].tg,this.weaponID, this.owner, this.dmg);
+                    if(Math.random() < 0.5){
+                        xr *= -1;
+                    }
+                    this.playHitSounds();
+                    this.scene.addHitEffect(new BasicEffect(this.scene,"splash",this.thits[n].vt.x,this.thits[n].vt.y,4,100,false,0,this.a,[1.75+Math.random()*2.5,xr*(1.25+Math.random()*1.25)]));
+                    
+                    let tr = "";
+                    tr += Math.trunc(this.dmg);
+                    let b = false;
+                    if(this.crit > 1)
+                    {
+                        tr += "!";
+                        b = true;
+                    }
+                    this.scene.addHitEffect(new DamageText(this.scene,this.hX,this.hY,tr,b));
                 }
                 //base += 0.05;
                 this.thits[n].tg.hitStun = 20;
-                if(Math.random() < 0.5){
-                    xr *= -1;
-                }
-                this.playHitSounds();
-                this.scene.addHitEffect(new BasicEffect(this.scene,"splash",this.thits[n].vt.x,this.thits[n].vt.y,4,100,false,0,this.a,[1.75+Math.random()*2.5,xr*(1.25+Math.random()*1.25)]));
                 
-                let tr = "";
-                tr += this.dmg;
-                if(this.crit > 1)
-                {
-                    tr += "!";
-                }
-                this.scene.addPlayerEffect(new DamageText(this.scene,this.hX,this.hY,tr));
 
                 if(rp <= 0) {
                     if(rx > 0){
@@ -350,12 +386,14 @@ export class Bullet extends Phaser.GameObjects.Container{
             this.scene.addHitEffect(new BasicEffect(this.scene,"splash",this.hX,this.hY,4,100,false,0,this.a,[1.75+Math.random()*2.5,xr*(1.25+Math.random()*1.25)]));
             
             let tr = "";
-            tr += this.dmg;
+            let b = false;
+            tr += Math.trunc(this.dmg);
             if(this.crit > 1)
             {
                 tr += "!";
+                b = true;
             }
-            this.scene.addHitEffect(new DamageText(this.scene,this.hX,this.hY,tr));
+            this.scene.addHitEffect(new DamageText(this.scene,this.hX,this.hY,tr,b));
             
             this.thits = [];
         }

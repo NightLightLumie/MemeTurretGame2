@@ -134,7 +134,7 @@ export class GunDataDisplay extends Phaser.GameObjects.Container{
         this.reload.setText("Reload Time: " + ((1/(1+(0.1*ag[4])))*e.load).toFixed(2) + " seconds");
         this.pierce.setText("Pierce: " + (e.pen*(1+(ag[9]*0.1))).toFixed(2));
         this.acc.setText("Accuracy Cone: " + (2*e.acc*(1/(1+(0.1*ag[10])))).toFixed(2) + " degrees");
-        this.crit.setText("Crit Chance/Damage: " + (e.crit[0]+(2.5*ag[11])) + "% / " + (100*(e.crit[1]+(0.1*ag[12]))).toFixed(2) + "%");
+        this.crit.setText("Crit Chance/Damage: " + ((100*e.crit[0])+(2.5*ag[11])).toFixed(2) + "% / " + (100*(e.crit[1]+(0.1*ag[12]))).toFixed(2) + "%");
         this.arpen.setText("Armor Penetration: " + (e.arpen[0]+(ag[6])) + " / " + (100*(e.arpen[1]+(ag[6]*0.05))) + "%");
         if(tmp.passives.length > 0){
             let pst = "";

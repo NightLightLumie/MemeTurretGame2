@@ -65,7 +65,7 @@ export class UpgradeScene extends BaseScene {
 		this.background.setScale(1);
 		this.background.setDepth(0);
 
-		this.nxt = new NextSceneButton(this, 1750, 960);
+		this.nxt = new NextSceneButton(this, 1810, 1000);
 
 		this.overlay = this.add.image(0, 0, "topbar");
 		this.overlay.setOrigin(0,0);

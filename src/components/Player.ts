@@ -46,6 +46,9 @@ export class Player extends Phaser.GameObjects.Container {
 	public loadout: [Weapon,Weapon,Weapon];
 	public activeWeapon: number = 0;
 
+	public hp: number[] = [1000,1000];
+	public hpBar: Phaser.GameObjects.Rectangle;
+
 	constructor(scene: GameScene, x: number, y: number) {
 		super(scene, x, y);
 		scene.add.existing(this);
@@ -122,6 +125,11 @@ export class Player extends Phaser.GameObjects.Container {
 			top: -1080,
 			bottom: 1080,
 		};
+
+		this.hpBar = this.scene.add.rectangle(-128,128,256,32,0x00ff00,1);
+		this.hpBar.setOrigin(0,0);
+		this.add(this.hpBar);
+		this.hpBar.setVisible(false);
 	}
 
 	setDefaultLoadout(){
@@ -143,6 +151,18 @@ export class Player extends Phaser.GameObjects.Container {
 		//this.loadout[0] = new Weapon (this.scene, this.scene.masterData.)
 	}
 
+	takeDamage(n: number){
+		this.hp[0] -= n;
+		if(this.hp[0] <= 0){ 
+			this.hp[0] = 0;
+			this.die();
+		}
+	}
+
+	die(){
+		this.scene.die();
+	}
+
 	update(time: number, delta: number) {
 
 		this.gfx.clear();
@@ -155,6 +175,20 @@ export class Player extends Phaser.GameObjects.Container {
 		*/
 
 		//this.ttText.setText("Position: " + this.x + ", " + this.y );
+		if(this.hp[0] >= this.hp[1]){
+			this.hpBar.setVisible(false);
+		} else {
+			this.hpBar.setVisible(true);
+			this.hpBar.setScale(this.hp[0]/this.hp[1],1);
+			
+		}
+		if(((this.hp[0]/this.hp[1]) <= 0.65) && ((this.hp[0]/this.hp[1]) > 0.3)) {
+			this.hpBar.fillColor = 0xFFFF00;
+		} else if (((this.hp[0]/this.hp[1]) <= 0.3)) {
+			this.hpBar.fillColor = 0xFF0000;
+		} else {
+			this.hpBar.fillColor = 0x00FF00;
+		}
 
         const pointer = this.scene.input.activePointer;
         const worldX = this.scene.cameras.main.getWorldPoint(pointer.x, pointer.y).x;

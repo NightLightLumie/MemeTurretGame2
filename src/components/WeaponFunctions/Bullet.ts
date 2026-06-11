@@ -338,6 +338,12 @@ export class Bullet extends Phaser.GameObjects.Container{
                             this.pierce = 1;
                             rx = 0;
                             rp = 1;
+                        } else {
+                            this.hX = this.thits[n].vt.x;
+                            this.hY = this.thits[n].vt.y;
+                            rx = 0;
+                            rp = 0;
+                            break;
                         }
                     } else {
                         this.hX = this.thits[n].vt.x;

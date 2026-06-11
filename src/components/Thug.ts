@@ -12,17 +12,12 @@ export class Thug extends Target{
 
     private v: number = 0;
     private a: number = 0;
-    private hp: number = 60000;
     private mod: number = 1;
     private ofss: number = 0;
-    private unstackFactor: number = 500;
-
     protected atype: number = 0;
     protected cd: number = 0;
     protected maxcd: number = 1000;
 
-
-    private tpr: number[] = [];
     private tdisp: Phaser.GameObjects.Container;
     private txt: Phaser.GameObjects.Text;
 
@@ -45,12 +40,10 @@ export class Thug extends Target{
         this.initializeAngle(mode, ofs);
         this.add(this.spr);
         this.ofss = Math.random()*2*Math.PI; //random offset for oscillating motion
-        this.bLog = new Map(); //log for pierce shots
         this.tID = this.scene.getTargetID();
         this.tdisp = new Phaser.GameObjects.Container(this.scene,0,0);
         this.add(this.tdisp);
         this.tdisp.setDepth(10);
-        this.stackLog = new Map(); //logs of stacks for procs
         this.gx = this.scene.add.graphics();
         this.gx.fillStyle(0x008080,0.85);
         this.add(this.gx);
@@ -76,6 +69,7 @@ export class Thug extends Target{
         let theta = 0;
         this.radOfs = Math.random()*200000;
         switch(input){
+            case "xx": {}
             case "x": {
                 if(this. x > 0) {
                     theta = 180+ofs;
@@ -122,13 +116,9 @@ export class Thug extends Target{
         this.y += (this.mod*this.v*tmod*Math.sin(this.a)*d/1000);
         //this.refactor();
         //this.txt.setText("{" + this.unstack[0] + ", "+ this.unstack[1] + "}");
-        this.x += (this.unstack[0]*this.unstackFactor*d/1000);
-        this.y += (this.unstack[1]*this.unstackFactor*d/1000);
-        this.unstack = [0,0];
+        this.updateUnstacking(t,d);
         this.seek(t,d);
-
         this.setAngle((180/Math.PI)*this.a);
-
         this.updateLogs(t,d);
         this.updateBounds();
 
@@ -166,81 +156,6 @@ export class Thug extends Target{
         }
     }
 
-    playerCollide(){
-        let r  = this.playerDist();
-        let ct = 0;
-        if(r < (this.radius+this.scene.player.radius)){
-            ct = Math.atan2(this.y-this.scene.player.y,this.x-this.scene.player.x);
-            this.x = this.scene.player.x+((this.scene.player.radius+this.radius)*Math.cos(ct));
-            this.y = this.scene.player.y+((this.scene.player.radius+this.radius)*Math.sin(ct));   
-        }
-
-    }
-
-    refactor(){
-        let r = Math.sqrt(Math.pow(this.unstack[0],2)+Math.pow(this.unstack[1],2));
-        if(this.unstack[0] != 0) {
-            this.unstack[0] = Math.cos(r);
-        }
-        if(this.unstack[1] != 0) {
-            this.unstack[1] = Math.sin(r);
-        }
-    }
-
-    updateLogs(t:number,d:number){
-        this.bLog.forEach((value: HitLog, key: number) => {
-            if(value.cooldown > 0) {
-                value.cooldown -= d;
-                if(value.cooldown <= 0) {
-                    value.cooldown = 0;
-                }
-                this.bLog.set(key, value);
-            }
-        });
-
-        this.tpr = [];
-        this.updateStacks();
-
-        for(let nr = 0; nr < this.tpr.length; nr++) {
-            //console.log("deleted stack: " + this.tpr[nr]);
-            this.stackLog.delete(this.tpr[nr]);
-        }
-        this.tpr = [];
-    }
-
-    updateStacks(){
-            let tmpr = 0;
-            this.stackLog.forEach((value: DmgStack, key: number) => {
-            if(value.bop) {
-                value.image.setScale(value.drawsize*3);
-                value.bop = false;
-            } else {
-                value.image.setScale(value.drawsize);
-            }
-            //console.log("hits: " + value.curhits);
-            if(value.curhits >= value.maxhits) {
-                tmpr = value.curhits-value.maxhits;
-                value.image.setAlpha(1);
-                this.takeDamage(value.damage);
-                //console.log("boom");
-                this.scene.sound.play(value.sound,{volume: 0.75});
-                this.scene.addHitEffect(new BasicEffect(this.scene,"hit_spark",this.x,this.y,3,100,false,0,Math.random()*360));
-                if(tmpr >= 0){
-                    value.curhits = tmpr;
-                    value.bop = true;
-                    value.drawsize = 0.8;
-                } else {
-                    this.tpr.push(key);
-                    value.image.destroy();
-                }
-            } else {
-                value.image.setAlpha(0.5+(0.5*(value.curhits/value.maxhits)));
-                value.image.setTint(Phaser.Display.Color.GetColor(255*(value.curhits/value.maxhits),255*(value.curhits/value.maxhits),255));
-            }
-        });
-    }
-
-
     updateBounds(){
         switch(this.boundState){
             case 0: {
@@ -259,21 +174,6 @@ export class Thug extends Target{
         }
     }
 
-    playerDist(): number{
-        return Math.sqrt(Math.pow(this.scene.player.x-this.x,2)+Math.pow(this.scene.player.y-this.y,2));
-    }
-
-    playerAngle(): number {
-        return Math.atan2(this.scene.player.y-this.y,this.scene.player.x-this.x);
-    }
-
-    takeDamage(n: number){
-        this.hp -= n;
-        if(this.hp <= 0) {
-            this.die();
-        }
-    }
-
     attack(t: number, d: number){
         if(this.aCD[0] <= 0) {
             if(this.playerDist() < (this.scene.player.radius+this.radius+this.aRange))
@@ -281,7 +181,7 @@ export class Thug extends Target{
                 this.scene.sound.play("turret_hit", {volume: 0.5});
                 this.scene.addPlayerEffect(new BoneEffect(this.scene, this.scene.player.x, this.scene.player.y, this.scene.player));
                 this.aCD[0] = this.aCD[1];   
-                this.scene.player.takeDamage(100);
+                this.scene.player.takeDamage(75);
             }
         } else {
             this.aCD[0] -= d;
@@ -291,58 +191,27 @@ export class Thug extends Target{
         }
     }
 
-    takePierceDamage(n: number, p: number, wID: number): boolean{
-        if(this.bLog.has(p)){
-            let tr = this.bLog.get(p);
-            if(tr != null) {
-                if((tr.cooldown > 0) || (tr.cooldown <= -999)){
-                    return false;
-                } else {
-                    this.hp -= n;
-                }
-            } else {
-                this.hp -= n;
-            }
-        } else {
-            this.hp -= n;  
-        }
-        let mm = this.scene.handler.getParams(wID);
-        if(this.hp <= 0) {
-            this.die();
-            return true;
-        } else {
-            if(this.bLog.has(p)){
-                let ii = this.bLog.get(p);
-                if(ii != null){
-                    ii.cooldown = mm.pcd;
-                    this.bLog.set(p, ii);
-                }
-            } else {
-                this.bLog.set(p,{cooldown: mm.pcd, weaponID: wID});
-            }
-            return true;
-        }
-    }
+
 
     gib(){
         this.scene.addPartEffect(new GibEffect(this.scene,this.x,this.y,"f1-0",[-1200+Math.random()*2400,-1200+Math.random()*2400],
-        [0,0],Math.random()*360,1000+(Math.random()*3000),Math.random()*3600,10000));
+        [0,0],Math.random()*360,1000+(Math.random()*3000),Math.random()*3600,5000));
         this.scene.addPartEffect(new GibEffect(this.scene,this.x,this.y,"f1-1",[-1200+Math.random()*2400,-1200+Math.random()*2400],
-        [0,0],Math.random()*360,1000+(Math.random()*3000),Math.random()*3600,10000));
+        [0,0],Math.random()*360,1000+(Math.random()*3000),Math.random()*3600,5000));
         this.scene.addPartEffect(new GibEffect(this.scene,this.x,this.y,"f1-2",[-1200+Math.random()*2400,-1200+Math.random()*2400],
-        [0,0],Math.random()*360,1000+(Math.random()*3000),Math.random()*3600,10000));
+        [0,0],Math.random()*360,1000+(Math.random()*3000),Math.random()*3600,5000));
         this.scene.addPartEffect(new GibEffect(this.scene,this.x,this.y,"f1-3",[-1200+Math.random()*2400,-1200+Math.random()*2400],
-        [0,0],Math.random()*360,1000+(Math.random()*3000),Math.random()*3600,10000));
+        [0,0],Math.random()*360,1000+(Math.random()*3000),Math.random()*3600,5000));
         this.scene.addPartEffect(new GibEffect(this.scene,this.x,this.y,"f1-4",[-1200+Math.random()*2400,-1200+Math.random()*2400],
-        [0,0],Math.random()*360,1000+(Math.random()*3000),Math.random()*3600,10000));
+        [0,0],Math.random()*360,1000+(Math.random()*3000),Math.random()*3600,5000));
         this.scene.addPartEffect(new GibEffect(this.scene,this.x,this.y,"f1-5",[-1200+Math.random()*2400,-1200+Math.random()*2400],
-        [0,0],Math.random()*360,1000+(Math.random()*3000),Math.random()*3600,10000));
+        [0,0],Math.random()*360,1000+(Math.random()*3000),Math.random()*3600,5000));
         this.scene.addPartEffect(new GibEffect(this.scene,this.x,this.y,"f1-6",[-1200+Math.random()*2400,-1200+Math.random()*2400],
-        [0,0],Math.random()*360,1000+(Math.random()*3000),Math.random()*3600,10000));
+        [0,0],Math.random()*360,1000+(Math.random()*3000),Math.random()*3600,5000));
         this.scene.addPartEffect(new GibEffect(this.scene,this.x,this.y,"f1-7",[-1200+Math.random()*2400,-1200+Math.random()*2400],
-        [0,0],Math.random()*360,1000+(Math.random()*3000),Math.random()*3600,10000));
+        [0,0],Math.random()*360,1000+(Math.random()*3000),Math.random()*3600,5000));
         this.scene.addPartEffect(new GibEffect(this.scene,this.x,this.y,"f1-8",[-1200+Math.random()*2400,-1200+Math.random()*2400],
-        [0,0],Math.random()*360,1000+(Math.random()*3000),Math.random()*3600,10000));
+        [0,0],Math.random()*360,1000+(Math.random()*3000),Math.random()*3600,5000));
     }
 
     addStack(pd: number, ap: DmgStack){

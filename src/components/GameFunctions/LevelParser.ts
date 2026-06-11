@@ -94,7 +94,15 @@ export class LevelParser {
                     this.decrementLoop(args);
                     break;
                 }
-            } case "end": {
+            } case "waitEnemies":{
+                if(this.scene.checkEnemies()){
+                    this.index++;
+                } else {
+                    break;
+                }
+            } case "endStage": {
+                break;
+            }case "end": {
                 this.deleteFlag = true;
                 break;
             } default: {
@@ -107,13 +115,15 @@ export class LevelParser {
         let found = false;
 		for(let h = (this.loopTimers.length-1); h >= 0; h--){
             if(this.loopTimers[h][0] == n[2]){
+                if(this.loopTimers[h][1] <= 0){
+                    this.loopTimers.splice(h,1);
+                    this.index++;
+                    return;
+                }
                 this.loopTimers[h][1] -= 1;
                 this.index = n[0];
                 found = true;
             }
-			if(this.loopTimers[h][1] <= 0) {
-				this.loopTimers.splice(h,1);
-			}
 		}
         if(!found) {
             this.loopTimers.push([n[2],n[1]-1]);

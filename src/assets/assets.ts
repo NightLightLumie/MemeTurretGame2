@@ -91,6 +91,17 @@ const images: Image[] = [
 	image('enemies/fragments/e1/f1-7', 'f1-7'),
 	image('enemies/fragments/e1/f1-8', 'f1-8'),
 
+	image('enemies/fragments/e2/u1', 'u1'),
+	image('enemies/fragments/e2/u2', 'u2'),
+	image('enemies/fragments/e2/u3', 'u3'),
+	image('enemies/fragments/e2/u4', 'u4'),
+	image('enemies/fragments/e2/u5', 'u5'),
+	image('enemies/fragments/e2/u6', 'u6'),
+	image('enemies/fragments/e2/u7', 'u7'),
+
+
+	image('enemies/ufobullet', 'ufobullet'),
+
 	//loot box
 	image('items/box_0', 'box_0'),
 	image('items/arm_r_0', 'arm_r_0'),
@@ -100,8 +111,9 @@ const images: Image[] = [
 /* Spritesheets */
 const spritesheets: SpriteSheet[] = [
 	spritesheet("anims/splash", "splash", 64, 64),
+	spritesheet("enemies/enemy_2", "enemy_2", 360, 360),
 	spritesheet("anims/hit_spark", "hit_spark", 128, 128),
-
+	spritesheet("anims/hit_purple", "hit_purple", 128, 128),
 	spritesheet("ui/aug", "aug", 48, 64),
 	spritesheet("ui/aug_extra", "aug_extra", 48, 64),
 	spritesheet("ui/aug_button_frame", "aug_button_frame", 64, 64),
@@ -142,6 +154,8 @@ const audios: Audio[] = [
 	sound('tree/turret_hit', 'turret_hit', 0.5),
 	sound('tree/turret_dead', 'turret_dead', 0.5),
 	sound('tree/scroll', 'scroll', 0.5),
+
+	sound('tree/ufobullet_fire', 'ufobullet_fire', 0.5),
 
 	sound('tree/darksouls', 'darksouls', 0.5),
 

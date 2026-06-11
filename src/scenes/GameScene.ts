@@ -17,6 +17,8 @@ import { Levels } from "@/components/GameFunctions/Levels";
 import { Music } from "@/components/Music";
 import { MusicKey } from "@/components/MusicData";
 import { NextSceneButton } from "@/components/GameFunctions/NextSceneButton";
+import { EnemyBullet } from "@/components/EnemyBullet";
+import { Ufo } from "@/components/Enemies/Ufo";
 
 export class GameScene extends BaseScene {
 	private background: Phaser.GameObjects.Image;
@@ -30,9 +32,10 @@ export class GameScene extends BaseScene {
 
 	private UI: Phaser.GameObjects.Container;
 	private pDisp: Phaser.GameObjects.Container;
-
+	private ebDisp: Phaser.GameObjects.Container;
 	private bDisp: Phaser.GameObjects.Container;
 	private tDisp: Phaser.GameObjects.Container;
+	private ftDisp: Phaser.GameObjects.Container;
 	private eDisp: Phaser.GameObjects.Container;
 	private fDisp: Phaser.GameObjects.Container;
 
@@ -43,6 +46,7 @@ export class GameScene extends BaseScene {
 	public handler: WeaponOperator;
 
 	private bList: Bullet[];
+	private eBulletList: EnemyBullet[];
 	private tList: Target[];
 	private playerEffects: Effect[];
 	private hitEffects: Effect[];
@@ -69,6 +73,8 @@ export class GameScene extends BaseScene {
 	private dTimer: number[] = [250,250];
 	private eTimer: number[] = [1000,1000];
 	private ended: boolean = false;
+	private zoom: number[] = [0.5,0.5];
+	public enemyCap: number = 500;
 
 	private nextButton: NextSceneButton;
 
@@ -102,7 +108,7 @@ export class GameScene extends BaseScene {
 		this.endScreen.setAlpha(0);
 
 		this.cameras.main.setBounds(-5000,-5000,10000,10000);
-		this.cameras.main.setZoom(0.5,0.5);
+		this.cameras.main.setZoom(this.zoom[0],this.zoom[1]);
 		this.chunks = new TileChecker([-6200,6200], [-6200,6200],[250,250]);
 
 
@@ -134,6 +140,7 @@ export class GameScene extends BaseScene {
 
 		//arrays
 		this.bList = [];
+		this.eBulletList = [];
 		this.tList = [];
 		this.hitEffects = [];
 		this.partEffects = [];
@@ -144,41 +151,42 @@ export class GameScene extends BaseScene {
 
 
 
-		this.pDisp = new Phaser.GameObjects.Container(this,0,0);
-		this.add.existing(this.pDisp);
-		this.pDisp.setDepth(12);
 
-		this.UI = new Phaser.GameObjects.Container(this,0,0);
+
+		this.UI = new Phaser.GameObjects.Container(this,0,0); // display layer for UI
 		this.add.existing(this.UI);
 		this.UI.setDepth(16);
 
-		this.bDisp = new Phaser.GameObjects.Container(this,0,0);
-		this.add.existing(this.bDisp);
-		this.bDisp.setDepth(8);
+		this.ebDisp = new Phaser.GameObjects.Container(this,0,0); // display layer for enemy bullets
+		this.add.existing(this.ebDisp);
+		this.ebDisp.setDepth(14);
 
-		this.tDisp = new Phaser.GameObjects.Container(this,0,0);
+		this.pDisp = new Phaser.GameObjects.Container(this,0,0); // display layer for player
+		this.add.existing(this.pDisp);
+		this.pDisp.setDepth(12);
+
+		this.eDisp = new Phaser.GameObjects.Container(this,0,0); // display layer for effects
+		this.add.existing(this.eDisp);
+		this.eDisp.setDepth(10);
+
+		this.bDisp = new Phaser.GameObjects.Container(this,0,0); // display layer for bullets
+		this.add.existing(this.bDisp);
+		this.bDisp.setDepth(9);
+
+		this.ftDisp = new Phaser.GameObjects.Container(this,0,0); // display layer for flying enemies
+		this.add.existing(this.ftDisp);
+		this.ftDisp.setDepth(8);
+
+		this.tDisp = new Phaser.GameObjects.Container(this,0,0); // display layer for enemies
 		this.add.existing(this.tDisp);
 		this.tDisp.setDepth(7);
 
-		this.ls = new LineSegment(this,9989,9988,9999,9998);
-		this.ls.setDepth(14);
-
-		this.eDisp = new Phaser.GameObjects.Container(this,0,0);
-		this.add.existing(this.eDisp);
-		this.eDisp.setDepth(9);
-
-		this.fDisp = new Phaser.GameObjects.Container(this,0,0);
+		this.fDisp = new Phaser.GameObjects.Container(this,0,0); // display layer for enemy fragments
 		this.add.existing(this.fDisp);
 		this.fDisp.setDepth(6);
 
-		this.tracers = new Phaser.GameObjects.Container(this,0,0);
-		this.add.existing(this.tracers);
-		this.tracers.setDepth(11);
+		this.initiateTestObjects();
 
-		this.dotter = this.add.graphics();
-		this.dotter.fillStyle(0xFF8080,0.85);
-		this.add.existing(this.dotter);
-		this.dotter.setDepth(15);
 
 		/*
 		this.dotter.beginPath();
@@ -191,7 +199,6 @@ export class GameScene extends BaseScene {
 		this.initTouchControls();
 		this.cLevel = new Levels(this);
 		this.cLevel.load(0);
-		this.spawnTestObjects();
 
 		this.nextButton = new NextSceneButton(this,0,0);
 		this.nextButton.setScale(2,2);
@@ -200,7 +207,19 @@ export class GameScene extends BaseScene {
 
 	}
 
-	spawnTestObjects(){
+	initiateTestObjects(){
+
+		this.ls = new LineSegment(this,9989,9988,9999,9998);
+		this.ls.setDepth(14);
+
+		this.tracers = new Phaser.GameObjects.Container(this,0,0);
+		this.add.existing(this.tracers);
+		this.tracers.setDepth(11);
+
+		this.dotter = this.add.graphics();
+		this.dotter.fillStyle(0xFF8080,0.85);
+		this.add.existing(this.dotter);
+		this.dotter.setDepth(15);
 		/*
 		let ttt = new Thug(this,-800,600);
 		this.tDisp.add(ttt);
@@ -256,7 +275,7 @@ export class GameScene extends BaseScene {
 	}
 
 	spawnEnemies(num:number = 2, cmd:string = "x", etype:string = "thug", difficulty:number = 0): boolean{
-		if(this.tList.length > 200) {
+		if(this.tList.length > this.enemyCap) {
 			//console.log("LEN: " + this.tList.length);
 			//this.sCD = 500;
 			return false;
@@ -284,6 +303,16 @@ export class GameScene extends BaseScene {
 				xx = rx*4500;
 				yy = -3000+(Math.random()*6000);
 				break;
+			} case "xx": {
+				rx = Math.random();
+				if (rx < 0.5) {
+					rx = -1;
+				} else {
+					rx = 1;
+				}
+				xx = this.player.x+(rx*2420);
+				yy = this.player.y+(-1580+(Math.random()*3160));
+				break;
 			} case "r": {
 				aa = Math.random()*2*Math.PI;
 				xx = Math.cos(aa)*4542;
@@ -298,13 +327,23 @@ export class GameScene extends BaseScene {
 				this.tDisp.add(tn);
 				this.tList.push(tn);
 				break;
-			} case "UFO": {
+			} case "ufo": {
+				let tu = new Ufo(this,xx,yy);
+				this.ftDisp.add(tu);
+				this.tList.push(tu);
 				break;
 			} default: {
 				break;
 			}
 		}
+	}
 
+	checkEnemies(): boolean{
+		if(this.tList.length <= 0){
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 	refreshGUI(){
@@ -371,6 +410,15 @@ export class GameScene extends BaseScene {
 				this.bList.splice(i,1);
 			}
 		}
+
+		for(let ie = (this.eBulletList.length-1); ie >= 0; ie--){
+			this.eBulletList[ie].update(t,d);
+			this.eBulletList[ie].hitCheck();
+			if(this.eBulletList[ie].deleteFlag){
+				this.eBulletList[ie].destroy();
+				this.eBulletList.splice(ie,1);
+			}
+		}
 	}
 
 	addHitEffect(e: Effect){
@@ -393,8 +441,17 @@ export class GameScene extends BaseScene {
 			this.overlapCheck(this.tList[i]);
 		}
 	}
+	
+	addEnemyBullet(e: EnemyBullet){
+		this.eBulletList.push(e);
+		this.ebDisp.add(e);
+
+	}
 
 	overlapCheck(t: Target){
+		if(t.ghosting){
+			return;
+		}
 		this.checkTargetOverlap(t,this.chunks.fetchAdjacent(t,"0"));
 		this.checkTargetOverlap(t,this.chunks.fetchAdjacent(t,"+y"));
 		this.checkTargetOverlap(t,this.chunks.fetchAdjacent(t,"-y"));
@@ -415,7 +472,9 @@ export class GameScene extends BaseScene {
 		let at = 0;
 		for(let i = (targets.length-1); i >= 0; i--){
 			//console.log("Checking Targets");
-			if(!(c.tID == targets[i].tID)){
+			if((targets[i].ghosting)){
+
+			} else if ((c.tID != targets[i].tID)){
 				at = Math.abs(Math.sqrt(Math.pow(targets[i].y-c.y,2)+Math.pow(targets[i].x-c.x,2)));
 				if(at < (targets[i].colrad + c.colrad)){
 					zr = Math.atan2((targets[i].y-c.y),(targets[i].x-c.x));
@@ -548,5 +607,9 @@ export class GameScene extends BaseScene {
 			//this.musicTitle.stop();
 			this.scene.start("LootScene", {gameData: this.masterData});
 		});
+	}
+
+	getCameraDiag(): number{
+		return Math.hypot(1920/this.zoom[0],1080/this.zoom[1]);
 	}
 }

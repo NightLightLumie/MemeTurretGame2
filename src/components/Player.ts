@@ -23,6 +23,7 @@ export class Player extends Phaser.GameObjects.Container {
 	private sprite: Phaser.GameObjects.Sprite;
 	private inventory: number;
 	private tween: Phaser.Tweens.Tween;
+	public hitsize: number = 40;
 
 	// Controls
 	private keyboard: any;
@@ -42,7 +43,7 @@ export class Player extends Phaser.GameObjects.Container {
 	private cd: number = 0;
 	private maxCD: number = 250;
 	private gfx: Phaser.GameObjects.Graphics;
-	public health: number = 2000;
+	public health: number = 1000;
 	public loadout: [Weapon,Weapon,Weapon];
 	public activeWeapon: number = 0;
 

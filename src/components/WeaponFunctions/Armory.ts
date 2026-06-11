@@ -31,21 +31,24 @@ export class Armory {
     constructor(ref: GlobalVariables) {
         this.reference = ref;
         this.gunList = new Map([
-            [-999999999, {gID: -999999999, wID: 0, augs: [{name: "Impact", index: 1, level: 5, maxlv: 8, lvcap: 10, desc: "Increased base damage."}], passives: this.reference.getGunPassives(0)}],
+            [-999999999, {gID: -999999999, wID: 0, augs: [], passives: this.reference.getGunPassives(0)}],
             [-999999998, {gID: -999999998, wID: 1, augs: [], passives: this.reference.getGunPassives(1)}],
-            [-999999997, {gID: -999999997, wID: 2, augs: [{name: "Impact", index: 1, level: 12, maxlv: 13, lvcap: 13, desc: "Increased base damage."},
-                {name: "Barrage", index: 2, level: 8, maxlv: 10, lvcap: 10, desc: "Increased rate of fire."},    
-                {name: "Penetrator", index: 9, level: 6, maxlv: 8, lvcap: 10, desc: "Increases penetration capability."},
-                {name: "default", index: 0, level: 0, maxlv: 10, lvcap: 10, desc: ""}], passives: this.reference.getGunPassives(2)}],//keep these three defaults the same
+            [-999999997, {gID: -999999997, wID: 2, augs: [], passives: this.reference.getGunPassives(2)}],//keep these three defaults the same
 
             [-999999996, {gID: -999999996, wID: 4, augs: [], passives: this.reference.getGunPassives(4)}],
+
+            /*
             [-999999995, {gID: -999999995, wID: 9, augs: [{name: "default", index: 0, level: 0, maxlv: 13, lvcap: 13, desc: ""},
                 {name: "default", index: 0, level: 0, maxlv: 13, lvcap: 13, desc: ""},
                 {name: "default", index: 0, level: 0, maxlv: 13, lvcap: 13, desc: ""},
                 {name: "default", index: 0, level: 0, maxlv: 13, lvcap: 13, desc: ""},
             ], passives: this.reference.getGunPassives(9)}],
-            [-999999994, {gID: -999999994, wID: 2, augs: [], passives: this.reference.getGunPassives(2)}],
+            [-999999994, {gID: -999999994, wID: 2, augs: [{name: "Impact", index: 1, level: 12, maxlv: 13, lvcap: 13, desc: "Increased base damage."},
+            {name: "Barrage", index: 2, level: 8, maxlv: 10, lvcap: 10, desc: "Increased rate of fire."},    
+            {name: "Penetrator", index: 9, level: 6, maxlv: 8, lvcap: 10, desc: "Increases penetration capability."},
+            {name: "default", index: 0, level: 0, maxlv: 10, lvcap: 10, desc: ""}], passives: this.reference.getGunPassives(2)}],
             [-999999993, {gID: -999999994, wID: 7, augs: [this.generateAugment(0,0,13,13), this.generateAugment(0,0,13,13), this.generateSpecialAugment(7,1,13,13), this.generateAugment(0,0,13,13), ], passives: this.reference.getGunPassives(7)}],
+            */
         ]);
 
 

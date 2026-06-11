@@ -7,6 +7,7 @@ export class Lootbox extends Button{
     public panelR: Phaser.GameObjects.Sprite;
     public panelL: Phaser.GameObjects.Sprite;
     public chassis: Phaser.GameObjects.Sprite;
+    public boxlight: Phaser.GameObjects.Sprite;
     public lv: number = 0;
 
     public liftTime: number = 750;
@@ -32,6 +33,8 @@ export class Lootbox extends Button{
     }
 
     initiateImages(){
+        this.boxlight = this.scene.add.sprite(0,0,"boxlight");
+        this.add(this.boxlight);
         this.panelR = this.scene.add.sprite(0,0,("arm_r_" + this.lv));
         this.add(this.panelR);
         this.panelR.setOrigin(0.5,0.5);
@@ -67,6 +70,7 @@ export class Lootbox extends Button{
     open(){
         this.phase = 2;
         this.curTime = this.timers[this.phase];
+        this.boxlight.setFrame(1);
         this.scene.sound.play("open_0", {volume: 0.75});
     }
 

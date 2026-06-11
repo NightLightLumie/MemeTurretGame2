@@ -75,6 +75,7 @@ const images: Image[] = [
 	image('weapons/aug_17', 'aug_17'),
 	image('weapons/aug_18', 'aug_18'),
 	image('weapons/equip', 'equip'),
+	image('weapons/missile', 'missile'),
 	image('weapons/gunback', 'gunback'),
 	image('weapons/blank', 'blank'),
 	image('weapons/stackcircle', 'stackcircle'),
@@ -111,6 +112,7 @@ const images: Image[] = [
 /* Spritesheets */
 const spritesheets: SpriteSheet[] = [
 	spritesheet("anims/splash", "splash", 64, 64),
+	spritesheet("anims/exp", "exp", 256, 256),
 	spritesheet("enemies/enemy_2", "enemy_2", 360, 360),
 	spritesheet("anims/hit_spark", "hit_spark", 128, 128),
 	spritesheet("anims/hit_purple", "hit_purple", 128, 128),
@@ -155,6 +157,7 @@ const audios: Audio[] = [
 	sound('tree/turret_dead', 'turret_dead', 0.5),
 	sound('tree/scroll', 'scroll', 0.5),
 
+
 	sound('tree/ufobullet_fire', 'ufobullet_fire', 0.5),
 
 	sound('tree/darksouls', 'darksouls', 0.5),
@@ -165,6 +168,8 @@ const audios: Audio[] = [
 	sound('weapons/start_reload', 'start_reload', 0.5),
 	sound('weapons/end_reload', 'end_reload', 0.5),
 	sound('weapons/stackexplode', 'stackexplode', 0.5),
+	sound('weapons/meme_explosion', 'meme_explosion', 0.5),
+	sound('weapons/rocket', 'rocket', 0.5),
 ];
 
 /* Fonts */

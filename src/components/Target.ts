@@ -121,6 +121,10 @@ export class Target extends Phaser.GameObjects.Container{
         return Math.sqrt(Math.pow(this.scene.player.x-this.x,2)+Math.pow(this.scene.player.y-this.y,2));
     }
 
+    distanceTo(x: number, y: number): number{
+        return Math.sqrt(Math.pow(x-this.x,2)+Math.pow(y-this.y,2));
+    }
+
     playerAngle(): number {
         return Math.atan2(this.scene.player.y-this.y,this.scene.player.x-this.x);
     }

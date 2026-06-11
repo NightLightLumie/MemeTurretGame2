@@ -34,7 +34,7 @@ export class Armory {
             [-999999999 - 2, {gID: -999999998, wID: 1, augs: [], passives: this.reference.getGunPassives(1)}],
             [-999999999 - 1, {gID: -999999997, wID: 2, augs: [], passives: this.reference.getGunPassives(2)}],//keep these three defaults the same
 
-            [-999999999, {gID: -999999996, wID: 4, augs: [], passives: this.reference.getGunPassives(4)}],
+            [-999999999, {gID: -999999996, wID: 6, augs: [], passives: this.reference.getGunPassives(4)}],
 
             /*
             [-999999995, {gID: -999999995, wID: 9, augs: [{name: "default", index: 0, level: 0, maxlv: 13, lvcap: 13, desc: ""},

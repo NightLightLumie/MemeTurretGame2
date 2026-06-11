@@ -1,4 +1,5 @@
 import { BaseScene } from "@/scenes/BaseScene";
+import { DamageText } from "@/components/Graphics/DamageText";
 import { Player } from "@/components/Player";
 import { UI } from "@/components/UI";
 import { Bullet } from "@/components/WeaponFunctions/Bullet";
@@ -407,6 +408,8 @@ export class GameScene extends BaseScene {
 
 	}
 
+
+
 	updateBullets(t:number,d:number){
 		for(let i = (this.bList.length-1); i >= 0; i--){
 
@@ -471,6 +474,10 @@ export class GameScene extends BaseScene {
 
 	}
 
+	dropBox(){
+		this.masterData.lootBoxes.push(0);
+	}
+
 	overlapCheck(t: Target){
 		if(t.ghosting){
 			return;
@@ -509,7 +516,15 @@ export class GameScene extends BaseScene {
 		}
 	}
 	
-
+	simpleExplode(dmg: number, x:number, y:number, radius:number){
+		this.tList.forEach((t)=>{
+			if((t != null) && (t.deleteFlag != true)){
+				if(t.distanceTo(x,y) < (t.radius+radius))
+				t.takeDamage(dmg);
+				this.addHitEffect(new DamageText(this,t.x,t.y,""+dmg,false));
+			}
+		})
+	}
 
 	initTouchControls() {
 		this.input.addPointer(2);
@@ -599,6 +614,11 @@ export class GameScene extends BaseScene {
 		return this.pID;
 	}
 
+	addPlayerProjectile(m: Missile){
+		this.playerProjectiles.push(m);
+		this.bDisp.add(m);
+	}
+
 	dot(x: number, y: number){
 		let gfx = new DotTracker(this,x,y);
 		//this.add.existing(gfx);
@@ -608,6 +628,7 @@ export class GameScene extends BaseScene {
 		//console.log("dot: "+ x + ", "+ y);
 
 	}
+	
 
 	getTargetID(): number{
 		this.tID++;

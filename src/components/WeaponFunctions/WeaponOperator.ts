@@ -2,6 +2,7 @@ import { Player } from "../Player"
 import { Target } from "../Target";
 import { PassiveAbility } from "./Armory";
 import { Bullet } from "./Bullet";
+import { Rocket } from "./Rocket";
 import { Augment, Weapon } from "./Weapon";
 
 export interface HitInfo{
@@ -154,6 +155,12 @@ export class WeaponOperator{
                 aa.recalculateCrit();
                 bb.recalculateCrit();
                 break;
+            } case 6: {//LOSSNEN
+                let ofs = Phaser.Math.DegToRad(-1*w.acc+(Math.random()*2*w.acc));
+				this.p.scene.sound.play("rocket",{volume: 0.7});
+                this.p.scene.addPlayerProjectile(new Rocket(this.p.scene,this.p.x+(w.fRad*Math.cos(a)),this.p.y+(w.fRad*Math.sin(a)),"missile",a+ofs,w));
+                //Bullet(this.p.scene,this.p.x+(w.fRad*Math.cos(a)), this.p.y+(w.fRad*Math.sin(a)), w.wp.type, w.wp.spd,a+ofs,w.damage,w.pierce, w));
+                break; 
             }
             default: {
                 break;

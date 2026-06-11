@@ -22,9 +22,8 @@ export class Missile extends Phaser.GameObjects.Container{
         this.key = name;
         this.v = [Math.cos(angle),Math.sin(angle)];
         this.vangle = angle;
-        console.log("BULLET ANGLE: " + this.angle);
+        //console.log("BULLET ANGLE: " + this.angle);
         this.setAngle(this.vangle*(180/Math.PI));
-        this.initiateParams();
     }
 
     initiateParams(){

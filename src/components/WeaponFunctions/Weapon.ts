@@ -85,8 +85,11 @@ export class Weapon {
     public crit: number[] = [0,0];
     private killtracker: number[] = [0,0];
     public pvalue: number[] = [0,0,0,0,0,0];
+    public width: number = 0;
 
     public rof: number = 0;
+
+    public speed: number = 1;
 
 
 
@@ -154,6 +157,7 @@ export class Weapon {
         this.acc = this.wp.acc*(1/(1+(0.1*this.augVars[10])));
         this.crit[0] = this.wp.crit[0]+(0.025*this.augVars[11]);
         this.crit[1] = this.wp.crit[1]+(0.1*this.augVars[12]);
+        this.width = this.wp.width*(1+(0.05*this.augVars[8]));
     }
 
     initiatePassive(name: string){

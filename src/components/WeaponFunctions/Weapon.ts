@@ -97,9 +97,9 @@ export class Weapon {
         this.augVars = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
         this.augModifier = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
         //console.log(this.wp.name + " COOLDOWN: " + this.maxCD);\
-        this.loadPassives();
         this.loadAugment();
         this.loadGunValues();
+        this.loadPassives();
         this.bursts = [];
 
     }
@@ -145,8 +145,8 @@ export class Weapon {
         this.pierce = this.wp.pen*(1+(0.1*this.augVars[9]));
         this.pcd = this.wp.pcd;
         this.img = ("gun_"+this.wp.type);
-        this.curAmmo = Math.round(this.wp.clip)*((1+(0.1*this.augVars[3])));
-        this.maxAmmo = Math.round(this.wp.clip)*(1+(0.1*this.augVars[3]));
+        this.curAmmo = Math.trunc(Math.round(this.wp.clip)*((1+(0.1*this.augVars[3]))));
+        this.maxAmmo = Math.trunc(Math.round(this.wp.clip)*((1+(0.1*this.augVars[3]))));
         this.maxLoad = (1/(1+(0.1*this.augVars[4])))*this.wp.load*1000;
         this.onHit = (this.wp.onhit*(1+(0.1*this.augVars[7])))+(5*this.augVars[7]);
         this.specialStat = this.augVars[18];
@@ -158,12 +158,16 @@ export class Weapon {
 
     initiatePassive(name: string){
         switch(name){
-            case "Shear": {} case "Quality and Quantity": {}
+            case "Shear": {} case "Quality and Quantity": {} case "Wholesale": {}  case "Long Bolts": {}
             case "Hi-Point": {
                 this.parseBasePassives(name);
                 break;
+            } case "Timeless": {
+                this.pvalue[0] += 3;
+                break;
             } case "Full Tilt": {
-                this.maxAmmo = Math.round(this.maxAmmo *= 1.25);
+                this.maxAmmo = Math.trunc(Math.round(this.maxAmmo *= 1.25));
+                this.curAmmo = this.maxAmmo;
                 this.killtracker = [0,8];
                 this.maxCD = 1/(this.rof*(1+0.1+(0.05*this.killtracker[2])));
                 break;
@@ -197,8 +201,15 @@ export class Weapon {
                 this.onHit += 12;
                 break;
             } case "Shear": {
-                this.maxCD = 1/(this.rof+2);
+                this.rof += 2;
+                this.maxCD = 1/(this.rof);
                 this.pierce += 1;
+                break;
+            } case "Long Bolts": {
+                this.crit[1] += 0.4;
+                break;
+            } case "Wholesale": {
+                this.damage *= 1.25;
                 break;
             } default: {
                 break;

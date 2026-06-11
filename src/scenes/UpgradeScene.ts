@@ -36,9 +36,9 @@ export class UpgradeScene extends BaseScene {
 	public p1: Phaser.Math.Vector2;
 	public p2: Phaser.Math.Vector2;
 	public p3: Phaser.Math.Vector2;
-	public side: number = -999999999;
-	public prim: number = -999999998;
-	public sec: number = -999999997;
+	public side: number = -999999999 - 3;
+	public prim: number = -999999999 - 2;
+	public sec: number = -999999999 - 1;
 
 	public nxt: NextSceneButton;
 
@@ -46,6 +46,8 @@ export class UpgradeScene extends BaseScene {
 	public equippedButtons: WeaponButton[];
 
 	public locked: boolean = false;
+
+
 
 	constructor() {
 		super({ key: "UpgradeScene" });
@@ -58,6 +60,7 @@ export class UpgradeScene extends BaseScene {
 	}
 
 	create(): void {
+		this.resetVariables();
 		this.initButtons();
 		this.initTouchControls();
 		this.background = this.add.image(0, 0, "upgradebkg");
@@ -124,9 +127,16 @@ export class UpgradeScene extends BaseScene {
 		this.augUI.setDepth(20);
 
 		this.fade(false, 200, 0x000000);
+	}
 
-
-
+	resetVariables(){
+		this.buttonList = [];
+		this.side = this.masterData.side.gID;
+		this.prim = this.masterData.primary.gID;
+		this.sec = this.masterData.secondary.gID;
+		this.lockout = 0;
+		this.maxlockout = 200;
+		this.dragging = false;
 	}
 
 	update(time: number, delta: number) {

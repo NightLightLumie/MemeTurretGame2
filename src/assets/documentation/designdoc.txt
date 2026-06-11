@@ -1,0 +1,87 @@
+Skirmisher:
+Passive: Close Combat -> increased movespeed and damage to nearby enemies
+1: Evasive Reload -> dash a short distance and reload, + x% damage for the magazine
+2: Blademaster -> deal damage to nearby enemies
+
+Vanguard:
+Passive: Bastion -> regen x hp per second
+1. Bracing Fire -> deal x% increased damage and regen x% ammo per second while fighting, oeduced movespeed
+2. EMP Grenade -> heavily slow enemies and mark for vulnerable
+
+Sharpshooter:
+Passive: Hawkeye -> Critical strike chance and damage increased by 10%.
+1. Counter Shot -> Fire a critical shot and dash a tiny distance backwards, supercrits if you evaded damage
+2. Magnet Mines -> Plant a magnet mine, explodes when enemies step on it or when you shoot it
+
+
+
+Items
+    //Items: Carry up to 6.
+    //Cancel Death: Press x in deathbomb timer to cancel dying. Invuln for 1s. (250 ms window base, 30s cd, -5
+    //NFT: Increases difficulty by 5
+    //Explosive Magazine: Release fireballs when reloading, dealing 100 damage
+    //Rune Circle: Deals damage equal to your current health every 5 seconds in a moderate radius around you
+    //Hi-Power Rounds: All gun damage increased by 10%
+    //White Dragon Gem: The first hit on an enemy deals an additional 20% of its max health as true damage
+    //Black Dragon Gem: Enemies explode when defeated, dealing 10% of their max health to nearby enemies
+    //Prism of Stars: Shoot stars in cardinal, then intercardinal directions every 5 shots
+    //Cast Gun: Spells additionally do 100% of your gun damage as bonus damage.
+    //Kobold Mini-Nova: Deal 5 damage per second to all enemies on the field
+    //Ultrasonic Shield: Gain a slowly recharging shield equal to 25% of your max HP
+    //Reactive Barrier: Negates one hit every 20s, dealing damage equal to 50x the base damage in a moderate radius around you
+    //Phoenix's tail: Gain 3 extra lives
+    //Sticky Bomb: Enemies struck by your spell projectiles explode after 3s for 50 damage
+    //Zoomies: Gain 20% movement speed
+    //Fortify: Reduce incoming damage by 20%
+
+Companies
+WC Weapons Supply (wc.ws)
+Jagaimo-Tatsumaki Engineering (JT)
+NeoTech Revolutionary (NTR)
+Voracity-- ** Has been replaced with Feral Complex (FC)
+Lawson Securities
+PYROFOX
+
+
+
+New Brand Names:
+WC.Weapons Supply
+
+
+
+Perks:
+Precise (15% base crit)
+Merciless (30% extra damage below 50% hp)
+Featherweight (-25% movement penalty)
+Dominus (+30% damage to bosses and big mobs)
+
+
+Weapon types:
+Sidearms
+WC.WS-Lontra Perks: 
+
+SMGs:
+WS-003
+WS-003c
+Lawson 33
+
+ARs:
+WS-005
+
+
+Shotguns:
+WC-015 N-class
+
+Long rifles:
+
+LMGs:
+Lawson L51
+
+Launchers:
+WC-RS1
+
+Jets:
+Lawson CHKi
+
+Special:
+Grater

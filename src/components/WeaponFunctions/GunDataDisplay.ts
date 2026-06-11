@@ -130,7 +130,7 @@ export class GunDataDisplay extends Phaser.GameObjects.Container{
         }
 
         this.rof.setText("Cycle Rate: " + (e.rof*(1+(ag[2]*0.1))).toFixed(2) + " per second");
-        this.cap.setText("Capacity: " + Math.round(e.clip*(1+(ag[3]*0.1))));
+        this.cap.setText("Capacity: " + Math.trunc(Math.round(e.clip*(1+(ag[3]*0.1)))));
         this.reload.setText("Reload Time: " + ((1/(1+(0.1*ag[4])))*e.load).toFixed(2) + " seconds");
         this.pierce.setText("Pierce: " + (e.pen*(1+(ag[9]*0.1))).toFixed(2));
         this.acc.setText("Accuracy Cone: " + (2*e.acc*(1/(1+(0.1*ag[10])))).toFixed(2) + " degrees");

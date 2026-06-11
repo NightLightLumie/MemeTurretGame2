@@ -19,6 +19,7 @@ import { MusicKey } from "@/components/MusicData";
 import { NextSceneButton } from "@/components/GameFunctions/NextSceneButton";
 import { EnemyBullet } from "@/components/EnemyBullet";
 import { Ufo } from "@/components/Enemies/Ufo";
+import { Missile } from "@/components/WeaponFunctions/Missile";
 
 export class GameScene extends BaseScene {
 	private background: Phaser.GameObjects.Image;
@@ -49,6 +50,7 @@ export class GameScene extends BaseScene {
 	private eBulletList: EnemyBullet[];
 	private tList: Target[];
 	private playerEffects: Effect[];
+	private playerProjectiles: Missile[];
 	private hitEffects: Effect[];
 	private partEffects: Effect[];
 	private tracerList: Tracer[];
@@ -93,7 +95,7 @@ export class GameScene extends BaseScene {
 
 	create(): void {
 		this.fade(false, 200, 0x000000);
-
+		this.resetVariables();
 		this.stageMusic = new Music(this,"m_lv1",{volume:0.4});
 		this.stageMusic.play();
 		this.background = this.add.image(0, 0, "tempbkg");
@@ -142,6 +144,7 @@ export class GameScene extends BaseScene {
 		this.bList = [];
 		this.eBulletList = [];
 		this.tList = [];
+		this.playerProjectiles = [];
 		this.hitEffects = [];
 		this.partEffects = [];
 		this.playerEffects = [];
@@ -205,6 +208,14 @@ export class GameScene extends BaseScene {
 		this.nextButton.setDepth(300);
 		this.nextButton.hide();
 
+	}
+
+	resetVariables(){
+		this.paused = false;
+		this.dead = false;
+		this.eTimer = [1000,1000];
+		this.zoom = [0.5,0.5];
+		this.enemyCap = 500;
 	}
 
 	initiateTestObjects(){
@@ -408,6 +419,18 @@ export class GameScene extends BaseScene {
 			if(this.bList[i].deleteFlag){
 				this.bList[i].destroy();
 				this.bList.splice(i,1);
+			}
+		}
+
+		for(let pp = (this.playerProjectiles.length-1); pp >= 0; pp--){
+
+			this.playerProjectiles[pp].update(t,d);
+			for(let ex = this.tList.length-1; ex >= 0; ex--) {
+				this.playerProjectiles[pp].hitCheck(this.tList[ex]);
+			}
+			if(this.playerProjectiles[pp].deleteFlag){
+				this.playerProjectiles[pp].destroy();
+				this.playerProjectiles.splice(pp,1);
 			}
 		}
 

@@ -23,7 +23,6 @@ export interface LootEntry{
 
 export class Armory {
     public wlist: WeaponSlot[]; // do not push
-    public curID: number = -999999993;
     public gunList: Map<number,WeaponEntry>;
     public reference: GlobalVariables;
 
@@ -31,11 +30,11 @@ export class Armory {
     constructor(ref: GlobalVariables) {
         this.reference = ref;
         this.gunList = new Map([
-            [-999999999, {gID: -999999999, wID: 0, augs: [], passives: this.reference.getGunPassives(0)}],
-            [-999999998, {gID: -999999998, wID: 1, augs: [], passives: this.reference.getGunPassives(1)}],
-            [-999999997, {gID: -999999997, wID: 2, augs: [], passives: this.reference.getGunPassives(2)}],//keep these three defaults the same
+            [-999999999 - 3, {gID: -999999999, wID: 0, augs: [], passives: this.reference.getGunPassives(0)}],
+            [-999999999 - 2, {gID: -999999998, wID: 1, augs: [], passives: this.reference.getGunPassives(1)}],
+            [-999999999 - 1, {gID: -999999997, wID: 2, augs: [], passives: this.reference.getGunPassives(2)}],//keep these three defaults the same
 
-            [-999999996, {gID: -999999996, wID: 4, augs: [], passives: this.reference.getGunPassives(4)}],
+            [-999999999, {gID: -999999996, wID: 4, augs: [], passives: this.reference.getGunPassives(4)}],
 
             /*
             [-999999995, {gID: -999999995, wID: 9, augs: [{name: "default", index: 0, level: 0, maxlv: 13, lvcap: 13, desc: ""},
@@ -93,27 +92,26 @@ export class Armory {
 
 
 
-    addNewGun(wp: WeaponParams, auglist: Augment[]){
+    addNewGun(wp: WeaponParams, auglist: Augment[], id: number){
         let gun = {
-            gID: this.curID+1,
+            gID: id,
             wID: wp.type,
             augs: auglist,
             passives: wp.passives,
         }
         this.addGun(gun.gID,gun);
-        this.curID++;
     }
 
-    storeNewGun(wp: WeaponParams, auglist: Augment[]): number{
+    storeNewGun(wp: WeaponParams, auglist: Augment[], id: number): number{
         let gun = {
-            gID: this.curID+1,
+            gID: id,
             wID: wp.type,
             augs: auglist,
             passives: wp.passives,
         }
         this.addGun(gun.gID,gun);
+        console.log("Stored additional gun: " + JSON.stringify(gun));
         return gun.gID;
-        this.curID++;
     }
     /*
 

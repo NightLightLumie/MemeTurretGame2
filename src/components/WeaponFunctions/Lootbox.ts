@@ -28,6 +28,7 @@ export class Lootbox extends Button{
         this.lootTable = table;
         this.selectedGun = this.lootTable[Math.trunc(Math.random()*this.lootTable.length)];
         this.initiateImages();
+        console.log("GENERATED BOX WITH LVL: "+this.lv);
     }
 
     initiateImages(){
@@ -66,6 +67,7 @@ export class Lootbox extends Button{
     open(){
         this.phase = 2;
         this.curTime = this.timers[this.phase];
+        this.scene.sound.play("open_0", {volume: 0.75});
     }
 
     reveal(){
@@ -75,11 +77,23 @@ export class Lootbox extends Button{
         }
     }
 
+    lock(){
+        this.chassis.disableInteractive();
+    }
+
+    unlock(){
+        console.log("box unlocked");
+        this.chassis.setInteractive();
+    }
+
     update(t: number, d: number){
         if(this.curTime > 0){
             this.curTime -= d;
             if(this.curTime <= 0) {
                 if(this.phase > 0){
+                    if(this.phase == 1){
+                        this.scene.sound.play("open_1", {volume: 1});
+                    }
                     this.phase--;
                     this.curTime = this.timers[this.phase];
                 } else {

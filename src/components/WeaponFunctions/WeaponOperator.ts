@@ -109,6 +109,7 @@ export class WeaponOperator{
             } case 1: { //windmill
             } case 3: { //broadhead
             } case 8: { //NTR-141
+            } case 5: { //windmill
             } case 4: { //bjuron
                 let ofs = Phaser.Math.DegToRad(-1*w.acc+(Math.random()*2*w.acc));
 				this.p.scene.sound.play(("gun_"+w.type),{volume: 0.7});

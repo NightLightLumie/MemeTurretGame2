@@ -159,6 +159,9 @@ const audios: Audio[] = [
 
 	sound('tree/darksouls', 'darksouls', 0.5),
 
+	sound('ui/open_0', 'open_0', 0.5),
+	sound('ui/open_1', 'open_1', 0.5),
+
 	sound('weapons/start_reload', 'start_reload', 0.5),
 	sound('weapons/end_reload', 'end_reload', 0.5),
 	sound('weapons/stackexplode', 'stackexplode', 0.5),

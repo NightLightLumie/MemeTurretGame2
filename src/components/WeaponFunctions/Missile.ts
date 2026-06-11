@@ -51,12 +51,11 @@ export class Missile extends Phaser.GameObjects.Container{
         let r = this.targetDist(t);
         if(r < (this.radius+t.radius)){
             this.processHit(t);
-            this.deleteFlag = true;
         }
     }
 
     processHit(t: Target){
-
+        this.deleteFlag = true;
     }
 
     targetDist(t: Target): number{

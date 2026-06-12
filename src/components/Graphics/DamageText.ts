@@ -23,7 +23,7 @@ export class DamageText extends Effect{
     private negative: number = -1;
     private amp: number = 1;
 
-    constructor(scene:GameScene, x: number, y: number, txt: string, crit: boolean = false) {
+    constructor(scene:GameScene, x: number, y: number, txt: string, mode: string) {
         super(scene,x,y);
         this.scene = scene;
         let flash = false;
@@ -32,12 +32,37 @@ export class DamageText extends Effect{
         let valence = 1;
         let amplitude = 0.5;
         let fadeTime = 500;
-        let flashTime = 50;
-        let size = 35;
-        if(crit){
-            size = 55;
-            color1 = "aqua";
-            flash = true;
+        let flashTime = 75;
+        let size = 40;
+
+        switch(mode){
+            case "crit": {
+                size = 60;
+                color1 = "fuchsia";
+                color2 = "red";
+                flash = true;
+                break;
+            } case "onhit": {
+                size = 30;
+                color1 = "aqua";
+                color2 = "white";
+                flash = false;
+                break;
+            } case "explosion": {
+                size = 50;
+                color1 = "yellow";
+                color2 = "white";
+                flash = true;
+                break;
+            } case "repeat": {
+                size = 40;
+                color1 = "goldenrod";
+                color2 = "darkorange";
+                flash = true;
+                break;
+            } default: {
+                break;
+            }
         }
         this.myText = this.scene.addText({
 			x: 0,

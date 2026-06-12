@@ -155,7 +155,7 @@ export class GunDataDisplay extends Phaser.GameObjects.Container{
                     count++;
                     switch(tmp.passives[px].name){
                         case "Romp": {
-                            pst+= (""+(10*(1+(ag[18]*0.15))).toFixed(2) + "x the base damage.");
+                            pst+= (""+(10*(1+(ag[18]*0.2))).toFixed(2) + "x the pre-augment base damage.");
                             break;
                         } default: {
                             break;

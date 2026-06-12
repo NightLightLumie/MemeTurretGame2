@@ -1,3 +1,5 @@
+import { json } from "node:stream/consumers";
+
 export interface TextStyle {
 	fontFamily?: string;
 	x?: number;
@@ -15,6 +17,8 @@ export class BaseScene extends Phaser.Scene {
 
 	protected sounds: string[] = [];
 
+	//protected flashTimer: number[] = [0,0];
+
 	constructor(config: Phaser.Types.Scenes.SettingsConfig) {
 		super(config);
 		this.cameraShakeValue = 0;
@@ -27,8 +31,20 @@ export class BaseScene extends Phaser.Scene {
 		this.cameras.main.fadeEffect.start(fadeOut, time, c.r, c.g, c.b);
 	}
 
+	resetVariables(){
+		this.tweens.killAll();
+		if(this.flashRect){
+			this.flashRect.destroy();
+		}
+		this.cameraShakeValue = 0;
+		//this.flashTimer = [0,0];
+		this.flashRect = null;
+		this.sounds = [];
+	}
+
 	// Start a white camera flash effect
 	flash(time: number, hexColor: number = 0xffffff, alpha: number = 1.0) {
+		console.log("flashing");
 		if (!this.flashRect) {
 			this.flashRect = this.add.rectangle(this.CX, this.CY, this.W, this.H, 0);
 			this.flashRect.setDepth(9999999999);
@@ -37,6 +53,7 @@ export class BaseScene extends Phaser.Scene {
 		this.flashRect.setAlpha(alpha);
 		this.flashRect.fillColor = hexColor;
 
+		//console.log("CURRENT TWEENS: " + JSON.stringify(this.tweens));
 		this.tweens.add({
 			targets: this.flashRect,
 			alpha: { from: alpha, to: 0 },

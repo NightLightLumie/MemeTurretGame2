@@ -21,12 +21,15 @@ export class LootScene extends BaseScene{
     private yps: number = 840;
     private spacer: number = 68;
     private skip: boolean = false;
+    private blinkRect: Phaser.GameObjects.Rectangle;
+    private flashTimer: number[] = [0,0];
 
 	constructor() {
 		super({ key: "LootScene" });
 	}
 
     resetVariables(){
+        super.resetVariables();
         this.lootTable = [];
         this.displayBars = []
         this.waitTime = [1000,1000];
@@ -35,6 +38,15 @@ export class LootScene extends BaseScene{
         this.yps = 810;
         this.spacer = 68;
         this.skip = false;
+        if(this.blinkRect){
+            this.blinkRect?.destroy();
+        }
+        this.flashTimer = [];
+        this.blinkRect = this.add.rectangle(960, 540, this.W*1.25, this.H*1.25, 0);
+        this.blinkRect.setOrigin(0.5,0.5);
+        this.blinkRect.setDepth(999999999);
+        this.blinkRect.setVisible(false);
+        this.blinkRect.setAlpha(1);
     }
 
 	init(data: { gameData: GlobalVariables; })
@@ -117,7 +129,7 @@ export class LootScene extends BaseScene{
 
     reveal(){
         if(this.curBox != null){
-            this.flash(250,0xFFFFFF,1);
+            this.blink(250,0xFFFFFF);
             this.state = "transition";
             this.waitTime[0] = 500;
             let r = this.masterData.generateGun(this.curBox.selectedGun);
@@ -150,7 +162,7 @@ export class LootScene extends BaseScene{
     nextBox(){
         this.state = "waiting";
         this.waitTime[0] = 500;
-        this.flash(250,0xFFFFFF,1);
+        this.blink(250,0xFFFFFF);
         this.gImage.setTexture("blank");
         this.gImage.setScale(2,2);
         this.gImage.setVisible(false);
@@ -172,6 +184,19 @@ export class LootScene extends BaseScene{
         if(this.skip){
             return;
         }
+
+        if(this.flashTimer[0] > 0){
+            this.flashTimer[0] -= delta;
+            if(this.flashTimer[0] > 0){
+                this.blinkRect.setAlpha(this.flashTimer[0]/this.flashTimer[1]);
+            } else {
+                this.flashTimer = [0,0];
+                this.blinkRect.setVisible(false);
+                this.blinkRect.setAlpha(1);
+            }
+
+        }
+
         this.tOff += delta;
         if(this.tOff > 200000) {
             this.tOff -= 200000;
@@ -213,6 +238,13 @@ export class LootScene extends BaseScene{
                 break;
             }
         }
+    }
+
+    blink(t: number, color: number){
+        this.flashTimer = [t,t];
+        this.blinkRect.setFillStyle(color);
+        this.blinkRect.setAlpha(1);
+        this.blinkRect.setVisible(true);
     }
 
     progress(){

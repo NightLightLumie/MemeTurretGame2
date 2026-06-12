@@ -130,6 +130,7 @@ export class UpgradeScene extends BaseScene {
 	}
 
 	resetVariables(){
+		super.resetVariables();
 		this.buttonList = [];
 		this.side = this.masterData.side.gID;
 		this.prim = this.masterData.primary.gID;

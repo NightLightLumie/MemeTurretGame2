@@ -3,8 +3,8 @@ import { WeaponDisplay } from "./WeaponDisplay";
 import { Bullet } from "./WeaponFunctions/Bullet";
 import { Weapon } from "./WeaponFunctions/Weapon";
 
-const ACCELERATION = 250;
-const MAX_SPEED = 400;
+const ACCELERATION = 350;
+const MAX_SPEED = 500;
 const FRICTION = 0.7;
 const TAPPING_TIMER = 200; // ms
 console.assert(
@@ -46,6 +46,7 @@ export class Player extends Phaser.GameObjects.Container {
 	public health: number = 1000;
 	public loadout: [Weapon,Weapon,Weapon];
 	public activeWeapon: number = 0;
+	public spMod: number = 1;
 
 	public hp: number[] = [1000,1000];
 	public hpBar: Phaser.GameObjects.Rectangle;
@@ -165,7 +166,7 @@ export class Player extends Phaser.GameObjects.Container {
 	}
 
 	update(time: number, delta: number) {
-
+		this.spMod = this.getActiveWeapon().speed;
 		this.gfx.clear();
 		/*
 		this.gfx.fillStyle(0x00FFFF,0.75);
@@ -229,7 +230,8 @@ export class Player extends Phaser.GameObjects.Container {
 
 		this.inputVec.limit(1);
 		// this.inputVec.normalize();
-		this.inputVec.scale(ACCELERATION);
+		this.inputVec.scale(ACCELERATION*this.spMod);
+		console.log("Speed modifier: " + this.spMod);
 
 		if(!((this.inputVec.x == 0) && (this.inputVec.y == 0))){
 			this.sprite.setAngle((180/Math.PI)*Math.atan2(this.inputVec.y,this.inputVec.x));
@@ -243,7 +245,7 @@ export class Player extends Phaser.GameObjects.Container {
 		} else {
 			this.velocity.scale(FRICTION);
 			this.velocity.add(this.inputVec);
-			this.velocity.limit(MAX_SPEED);
+			this.velocity.limit(MAX_SPEED*this.spMod);
 		}
 
 		this.x += (this.velocity.x * delta) / 1000;

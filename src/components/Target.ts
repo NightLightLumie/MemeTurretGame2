@@ -20,6 +20,7 @@ export class Target extends Phaser.GameObjects.Container{
     public hp: number = 500;
     public difficulty: number = 0;
     public tID: number = 0;
+    public invuln: boolean = false;
     //public pID: number = 0;
 
 
@@ -104,11 +105,15 @@ export class Target extends Phaser.GameObjects.Container{
 
     }
 
-    takeDamage(n: number){
+    takeDamage(n: number): boolean{
+        if(this.invuln){
+            return false;
+        }
         this.hp -= n;
         if(this.hp <= 0) {
             this.die();
         }
+        return true;
     }
 
     updateUnstacking(t:number,d:number){

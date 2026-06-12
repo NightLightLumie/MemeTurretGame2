@@ -196,6 +196,9 @@ export class Ufo extends Target{
         if(!this.deleteFlag){
             this.gib();
             this.scene.sound.play("dead",{volume:0.25});
+            if(Math.random() < this.scene.getDropChance("ufo")){
+                this.scene.dropBox();
+            }
         }
         this.deleteFlag = true;
     }

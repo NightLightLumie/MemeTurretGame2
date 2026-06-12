@@ -169,7 +169,7 @@ export class WeaponOperator{
 
     }
 
-    processSpecial(t: Target, wp: number, w: Weapon, dt: number){
+    processSpecial(t: Target, wp: number, w: Weapon, dmg: number){
         let wr = this.getParams(wp);
         switch(wp){
             case 7: {
@@ -181,7 +181,7 @@ export class WeaponOperator{
                         mm.drawsize+=0.15*w.pvalue[0];
                     }
                 } else {
-                    t.addStack(wp, {type: wp, damage: (wr.dmg*10)*(1+(0.15*w.specialStat)), curhits: w.pvalue[0], maxhits: 7, image: this.p.scene.add.image(0,0,"stackcircle"),drawsize: 0.8+(0.15*(w.pvalue[0]-1)), bop: true,
+                    t.addStack(wp, {type: wp, damage: (wr.dmg*10)*(1+(0.2*w.specialStat)), curhits: w.pvalue[0], maxhits: 7, image: this.p.scene.add.image(0,0,"stackcircle"),drawsize: 0.8+(0.15*(w.pvalue[0]-1)), bop: true,
                     alpha: 1, sound: "stackexplode", explode:"hit_spark"});
                     //console.log("ADD STACK: ");
                     //console.log(t.stackLog);

@@ -86,10 +86,12 @@ export class Weapon {
     private killtracker: number[] = [0,0];
     public pvalue: number[] = [0,0,0,0,0,0];
     public width: number = 0;
+    public blast: number = 0;
 
     public rof: number = 0;
 
     public speed: number = 1;
+    public repeats: number[] = [];
 
 
 
@@ -157,7 +159,8 @@ export class Weapon {
         this.acc = this.wp.acc*(1/(1+(0.1*this.augVars[10])));
         this.crit[0] = this.wp.crit[0]+(0.025*this.augVars[11]);
         this.crit[1] = this.wp.crit[1]+(0.1*this.augVars[12]);
-        this.width = this.wp.width*(1+(0.05*this.augVars[8]));
+        this.blast = this.wp.rad*(1+(0.05*this.augVars[8]));
+        this.speed = (1-this.wp.weight)+(0.05*this.augVars[16]);
     }
 
     initiatePassive(name: string){
@@ -189,6 +192,9 @@ export class Weapon {
             } case "Otter Space": {
                 this.pvalue[0] += 1;
                 break;
+            } case "Clearance": {
+                this.repeats.push(0.4);
+                break;
             } default: {
                 break;
             }
@@ -198,11 +204,11 @@ export class Weapon {
     parseBasePassives(name: string){
         switch(name){
             case "Hi-Point": {
-                this.damage*=1.15;
+                this.damage*=1.3;
                 this.pierce += 1*(1+(0.1*this.augVars[9]));
                 break;
             } case "Quality and Quantity": {
-                this.onHit += 12;
+                this.onHit += 22;
                 break;
             } case "Shear": {
                 this.rof += 2;
@@ -213,7 +219,7 @@ export class Weapon {
                 this.crit[1] += 0.4;
                 break;
             } case "Wholesale": {
-                this.damage *= 1.25;
+                this.damage *= 1.6;
                 break;
             } default: {
                 break;

@@ -243,10 +243,6 @@ export class Bullet extends Phaser.GameObjects.Container{
         this.boundCheck();
     }
 
-    processHits(){
-        
-    }
-
     updateLength(){
         let aa = Math.atan2(this.y-this.pY,this.x-this.pX);
         let bb = 0;
@@ -305,32 +301,15 @@ export class Bullet extends Phaser.GameObjects.Container{
 
         //let base = 0.2;
         let xr = -1;
+        let vtx = 0;
+        let vty = 0;
 
         for(let n = 0; n < this.thits.length; n++){
             if(rp >= 0){
-                if(this.thits[n].tg.takePierceDamage(this.dmg,this.pID,this.weaponID)){
+                if(this.processPierceHitData(n)){
                     rp--;
-                    this.scene.handler.processSpecial(this.thits[n].tg,this.weaponID, this.owner, this.dmg);
-                    if(Math.random() < 0.5){
-                        xr *= -1;
-                    }
-                    this.playHitSounds();
-                    this.scene.addHitEffect(new BasicEffect(this.scene,"splash",this.thits[n].vt.x,this.thits[n].vt.y,4,100,false,0,this.a,[1.75+Math.random()*2.5,xr*(1.25+Math.random()*1.25)]));
-                    
-                    let tr = "";
-                    tr += Math.trunc(this.dmg);
-                    let b = false;
-                    if(this.crit > 1)
-                    {
-                        tr += "!";
-                        b = true;
-                    }
-                    this.scene.addHitEffect(new DamageText(this.scene,this.hX,this.hY,tr,b));
                 }
-                //base += 0.05;
-                this.thits[n].tg.hitStun = 20;
                 
-
                 if(rp <= 0) {
                     if(rx > 0){
                         //fractional pierce calculation
@@ -375,34 +354,68 @@ export class Bullet extends Phaser.GameObjects.Container{
                     ix = n;
                 }
             }
-
-            this.thits[ix].tg.takeDamage(this.dmg);
-            this.scene.handler.processSpecial(this.thits[ix].tg,this.weaponID, this.owner, this.dmg);
-            this.playHitSounds();
-            this.thits[ix].tg.hitStun = 20;
-            this.hX = this.thits[ix].vt.x;
-            this.hY = this.thits[ix].vt.y;
-
-            this.pierce = 0;
-
-            let xr = -1;
-            if(Math.random() < 0.5){
-                xr *= -1;
-            }
-            this.scene.addHitEffect(new BasicEffect(this.scene,"splash",this.hX,this.hY,4,100,false,0,this.a,[1.75+Math.random()*2.5,xr*(1.25+Math.random()*1.25)]));
             
-            let tr = "";
-            let b = false;
-            tr += Math.trunc(this.dmg);
-            if(this.crit > 1)
-            {
-                tr += "!";
-                b = true;
+            if(this.thits[ix].tg.takeDamage(this.dmg)){
+                this.processBasicHit(ix);
+                this.hX = this.thits[ix].vt.x;
+                this.hY = this.thits[ix].vt.y;
+                this.pierce = 0;
             }
-            this.scene.addHitEffect(new DamageText(this.scene,this.hX,this.hY,tr,b));
             
             this.thits = [];
         }
+    }
+
+    processPierceHitData(n: number): boolean{
+        if(this.thits[n].tg.takePierceDamage(this.dmg,this.pID,this.weaponID)){
+            this.processBasicHit(n);
+            if(this.owner.repeats.length > 0){
+                this.owner.repeats.forEach((r)=>{
+                    if(Math.random() < r){
+                        this.processBasicHit(n);
+                    }
+                })
+            }
+
+            this.thits[n].tg.hitStun = 20;
+            return true;
+        } else {
+            return false;
+        }
+        //base += 0.05;
+    }
+
+    processBasicHit(n: number){
+        let xr = 1;
+        let ofsx = -20+Math.random()*40;
+        let ofsy = -20+Math.random()*40;
+        this.scene.handler.processSpecial(this.thits[n].tg,this.weaponID, this.owner, this.dmg);
+        if(Math.random() < 0.5){
+            xr *= -1;
+        }
+        this.playHitSounds();
+        this.scene.addHitEffect(new BasicEffect(this.scene,"splash",this.thits[n].vt.x,this.thits[n].vt.y,4,100,false,0,this.a,[1.75+Math.random()*2.5,xr*(1.25+Math.random()*1.25)]));
+        
+        let tr = "";
+        tr += Math.trunc(this.dmg);
+        let b = "";
+        if(this.crit > 1)
+        {
+            tr += "!";
+            b = "crit";
+        }
+        this.scene.addHitEffect(new DamageText(this.scene,this.hX+ofsx,this.hY+ofsy,tr,b));
+
+        if(this.owner.onHit > 0){
+            if(this.thits[n].tg.takeDamage(this.owner.onHit)){
+                tr = "";
+                tr += this.owner.onHit;
+                ofsx = -20+Math.random()*40;
+                ofsy = -20+Math.random()*40;
+                this.scene.addHitEffect(new DamageText(this.scene,this.hX+ofsx,this.hY+ofsy,tr,"onhit"));
+            }
+        }
+        
     }
 
     getDist(v: Phaser.Math.Vector2){

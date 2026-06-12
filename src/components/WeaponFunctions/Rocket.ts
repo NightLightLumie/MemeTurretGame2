@@ -24,9 +24,9 @@ export class Rocket extends Missile{
                 this.v[0] *= this.owner.wp.spd;
                 this.v[1] *= this.owner.wp.spd;
                 this.damage = this.owner.damage;
-                this.blast = this.owner.width;
+                this.blast = this.owner.blast;
                 this.radius = 18;
-                this.eScale = 2*this.owner.width/256;
+                this.eScale = 2*this.owner.blast/256;
                 this.sfile = "meme_explosion";
                 break;
             }
@@ -38,6 +38,7 @@ export class Rocket extends Missile{
 
     processHit(t: Target): void {
         this.deleteFlag = true;
+        this.scene.playSound("meme_explosion",0.5);
         this.scene.simpleExplode(this.damage,this.x,this.y,this.blast);
         this.scene.addHitEffect(new BasicEffect(this.scene,"exp",this.x,this.y,25,15,false,2,Math.random()*360,[this.eScale,this.eScale]));
     }

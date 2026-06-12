@@ -21,6 +21,7 @@ import { NextSceneButton } from "@/components/GameFunctions/NextSceneButton";
 import { EnemyBullet } from "@/components/EnemyBullet";
 import { Ufo } from "@/components/Enemies/Ufo";
 import { Missile } from "@/components/WeaponFunctions/Missile";
+import { TextEffect } from "@/components/TextEffect";
 
 export class GameScene extends BaseScene {
 	private background: Phaser.GameObjects.Image;
@@ -112,6 +113,7 @@ export class GameScene extends BaseScene {
 
 		this.cameras.main.setBounds(-5000,-5000,10000,10000);
 		this.cameras.main.setZoom(this.zoom[0],this.zoom[1]);
+		this.cameras.main.setPosition(0,0);
 		this.chunks = new TileChecker([-6200,6200], [-6200,6200],[250,250]);
 
 
@@ -212,6 +214,7 @@ export class GameScene extends BaseScene {
 	}
 
 	resetVariables(){
+		super.resetVariables();
 		this.paused = false;
 		this.dead = false;
 		this.eTimer = [1000,1000];
@@ -475,7 +478,21 @@ export class GameScene extends BaseScene {
 	}
 
 	dropBox(){
+		this.playSound("dropbox", 0.5);
+		this.addPlayerEffect(new TextEffect(this,this.player.x,this.player.y,"Loot Box Obtained!", "yellow", 60, true, "white", 1200,50, 2, 0));
 		this.masterData.lootBoxes.push(0);
+	}
+
+	getDropChance(name: string): number{
+		switch(name){
+			case "thug": {
+				return 0.01;
+			} case "ufo": {
+				return 0.05;
+			} default: {
+				return 0.01;
+			}
+		}
 	}
 
 	overlapCheck(t: Target){
@@ -519,9 +536,10 @@ export class GameScene extends BaseScene {
 	simpleExplode(dmg: number, x:number, y:number, radius:number){
 		this.tList.forEach((t)=>{
 			if((t != null) && (t.deleteFlag != true)){
-				if(t.distanceTo(x,y) < (t.radius+radius))
-				t.takeDamage(dmg);
-				this.addHitEffect(new DamageText(this,t.x,t.y,""+dmg,false));
+				if(t.distanceTo(x,y) < (t.radius+radius)){
+					t.takeDamage(dmg);
+					this.addHitEffect(new DamageText(this,t.x,t.y,""+dmg,"explosion"));
+				}
 			}
 		})
 	}

@@ -59,7 +59,7 @@ export class TextEffect extends Effect{
         this.setDepth(2);
     }
 
-    update(d: number, t: number) {
+    update(t: number, d: number) {
         this.y -= this.negative*(120*d/1000);
         this.x += this.phase*this.amp*(2+this.amod)*Math.sin(t/(125+this.dmod));
         if(this.isFlashing){

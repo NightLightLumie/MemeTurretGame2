@@ -27,8 +27,8 @@ const images: Image[] = [
 	image('ui/panelred', 'panelred'),
 	image('ui/aug_lock', 'aug_lock'),
 	image('ui/aug_select_back', 'aug_select_back'),
-	
-
+	image('ui/itemframeback', 'itemframeback'),
+	image('ui/itemshop', 'itemshop'),
 	// Titlescreen
 	image('titlescreen/sky', 'title_sky'),
 	image('titlescreen/background', 'title_background'),
@@ -147,6 +147,7 @@ const audios: Audio[] = [
 	sound('weapons/gun_1', 'gun_1', 0.5),
 	sound('weapons/gun_3', 'gun_3', 0.5),
 	sound('weapons/gun_4', 'gun_4', 0.5),
+	sound('weapons/gun_5', 'gun_5', 0.5),
 	sound('weapons/gun_7', 'gun_7', 0.5),
 	sound('weapons/gun_8', 'gun_8', 0.5),
 
@@ -156,6 +157,8 @@ const audios: Audio[] = [
 	sound('tree/turret_hit', 'turret_hit', 0.5),
 	sound('tree/turret_dead', 'turret_dead', 0.5),
 	sound('tree/scroll', 'scroll', 0.5),
+
+	sound('tree/dropbox', 'dropbox', 0.5),
 
 
 	sound('tree/ufobullet_fire', 'ufobullet_fire', 0.5),

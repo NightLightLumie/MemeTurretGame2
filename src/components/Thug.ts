@@ -222,7 +222,10 @@ export class Thug extends Target{
     die(){
         if(!this.deleteFlag){
             this.gib();
-            this.scene.sound.play("dead",{volume:0.25});
+            this.scene.playSound("dead",0.5);
+            if(Math.random() < this.scene.getDropChance("thug")){
+                this.scene.dropBox();
+            }
         }
         this.deleteFlag = true;
     }

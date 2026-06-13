@@ -15,7 +15,7 @@ export class NextSceneButton extends Button{
         this.sp.setOrigin(0.5, 0.5);
         this.sp.setScale(0.65,0.65);
         this.bindInteractive(this.sp);
-        this.setInteractive();
+        this.sp.setInteractive();
     }
 
     onDown(pointer: Phaser.Input.Pointer, localX: number, localY: number, event: Phaser.Types.Input.EventData): void {

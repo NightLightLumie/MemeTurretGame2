@@ -23,7 +23,7 @@ export class DamageText extends Effect{
     private negative: number = -1;
     private amp: number = 1;
 
-    constructor(scene:GameScene, x: number, y: number, txt: string, mode: string) {
+    constructor(scene:GameScene, x: number, y: number, txt: string, mode: string, dh: number = 1) {
         super(scene,x,y);
         this.scene = scene;
         let flash = false;
@@ -39,7 +39,7 @@ export class DamageText extends Effect{
             case "crit": {
                 size = 60;
                 color1 = "fuchsia";
-                color2 = "red";
+                color2 = "aqua";
                 flash = true;
                 break;
             } case "onhit": {
@@ -57,13 +57,40 @@ export class DamageText extends Effect{
             } case "repeat": {
                 size = 40;
                 color1 = "goldenrod";
-                color2 = "darkorange";
+                color2 = "white";
+                valence *= -1;
+                flash = true;
+                break;
+            } case "critrepeat": {
+                size = 60;
+                color1 = "darkmagenta";
+                color2 = "navy";
+                valence *= -1;
+                flash = true;
+                break;
+            } case "onhitrepeat": {
+                size = 30;
+                color1 = "aqua";
+                color2 = "white";
+                valence *= -1;
+                flash = true;
+                break;
+            } case "stack": {
+                size = 60;
+                color1 = "aqua";
+                color2 = "white";
                 flash = true;
                 break;
             } default: {
                 break;
             }
         }
+
+        if(dh > 1){
+            size += Math.trunc(10*dh);
+            valence *= 1.5;
+        }
+
         this.myText = this.scene.addText({
 			x: 0,
 			y: 0,
@@ -77,6 +104,8 @@ export class DamageText extends Effect{
         } else {
             this.phase = 1;
         }
+        this.flashTimer = flashTime;
+        this.maxFlashTimer = flashTime;
         this.isFlashing = flash;
         this.color1 = color1;
         this.color2 = color2;
@@ -97,8 +126,6 @@ export class DamageText extends Effect{
         
         this.y -= this.negative*(120*d/1000);
         this.x += this.phase*this.amp*(2+this.amod)*Math.sin(t/(125+this.dmod));
-        
-
         
         if(this.isFlashing){
             if(this.flashTimer > 0) {

@@ -123,28 +123,44 @@ export class GunDataDisplay extends Phaser.GameObjects.Container{
         let e = this.scene.masterData.getParams(tmp.wID);
         let ag = this.scene.masterData.inv.augmentToArray(tmp.augs);
         this.ndisp.setText(e.name);
+        let dtg = ""
         if(e.shots == 1){
-            this.dmg.setText("Damage: " + (e.dmg*(1+(ag[1]*0.1))).toFixed(2));
+            dtg = ("Damage: " + (e.dmg*(1+(ag[1]*0.1))).toFixed(2));
         } else {
-            this.dmg.setText("Damage: " + (e.dmg*(1+(ag[1]*0.1))*e.shots).toFixed(2) + " ("+(e.dmg*(1+(ag[1]*0.1))).toFixed(2) + " x " + e.shots + ")");
+            dtg = ("Damage: " + ""+(e.dmg*(1+(ag[1]*0.1))).toFixed(2) + " x " + e.shots + "");
         }
+        if((e.onhit > 0) || (ag[7] > 0)){
+            dtg += "  ";
+            dtg += ("On-Hit: " + ((e.onhit*(1+(ag[7]*0.1))) + (ag[7]*5)).toFixed(2));
+        }
+        this.dmg.setText(dtg);
+        this.rof.setText("Cycle Rate: " + (e.rof*(1+(ag[2]*0.1))).toFixed(2) + " / sec");
 
-        this.rof.setText("Cycle Rate: " + (e.rof*(1+(ag[2]*0.1))).toFixed(2) + " per second");
-        this.cap.setText("Capacity: " + Math.trunc(Math.round(e.clip*(1+(ag[3]*0.1)))));
-        this.reload.setText("Reload Time: " + ((1/(1+(0.1*ag[4])))*e.load).toFixed(2) + " seconds");
-        if(e.width > 0){
+        let ctt = ("Capacity: " + Math.trunc(Math.round(e.clip*(1+(ag[3]*0.1)))));
+        let spd = 0;
+        if((e.weight != 0) || (ag[16] != 0)){
+            spd = 100*((-1*e.weight) + (ag[16]*0.05));
+            ctt += ("  " + "Movement: ");
+            if(spd >= 0){
+                ctt+= "+";
+            }
+            ctt += spd.toFixed(1)+" %";  
+        }
+        this.cap.setText(ctt);
+        this.reload.setText("Reload Time: " + ((1/(1+(0.1*ag[4])))*e.load).toFixed(2) + " sec");
+        if(e.rad > 1){
             let io = ""
             if(e.pen > 1) {
                 io += "Pierce: " + (e.pen*(1+(ag[9]*0.1))).toFixed(2);
                 io += "  ";
             }
-            io += "Blast Radius: " + (e.width*(1+(0.05*ag[8]))).toFixed(2);
+            io += "Blast Radius: " + (e.rad*(1+(0.05*ag[8]))).toFixed(2);
             this.pierce.setText(io);
         } else {
             this.pierce.setText("Pierce: " + (e.pen*(1+(ag[9]*0.1))).toFixed(2));
         }
-        this.acc.setText("Accuracy Cone: " + (2*e.acc*(1/(1+(0.1*ag[10])))).toFixed(2) + " degrees");
-        this.crit.setText("Crit Chance/Damage: " + ((100*e.crit[0])+(2.5*ag[11])).toFixed(2) + "% / " + (100*(e.crit[1]+(0.1*ag[12]))).toFixed(2) + "%");
+        this.acc.setText("Accuracy Cone: " + (2*e.acc*(1/(1+(0.1*ag[10])))).toFixed(2) + " deg");
+        this.crit.setText("Crit Chance/Damage: " + ((100*e.crit[0])+(2.5*ag[11])).toFixed(2) + "% / " + (100*(e.crit[1]*(1+(0.06*ag[12])))).toFixed(2) + "%");
         this.arpen.setText("Armor Penetration: " + (e.arpen[0]+(ag[6])) + " / " + (100*(e.arpen[1]+(ag[6]*0.05))) + "%");
         if(tmp.passives.length > 0){
             let pst = "";
@@ -155,7 +171,7 @@ export class GunDataDisplay extends Phaser.GameObjects.Container{
                     count++;
                     switch(tmp.passives[px].name){
                         case "Romp": {
-                            pst+= (""+(10*(1+(ag[18]*0.2))).toFixed(2) + "x the pre-augment base damage.");
+                            pst+= ("true damage equal to "+(10*(1+(ag[18]*0.2))).toFixed(2) + "x the pre-augment base damage.");
                             break;
                         } default: {
                             break;

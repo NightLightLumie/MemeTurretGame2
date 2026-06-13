@@ -2,6 +2,7 @@ import { GameScene } from "@/scenes/GameScene";
 import { WeaponDisplay } from "./WeaponDisplay";
 import { Bullet } from "./WeaponFunctions/Bullet";
 import { Weapon } from "./WeaponFunctions/Weapon";
+import { Item } from "./GameFunctions/Item";
 
 const ACCELERATION = 350;
 const MAX_SPEED = 500;
@@ -47,6 +48,7 @@ export class Player extends Phaser.GameObjects.Container {
 	public loadout: [Weapon,Weapon,Weapon];
 	public activeWeapon: number = 0;
 	public spMod: number = 1;
+	public items: Item[] = [];
 
 	public hp: number[] = [1000,1000];
 	public hpBar: Phaser.GameObjects.Rectangle;
@@ -230,8 +232,8 @@ export class Player extends Phaser.GameObjects.Container {
 
 		this.inputVec.limit(1);
 		// this.inputVec.normalize();
-		this.inputVec.scale(ACCELERATION*this.spMod);
-		console.log("Speed modifier: " + this.spMod);
+		this.inputVec.scale(ACCELERATION);
+		//console.log("Speed modifier: " + this.spMod);
 
 		if(!((this.inputVec.x == 0) && (this.inputVec.y == 0))){
 			this.sprite.setAngle((180/Math.PI)*Math.atan2(this.inputVec.y,this.inputVec.x));
@@ -245,11 +247,14 @@ export class Player extends Phaser.GameObjects.Container {
 		} else {
 			this.velocity.scale(FRICTION);
 			this.velocity.add(this.inputVec);
-			this.velocity.limit(MAX_SPEED*this.spMod);
+			this.velocity.limit(MAX_SPEED);
 		}
 
-		this.x += (this.velocity.x * delta) / 1000;
-		this.y += (this.velocity.y * delta) / 1000;
+		this.x += (this.velocity.x*this.spMod * delta) / 1000;
+		this.y += (this.velocity.y*this.spMod * delta) / 1000;
+
+
+		this.updateItems(time,delta);
 
 		// Border collision
 		this.checkBounds();
@@ -257,6 +262,14 @@ export class Player extends Phaser.GameObjects.Container {
 		// Animation (Change to this.sprite.setScale if needed)
 		const squish = 1.0 + 0.02 * Math.sin((6 * time) / 1000);
 		this.setScale(1.0, squish);
+	}
+
+	updateItems(t:number, d:number){
+		if(this.items.length > 0){
+			this.items.forEach((i)=>{
+				i.update(t,d);
+			})
+		}
 	}
 
 	scrollForward(){

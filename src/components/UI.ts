@@ -24,23 +24,29 @@ export class UI extends Phaser.GameObjects.Container {
 		this.panel.add(this.background);
 
 		this.text = this.scene.addText({
-			x: -50,
+			x: -70,
 			y: 0,
-			size: 60,
+			size: 40,
 			color: "#FFFFFF",
-			text: "Score: 123",
+			text: "Score: ",
 		});
 		this.text.setStroke("black", 4);
 		this.text.setOrigin(0, 0.5);
 		this.panel.add(this.text);
+		this.panel.setAlpha(0.5);
 
+		/*
 		this.panel.setPosition(
-			this.scene.W - this.background.displayWidth / 2 - 30,
-			this.scene.H - this.background.displayHeight / 2 - 30
-		);
+			this.scene.player.x + 1920 - 380,
+			this.scene.player.y + 1080 - 220
+		);*/
 	}
 
 
 
-	update(time: number, delta: number) {}
+	update(time: number, delta: number) {
+		this.x = this.scene.player.x + 1920 - 420;
+		this.y = this.scene.player.y + 1080 - 180;
+		this.text.setText("Score: " + this.scene.score +" €");
+	}
 }

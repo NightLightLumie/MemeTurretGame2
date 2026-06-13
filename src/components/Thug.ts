@@ -17,8 +17,6 @@ export class Thug extends Target{
     protected atype: number = 0;
     protected cd: number = 0;
     protected maxcd: number = 1000;
-
-    private tdisp: Phaser.GameObjects.Container;
     private txt: Phaser.GameObjects.Text;
 
     private aCD: number[] = [0, 1000];
@@ -32,7 +30,7 @@ export class Thug extends Target{
     public gx: Phaser.GameObjects.Graphics;
     private radOfs: number = 0;
 
-    constructor(scene:GameScene,x:number,y:number, mode: string = "x", ofs: number = 0, seek: string = "x"){
+    constructor(scene:GameScene,x:number,y:number, mode: string = "x", ofs: number = 0, seek: string = "x", diff: number = 1){
         super(scene,x,y);
         this.spr = this.scene.add.sprite(0,0,"enemy_1");
         this.spr.setOrigin(0.5,0.5);
@@ -41,12 +39,11 @@ export class Thug extends Target{
         this.add(this.spr);
         this.ofss = Math.random()*2*Math.PI; //random offset for oscillating motion
         this.tID = this.scene.getTargetID();
-        this.tdisp = new Phaser.GameObjects.Container(this.scene,0,0);
-        this.add(this.tdisp);
-        this.tdisp.setDepth(10);
         this.gx = this.scene.add.graphics();
         this.gx.fillStyle(0x008080,0.85);
         this.add(this.gx);
+        this.hp = 500;
+        this.setStackDisplay();
         this.txt = this.scene.addText({
 			x: 0,
 			y: 0,
@@ -191,8 +188,6 @@ export class Thug extends Target{
         }
     }
 
-
-
     gib(){
         this.scene.addPartEffect(new GibEffect(this.scene,this.x,this.y,"f1-0",[-1200+Math.random()*2400,-1200+Math.random()*2400],
         [0,0],Math.random()*360,1000+(Math.random()*3000),Math.random()*3600,5000));
@@ -214,15 +209,11 @@ export class Thug extends Target{
         [0,0],Math.random()*360,1000+(Math.random()*3000),Math.random()*3600,5000));
     }
 
-    addStack(pd: number, ap: DmgStack){
-        this.tdisp.add(ap.image);
-        this.stackLog.set(pd,ap);
-    }
-
     die(){
         if(!this.deleteFlag){
             this.gib();
             this.scene.playSound("dead",0.5);
+            this.scene.score += this.value;
             if(Math.random() < this.scene.getDropChance("thug")){
                 this.scene.dropBox();
             }

@@ -79,6 +79,7 @@ export class GameScene extends BaseScene {
 	private ended: boolean = false;
 	private zoom: number[] = [0.5,0.5];
 	public enemyCap: number = 500;
+	public score: number = 0;
 
 	private nextButton: NextSceneButton;
 
@@ -220,6 +221,7 @@ export class GameScene extends BaseScene {
 		this.eTimer = [1000,1000];
 		this.zoom = [0.5,0.5];
 		this.enemyCap = 500;
+		this.score = 0;
 	}
 
 	initiateTestObjects(){
@@ -258,6 +260,7 @@ export class GameScene extends BaseScene {
 	}
 
 	update(time: number, delta: number) {
+
 		const pointer = this.input.activePointer;
 		const worldX = this.cameras.main.getWorldPoint(pointer.x, pointer.y).x;
  		const worldY = this.cameras.main.getWorldPoint(pointer.x, pointer.y).y;
@@ -274,6 +277,7 @@ export class GameScene extends BaseScene {
 			}
 		}
 		if(!this.paused){
+			this.ui.update(time,delta);
 			//this.tyText.setPosition(worldX,worldY+80);
 			//this.tyText.setText("Pointer: " + worldX + ", " + worldY);
 			this.player.update(time, delta);

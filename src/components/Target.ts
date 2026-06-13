@@ -1,6 +1,7 @@
 import { GameScene } from "@/scenes/GameScene";
 import { DmgStack, HitLog } from "./WeaponFunctions/WeaponOperator";
 import { BasicEffect } from "./BasicEffect";
+import { DamageText } from "./Graphics/DamageText";
 
 export class Target extends Phaser.GameObjects.Container{
     public scene: GameScene;
@@ -21,6 +22,9 @@ export class Target extends Phaser.GameObjects.Container{
     public difficulty: number = 0;
     public tID: number = 0;
     public invuln: boolean = false;
+    protected tdisp: Phaser.GameObjects.Container;
+    protected armor: number[] = [0,0];
+    protected value: number = 20;
     //public pID: number = 0;
 
 
@@ -29,6 +33,14 @@ export class Target extends Phaser.GameObjects.Container{
         this.scene = scene;
         this.bLog = new Map(); //log for pierce shots
         this.stackLog = new Map(); //logs of stacks for procs
+
+
+    }
+
+    setStackDisplay(){
+        this.tdisp = new Phaser.GameObjects.Container(this.scene,0,0);
+        this.add(this.tdisp);
+        this.tdisp.setDepth(10);
     }
 
     updateLogs(t:number,d:number){
@@ -67,8 +79,9 @@ export class Target extends Phaser.GameObjects.Container{
                 value.image.setAlpha(1);
                 this.takeDamage(value.damage);
                 //console.log("boom");
-                this.scene.sound.play(value.sound,{volume: 0.75});
+                this.scene.sound.play(value.sound,{volume: 1});
                 this.scene.addHitEffect(new BasicEffect(this.scene,"hit_spark",this.x,this.y,3,100,false,0,Math.random()*360));
+                this.scene.addHitEffect(new DamageText(this.scene,this.x,this.y,(""+value.damage),"stack"));
                 if(tmpr >= 0){
                     value.curhits = tmpr;
                     value.bop = true;
@@ -139,7 +152,8 @@ export class Target extends Phaser.GameObjects.Container{
     }
 
     addStack(pd: number, ap: DmgStack){
-
+        this.tdisp.add(ap.image);
+        this.stackLog.set(pd,ap);
     }
 
     takePierceDamage(n: number, p: number, wID: number): boolean{

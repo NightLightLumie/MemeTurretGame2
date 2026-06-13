@@ -145,9 +145,15 @@ export class AugmentScreen extends Phaser.GameObjects.Container{
     initializeNewAugButtons(){
         let xx = 200;
         let yy = 200;
+        let agg: Augment;
+        let bl: boolean;
         for(let i = 1; i < this.scene.masterData.augList.length; i++){
-            this.augbtnlist.push(new AugmentSelectButton(this.scene, this, xx, yy, 
-                this.scene.masterData.copyAug(i), this.checkAugmentCompatibility(i)));
+            agg = this.scene.masterData.copyAug(i);
+            bl = this.checkAugmentCompatibility(i);
+            if((i == 18) && (bl)){
+                agg = this.scene.masterData.getCustomAugment(this.owner.tempGun.wID);
+            }
+            this.augbtnlist.push(new AugmentSelectButton(this.scene, this, xx, yy, agg, bl));
             this.augButtons.add(this.augbtnlist[i-1]);
             xx += 210;
             if(xx >= 1250) {

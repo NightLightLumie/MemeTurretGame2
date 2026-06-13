@@ -21,12 +21,22 @@ const images: Image[] = [
 
 	// Items
 	image('items/coin', 'coin'),
+	//loot box
+	image('items/box_0', 'box_0'),
+	image('items/arm_r_0', 'arm_r_0'),
+	image('items/arm_l_0', 'arm_l_0'),
+
+
+	//spells
+	image('items/itemtile', 'itemtile'),
 
 	// UI
 	image('ui/hud', 'hud'),
 	image('ui/panelred', 'panelred'),
 	image('ui/aug_lock', 'aug_lock'),
 	image('ui/aug_select_back', 'aug_select_back'),
+
+	//item shop
 	image('ui/itemframeback', 'itemframeback'),
 	image('ui/itemshop', 'itemshop'),
 	// Titlescreen
@@ -103,10 +113,7 @@ const images: Image[] = [
 
 	image('enemies/ufobullet', 'ufobullet'),
 
-	//loot box
-	image('items/box_0', 'box_0'),
-	image('items/arm_r_0', 'arm_r_0'),
-	image('items/arm_l_0', 'arm_l_0'),
+
 ];
 
 /* Spritesheets */

@@ -19,8 +19,6 @@ export class Ufo extends Target{
     protected cd: number = 0;
     protected maxcd: number = 1000;
 
-    private tdisp: Phaser.GameObjects.Container;
-
     private aCD: number[] = [0, 1000];
     private aRange: number = 800;
 
@@ -52,13 +50,10 @@ export class Ufo extends Target{
         this.hp = 2000;
         this.ofss = Math.random()*2*Math.PI; //random offset for oscillating motion
         this.tID = this.scene.getTargetID();
-        this.tdisp = new Phaser.GameObjects.Container(this.scene,0,0);
-        this.add(this.tdisp);
-        this.tdisp.setDepth(10);
         this.radius = 155;
         this.curAngle = this.playerAngle();
         this.tether = this.playerDist();
-
+        this.value = 100;
         this.gx = this.scene.add.graphics();
         this.gx.fillStyle(0x008080,0.85);
         this.add(this.gx);
@@ -69,6 +64,8 @@ export class Ufo extends Target{
             this.gx.closePath();
             this.gx.fillPath();
         }
+
+        this.setStackDisplay();
         //this.pID = this.scene.getProjID();
     }
 
@@ -185,11 +182,6 @@ export class Ufo extends Target{
         [0,0],Math.random()*360,1500+(Math.random()*3500),Math.random()*3600,5000));
         this.scene.addPartEffect(new GibEffect(this.scene,this.x,this.y,"u7",[-1800+Math.random()*3600,-1200+Math.random()*2400],
         [0,0],Math.random()*360,1500+(Math.random()*3500),Math.random()*3600,5000));
-    }
-
-    addStack(pd: number, ap: DmgStack){
-        this.tdisp.add(ap.image);
-        this.stackLog.set(pd,ap);
     }
 
     die(){

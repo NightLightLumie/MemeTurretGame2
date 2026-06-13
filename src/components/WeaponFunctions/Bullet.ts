@@ -69,6 +69,7 @@ export class Bullet extends Phaser.GameObjects.Container{
 
     public directHit: number = 1;
     public crit: number = 1;
+    public dh: number = 1;
     public bonuscrit: number = 0;
     public forcecrit: boolean = false;
     public holdcrit: boolean = false;
@@ -112,6 +113,7 @@ export class Bullet extends Phaser.GameObjects.Container{
             this.parseBonusCommand(c);
         });
         this.calculateCrit();
+        this.calculateDirectHit();
         //add to display done in game for layer reasons
 
     }
@@ -145,6 +147,11 @@ export class Bullet extends Phaser.GameObjects.Container{
     recalculateCrit(){
         this.holdcrit = false; //used only to reset for crit mods
         this.calculateCrit();
+    }
+
+    calculateDirectHit(){
+        this.dh = this.owner.rollDirectHit();
+        this.dmg *= this.dh;
     }
 
     calculateCrit(){
@@ -357,6 +364,13 @@ export class Bullet extends Phaser.GameObjects.Container{
             
             if(this.thits[ix].tg.takeDamage(this.dmg)){
                 this.processBasicHit(ix);
+                if(this.owner.repeats.length > 0){
+                    this.owner.repeats.forEach((r)=>{
+                        if(Math.random() < r){
+                            this.processBasicHit(ix,true);
+                        }
+                    })
+                }
                 this.hX = this.thits[ix].vt.x;
                 this.hY = this.thits[ix].vt.y;
                 this.pierce = 0;
@@ -372,7 +386,7 @@ export class Bullet extends Phaser.GameObjects.Container{
             if(this.owner.repeats.length > 0){
                 this.owner.repeats.forEach((r)=>{
                     if(Math.random() < r){
-                        this.processBasicHit(n);
+                        this.processBasicHit(n, true);
                     }
                 })
             }
@@ -385,7 +399,7 @@ export class Bullet extends Phaser.GameObjects.Container{
         //base += 0.05;
     }
 
-    processBasicHit(n: number){
+    processBasicHit(n: number, repeat: boolean = false){
         let xr = 1;
         let ofsx = -20+Math.random()*40;
         let ofsy = -20+Math.random()*40;
@@ -403,16 +417,26 @@ export class Bullet extends Phaser.GameObjects.Container{
         {
             tr += "!";
             b = "crit";
+            if(repeat){
+                b = "critrepeat";
+            }
+        } else if (repeat) {
+            b = "repeat";
         }
-        this.scene.addHitEffect(new DamageText(this.scene,this.hX+ofsx,this.hY+ofsy,tr,b));
+        this.scene.addHitEffect(new DamageText(this.scene,this.hX+ofsx,this.hY+ofsy,tr,b,this.dh));
 
         if(this.owner.onHit > 0){
+            if(repeat){
+                b = "onhitrepeat";
+            } else {
+                b = "onhit";
+            }
             if(this.thits[n].tg.takeDamage(this.owner.onHit)){
                 tr = "";
                 tr += this.owner.onHit;
                 ofsx = -20+Math.random()*40;
                 ofsy = -20+Math.random()*40;
-                this.scene.addHitEffect(new DamageText(this.scene,this.hX+ofsx,this.hY+ofsy,tr,"onhit"));
+                this.scene.addHitEffect(new DamageText(this.scene,this.hX+ofsx,this.hY+ofsy,tr,b));
             }
         }
         

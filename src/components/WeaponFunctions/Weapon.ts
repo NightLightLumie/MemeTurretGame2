@@ -92,7 +92,7 @@ export class Weapon {
 
     public speed: number = 1;
     public repeats: number[] = [];
-
+    public dh: number = 0;
 
 
     constructor(scene: BaseScene, wp: WeaponParams, augments: Augment[] = []){
@@ -158,9 +158,10 @@ export class Weapon {
         this.arpen = [this.wp.arpen[0]+(this.augVars[6]), this.wp.arpen[1]+(this.augVars[6]*0.05)];
         this.acc = this.wp.acc*(1/(1+(0.1*this.augVars[10])));
         this.crit[0] = this.wp.crit[0]+(0.025*this.augVars[11]);
-        this.crit[1] = this.wp.crit[1]+(0.1*this.augVars[12]);
+        this.crit[1] = this.wp.crit[1]*(1+(0.06*this.augVars[12]));
         this.blast = this.wp.rad*(1+(0.05*this.augVars[8]));
         this.speed = (1-this.wp.weight)+(0.05*this.augVars[16]);
+        this.dh += 0.1*this.augVars[13];
     }
 
     initiatePassive(name: string){
@@ -235,6 +236,21 @@ export class Weapon {
         } else {
             return true;
         }
+    }
+
+    rollDirectHit(): number{
+        let r = 1;
+        let nm = Math.trunc(this.dh);
+        let res = this.dh-nm;
+        if(nm > 0){
+            for(let ii = 0; ii < nm; ii++){
+                r*=1.25;
+            }
+        }
+        if(Math.random() < res){
+            r*=1.25;
+        }
+        return r;
     }
 
     loadAmmo(){

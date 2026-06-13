@@ -1,8 +1,9 @@
 import { LootScene } from "@/scenes/LootScene";
 import { AugmentButton } from "../AugmentButton";
 import { Augment } from "./Weapon";
+import { Button } from "./Button";
 
-export class AugmentDisplayBar extends Phaser.GameObjects.Container{
+export class AugmentDisplayBar extends Button{
     public scene: LootScene;
     public augbutton: AugmentButton;
     public ref: Augment;
@@ -31,6 +32,10 @@ export class AugmentDisplayBar extends Phaser.GameObjects.Container{
         this.bars = [];
         this.fillBar();
         this.scene.add.existing(this);
+    }
+
+    activate(){
+        
     }
 
     set(a: Augment){

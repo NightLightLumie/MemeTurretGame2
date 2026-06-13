@@ -34,7 +34,7 @@ export class Armory {
             [-999999999 - 2, {gID: -999999998, wID: 1, augs: [], passives: this.reference.getGunPassives(1)}],
             [-999999999 - 1, {gID: -999999997, wID: 2, augs: [], passives: this.reference.getGunPassives(2)}],//keep these three defaults the same
 
-            [-999999999, {gID: -999999996, wID: 6, augs: [], passives: this.reference.getGunPassives(4)}],
+            [-999999999, {gID: -999999996, wID: 7, augs: [this.generateAugment(0,0,13,13),this.generateAugment(0,0,13,13),this.generateAugment(0,0,13,13),this.generateAugment(0,0,13,13)], passives: this.reference.getGunPassives(7)}],
 
             /*
             [-999999995, {gID: -999999995, wID: 9, augs: [{name: "default", index: 0, level: 0, maxlv: 13, lvcap: 13, desc: ""},
@@ -65,7 +65,7 @@ export class Armory {
         {name: "Penetrator", index: 9, level: 0, maxlv: 10, lvcap: 10, desc: "Increases penetration capability."}, //Pierce, +10% each
         {name: "Concentration", index: 10, level: 0, maxlv: 10, lvcap: 10, desc: "Narrowed accuracy cone."}, //Accuracy cone, -5% each
         {name: "Critical Eye", index: 11, level: 0, maxlv: 10, lvcap: 10, desc: "Additional base critical hit chance."}, //Crit chance, +2.5% each
-        {name: "Merciless", index: 12, level: 0, maxlv: 10, lvcap: 10, desc: "Increased critical hit damage."}, //Crit damage, +10% each
+        {name: "Merciless", index: 12, level: 0, maxlv: 10, lvcap: 10, desc: "Increased total critical hit damage."}, //Crit damage, +10% each
         {name: "Trickshot", index: 13, level: 0, maxlv: 10, lvcap: 10, desc: "Additional direct hit chance."}, //Direct shot (+50% dmg) chance, +5% each
         {name: "Focus", index: 14, level: 0, maxlv: 10, lvcap: 10, desc: "Increased special shot recharge and rate of fire."}, //Special ammo recharge rate and RoF, +10% each
         {name: "Tactician", index: 15, level: 0, maxlv: 10, lvcap: 10, desc: "Increased special shot damage."}, //Special ammo damage, +10% each

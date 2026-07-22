@@ -22,7 +22,8 @@ LEVEL CODING GUIDE:
 "loop" : args[where to jump, amount of loops, #loop variable id]
 */
     public levelData: LevelEntry[][] = [
-        [{cmd: ["spawn", "thug", "xx"], args: [2,5,1000], cond: []},
+        [
+        {cmd: ["spawn", "thug", "xx"], args: [2,5,1000], cond: []},
         {cmd: ["waitEnemies"], args: [], cond: []},
         {cmd: ["wait"], args: [5000], cond: []},
         {cmd: ["loop"], args: [0,2,9999], cond: []},
@@ -61,6 +62,7 @@ LEVEL CODING GUIDE:
         {cmd: ["spawn", "ufo", "r"], args: [3,10,2500], cond: []},
         {cmd: ["spawn", "thug", "xx"], args: [10,10,500], cond: []},
         {cmd: ["wait"], args: [12000], cond: []},
+        {cmd: ["incDifficulty"], args: [20], cond: []},
         {cmd: ["loop"], args: [0], cond: []},]
     ];
 

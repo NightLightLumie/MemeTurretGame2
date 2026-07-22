@@ -94,6 +94,21 @@ export class LevelParser {
                     this.decrementLoop(args);
                     break;
                 }
+            } case "setDifficulty": {
+                if(args.length > 0){
+                    this.scene.difficulty = args[0];
+                }
+                this.index++;
+                break;
+            } case "incDifficulty": {
+                if(args.length > 0){
+                    this.scene.difficulty += args[0];
+                    if(this.scene.difficulty > 100){
+                        this.scene.difficulty = 100;
+                    }
+                }
+                this.index++;
+                break;
             } case "waitEnemies":{
                 if(this.scene.checkEnemies()){
                     this.index++;

@@ -2,6 +2,7 @@ import { BaseScene } from "@/scenes/BaseScene";
 import { UpgradeScene } from "@/scenes/UpgradeScene";
 import { WeaponEntry } from "./Armory";
 import { WeaponParams } from "./WeaponOperator";
+import { Weapon } from "./Weapon";
 
 export class GunDataDisplay extends Phaser.GameObjects.Container{
     public scene:UpgradeScene;
@@ -119,6 +120,91 @@ export class GunDataDisplay extends Phaser.GameObjects.Container{
         {name: "CUSTOM", index: 18, level: 0, maxlv: 10, lvcap: 10, desc: ""},
 */
 
+    xredraw(tmp:WeaponEntry): WeaponEntry{
+        let e = this.scene.masterData.getGunParams(tmp);
+        let ag = this.scene.masterData.inv.augmentToArray(tmp.augs);
+        let wp = new Weapon(this.scene,e,tmp.augs)
+        this.ndisp.setText(e.name);
+        let dtg = ""
+        if(e.shots == 1){
+            dtg = ("Damage: " + wp.damage.toFixed(2));
+        } else {
+            dtg = ("Damage: " + wp.damage.toFixed(2) + " x " + wp.shots + "");
+        }
+        if((wp.onHit > 0)){
+            dtg += "  ";
+            dtg += ("On-Hit: " + wp.onHit.toFixed(2));
+        }
+        this.dmg.setText(dtg);
+        this.rof.setText("Cycle Rate: " + wp.rof.toFixed(2) + " / sec");
+
+        let ctt = ("Capacity: " + wp.maxAmmo);
+        let spd = 0;
+        if(wp.speed != 1){
+            spd = 100*(wp.speed-1);
+            ctt += ("  " + "Movement: ");
+            if(spd >= 0){
+                ctt += "+";
+            }
+            ctt += spd.toFixed(1)+" %";  
+        }
+        this.cap.setText(ctt);
+        this.reload.setText("Reload Time: " + (wp.maxLoad/1000).toFixed(2) + " sec");
+        if(e.rad > 1){
+            let io = ""
+            if(e.pen > 1) {
+                io += "Pierce: " + (wp.pierce).toFixed(2);
+                io += "  ";
+            }
+            io += "Blast Radius: " + (wp.blast).toFixed(2);
+            this.pierce.setText(io);
+        } else {
+            this.pierce.setText("Pierce: " + (wp.pierce).toFixed(2));
+        }
+        let deg = "";
+        if(e.type == 10) {}
+        this.acc.setText("Accuracy Cone: " + (wp.acc).toFixed(2) + " deg");
+        this.crit.setText("Crit Chance/Damage: " + (100*wp.crit[0]).toFixed(2) + "% / " + (100*wp.crit[1]).toFixed(2) + "%");
+        this.arpen.setText("Armor Penetration: " + (wp.arpen[0]) + " / " + (100*wp.arpen[1]).toFixed(2) + "%");
+        if(tmp.passives.length > 0){
+            let pst = "";
+            let count = 0;
+            for(let px = 0; px < tmp.passives.length; px++){
+                if(tmp.passives[px].activated) {
+                    pst += (""+tmp.passives[px].name+": "+tmp.passives[px].desc);
+                    count++;
+                    switch(tmp.passives[px].name){
+                        case "Romp": {
+                            pst+= ("true damage equal to "+(10*(1+(ag[18]*0.2))).toFixed(2) + "x the pre-augment base damage.");
+                            break;
+                        } default: {
+                            break;
+                        }
+                    }
+                    pst+= (""+"\n"+"\n");
+                } else if (count <= 0) {
+                    pst += (""+"\n"+"\n");
+                    pst += (""+"???");
+                    pst+= (""+"\n"+"\n");
+                } else {
+                    pst += (""+"???");
+                    pst+= (""+"\n"+"\n");
+                }
+            }
+            this.psdesc.setText(pst);
+            if(count > 0) {
+                this.pstitle.setText("Passive Abilities: ");
+            } else {
+                this.pstitle.setText("Passive Abilities Not Unlocked ");
+            }
+        } else {
+            this.pstitle.setText("");
+            this.psdesc.setText("");
+        }
+        return tmp;
+    }
+
+    /*
     redraw(tmp: WeaponEntry): WeaponEntry{
         let e = this.scene.masterData.getParams(tmp.wID);
         let ag = this.scene.masterData.inv.augmentToArray(tmp.augs);
@@ -131,7 +217,7 @@ export class GunDataDisplay extends Phaser.GameObjects.Container{
         }
         if((e.onhit > 0) || (ag[7] > 0)){
             dtg += "  ";
-            dtg += ("On-Hit: " + ((e.onhit*(1+(ag[7]*0.1))) + (ag[7]*5)).toFixed(2));
+            dtg += ("On-Hit: " + ((e.onhit*(1+(ag[7]*0.1))) + (ag[7]*3)).toFixed(2));
         }
         this.dmg.setText(dtg);
         this.rof.setText("Cycle Rate: " + (e.rof*(1+(ag[2]*0.1))).toFixed(2) + " / sec");
@@ -159,6 +245,8 @@ export class GunDataDisplay extends Phaser.GameObjects.Container{
         } else {
             this.pierce.setText("Pierce: " + (e.pen*(1+(ag[9]*0.1))).toFixed(2));
         }
+        let deg = "";
+        if(e.type == 10) {}
         this.acc.setText("Accuracy Cone: " + (2*e.acc*(1/(1+(0.1*ag[10])))).toFixed(2) + " deg");
         this.crit.setText("Crit Chance/Damage: " + ((100*e.crit[0])+(2.5*ag[11])).toFixed(2) + "% / " + (100*(e.crit[1]*(1+(0.06*ag[12])))).toFixed(2) + "%");
         this.arpen.setText("Armor Penetration: " + (e.arpen[0]+(ag[6])) + " / " + (100*(e.arpen[1]+(ag[6]*0.05))) + "%");
@@ -201,4 +289,5 @@ export class GunDataDisplay extends Phaser.GameObjects.Container{
         return tmp;
    
     }
+    */
 }

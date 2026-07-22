@@ -25,6 +25,12 @@ const images: Image[] = [
 	image('items/box_0', 'box_0'),
 	image('items/arm_r_0', 'arm_r_0'),
 	image('items/arm_l_0', 'arm_l_0'),
+	image('items/box_0', 'box_999'),
+	image('items/arm_r_0', 'arm_r_999'),
+	image('items/arm_l_0', 'arm_l_999'),
+	image('items/box_0', 'box_9999'),
+	image('items/arm_r_0', 'arm_r_9999'),
+	image('items/arm_l_0', 'arm_l_9999'),
 
 
 	//spells
@@ -62,8 +68,8 @@ const images: Image[] = [
 	image('weapons/gun_7', 'gun_7'),
 	image('weapons/gun_8', 'gun_8'),
 	image('weapons/gun_9', 'gun_9'),
-
-
+	image('weapons/gun_10', 'gun_10'),
+	image('weapons/gun_placeholder', 'gun_placeholder'),
 
 	image('weapons/aug_0', 'aug_0'),
 	image('weapons/aug_1', 'aug_1'),
@@ -157,6 +163,8 @@ const audios: Audio[] = [
 	sound('weapons/gun_5', 'gun_5', 0.5),
 	sound('weapons/gun_7', 'gun_7', 0.5),
 	sound('weapons/gun_8', 'gun_8', 0.5),
+	sound('weapons/gun_9', 'gun_9', 0.5),
+	sound('weapons/gun_10', 'gun_10', 0.5),
 
 	sound('weapons/equip', 'equip', 0.5),
 	sound('weapons/crit', 'crit', 0.5),

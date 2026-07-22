@@ -66,6 +66,7 @@ export class Ufo extends Target{
         }
 
         this.setStackDisplay();
+        this.setDifficulty();
         //this.pID = this.scene.getProjID();
     }
 

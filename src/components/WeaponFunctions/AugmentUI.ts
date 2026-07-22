@@ -65,7 +65,7 @@ export class AugmentUI extends Phaser.GameObjects.Container{
 
         this.loadGun();
         this.gunJargon = new GunDataDisplay(this.scene,1428,307);
-        this.gunJargon.redraw(this.tempGun); 
+        this.gunJargon.xredraw(this.tempGun); 
         this.add(this.gunJargon);
         this.gunJargon.setDepth(25);
         this.scene.add.existing(this);
@@ -113,7 +113,7 @@ export class AugmentUI extends Phaser.GameObjects.Container{
     swapGun(id: number){
         this.curGun = id;
         this.tempGun = this.scene.fetchGun(this.curGun);
-        this.gunJargon.redraw(this.tempGun);
+        this.gunJargon.xredraw(this.tempGun);
         this.clear();
         this.initBars();
     }
@@ -146,11 +146,11 @@ export class AugmentUI extends Phaser.GameObjects.Container{
                 this.gunJargon.setVisible(true);
                 this.refreshBars();
                 this.scene.unlockButtons();
-                this.gunJargon.redraw(this.tempGun);
+                this.gunJargon.xredraw(this.tempGun);
                 break;
             } case "add": {
                 this.refreshBars();
-                this.gunJargon.redraw(this.tempGun);
+                this.gunJargon.xredraw(this.tempGun);
                 break;
             } default: {
                 break;

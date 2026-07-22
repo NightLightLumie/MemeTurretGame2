@@ -34,8 +34,8 @@ export class EnemyBullet extends Phaser.GameObjects.Container{
                 this.damage = 50 * Math.trunc(1+(0.1*this.diff));
                 this.hitAnim = "hit_purple";
                 this.spr.setScale(2,2);
-                this.v[0] *= 750;
-                this.v[1] *= 750;
+                this.v[0] *= 1000;
+                this.v[1] *= 1000;
                 this.radius = 16;
                 break;
             } default: {

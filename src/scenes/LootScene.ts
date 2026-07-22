@@ -86,6 +86,12 @@ export class LootScene extends BaseScene{
 
     generateLootTable(q: number): number[]{
         this.lootTable = [];
+        if(q == 999){
+            this.lootTable = [0,1,2,3,4,5,6,7,8,9,10];
+        }
+        if(q == 9999){
+            this.lootTable = [0,1,2,3,4,5,6,7,7,8,9,9,10,10];
+        }
         let pr = 0;
         let ir = 4;
         let wp = this.masterData.getGun(0);
@@ -123,9 +129,7 @@ export class LootScene extends BaseScene{
 			}
 
 		});
-
 	}
-
 
     reveal(){
         if(this.curBox != null){

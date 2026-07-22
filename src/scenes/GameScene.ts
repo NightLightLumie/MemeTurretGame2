@@ -80,6 +80,7 @@ export class GameScene extends BaseScene {
 	private zoom: number[] = [0.5,0.5];
 	public enemyCap: number = 500;
 	public score: number = 0;
+	public difficulty: number = 0;
 
 	private nextButton: NextSceneButton;
 
@@ -222,6 +223,7 @@ export class GameScene extends BaseScene {
 		this.zoom = [0.5,0.5];
 		this.enemyCap = 500;
 		this.score = 0;
+		this.difficulty = 0;
 	}
 
 	initiateTestObjects(){
@@ -482,9 +484,36 @@ export class GameScene extends BaseScene {
 	}
 
 	dropBox(){
+		switch(this.masterData.makeBox()){
+			case 0: {
+				this.dropNormalBox();
+				return;
+			} case 999: {
+				this.dropMaxBox();
+				return;
+			} case 9999: {
+				this.dropSuperMaxBox();
+				return;
+			}
+		}
+	}
+
+	dropNormalBox(){
 		this.playSound("dropbox", 0.5);
 		this.addPlayerEffect(new TextEffect(this,this.player.x,this.player.y,"Loot Box Obtained!", "yellow", 60, true, "white", 1200,50, 2, 0));
 		this.masterData.lootBoxes.push(0);
+	}
+
+	dropMaxBox(){
+		this.playSound("dropbox", 0.5);
+		this.addPlayerEffect(new TextEffect(this,this.player.x,this.player.y,"MEGA Loot Box Obtained!!", "teal", 70, true, "white", 1200,50, 2, 0));
+		this.masterData.lootBoxes.push(999);
+	}
+
+	dropSuperMaxBox(){
+		this.playSound("dropbox", 0.5);
+		this.addPlayerEffect(new TextEffect(this,this.player.x,this.player.y,"SUPER MEGA Loot Box Obtained!!!", "blue", 80, true, "white", 1200,50, 2, 0));
+		this.masterData.lootBoxes.push(9999);
 	}
 
 	getDropChance(name: string): number{

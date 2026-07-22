@@ -58,6 +58,7 @@ export class Thug extends Target{
             this.gx.closePath();
             this.gx.fillPath();
         }
+        this.setDifficulty();
         //this.pID = this.scene.getProjID();
     }
 

@@ -35,6 +35,7 @@ export class Armory {
             [-999999999 - 1, {gID: -999999997, wID: 2, augs: [], passives: this.reference.getGunPassives(2)}],//keep these three defaults the same
 
             [-999999999, {gID: -999999996, wID: 7, augs: [this.generateAugment(0,0,13,13),this.generateAugment(0,0,13,13),this.generateAugment(0,0,13,13),this.generateAugment(0,0,13,13)], passives: this.reference.getGunPassives(7)}],
+            [-999999999 + 1, {gID: -999999996, wID: 10, augs: [this.generateAugment(0,0,13,13),this.generateAugment(0,0,13,13),this.generateAugment(0,0,13,13),this.generateAugment(0,0,13,13)], passives: this.reference.getGunPassives(10)}],
 
             /*
             [-999999995, {gID: -999999995, wID: 9, augs: [{name: "default", index: 0, level: 0, maxlv: 13, lvcap: 13, desc: ""},
@@ -226,14 +227,23 @@ export class Armory {
     copyAugList(a: Augment[]): Augment[]{
         let rt = [];
         for(let ax = 0; ax < a.length; ax++){
-            rt.push({
-                name: a[ax].name,
-                index: a[ax].index,
-                level: a[ax].level,
-                maxlv: a[ax].maxlv,
-                lvcap: a[ax].lvcap,
-                desc: a[ax].desc, 
-            })
+            rt.push(this.copyAug(a[ax]));
+        }
+        return rt;
+    }
+
+    copyPassive(p: PassiveAbility): PassiveAbility{
+        return {
+            name: p.name,
+            desc: p.desc,
+            activated: p.activated,
+        }
+    }
+
+    copyPassiveList(p: PassiveAbility[]): PassiveAbility[]{
+        let rt = [];
+        for(let px = 0; px < p.length; px++){
+            rt.push(this.copyPassive(p[px]));
         }
         return rt;
     }

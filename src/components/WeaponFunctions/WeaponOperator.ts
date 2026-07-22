@@ -124,7 +124,7 @@ export class WeaponOperator{
             } case 2: { //ANTEK
                 let ofs = Phaser.Math.DegToRad(-1*w.acc+(Math.random()*2*w.acc));
 				this.p.scene.sound.play("machinegun",{volume: 0.7});
-                for(let r = 0; r < w.wp.shots; r++) {
+                for(let r = 0; r < w.shots; r++) {
                     ofs = Phaser.Math.DegToRad(-1*w.acc+(Math.random()*2*w.acc));
                     this.p.scene.addBullet(new Bullet(this.p.scene,this.p.x+(w.fRad*Math.cos(a)), this.p.y+(w.fRad*Math.sin(a)), w.wp.type, w.wp.spd,a+ofs,w.damage,w.pierce, w));
                 }
@@ -161,8 +161,21 @@ export class WeaponOperator{
                 this.p.scene.addPlayerProjectile(new Rocket(this.p.scene,this.p.x+(w.fRad*Math.cos(a)),this.p.y+(w.fRad*Math.sin(a)),"missile",a+ofs,w));
                 //Bullet(this.p.scene,this.p.x+(w.fRad*Math.cos(a)), this.p.y+(w.fRad*Math.sin(a)), w.wp.type, w.wp.spd,a+ofs,w.damage,w.pierce, w));
                 break; 
-            }
-            default: {
+            } case 10: {// crossfade SE
+                let ofsn = Phaser.Math.DegToRad(-1*w.acc+(Math.random()*2*w.acc));
+                let rlt = [1,2,3];
+                if(w.pvalue[0] >= 1){
+                    rlt.push(4);
+                }
+                let st = Math.trunc(Math.random()*rlt.length);
+                let ofs = Phaser.Math.DegToRad(-1*(w.acc/4)+(Math.random()*2*(w.acc/4)));
+                for(let r = 0; r < rlt[st]; r++) {
+                    ofs = ofsn+Phaser.Math.DegToRad(-1*(w.acc/4)+(Math.random()*2*(w.acc/4)));
+                    this.p.scene.addBullet(new Bullet(this.p.scene,this.p.x+(w.fRad*Math.cos(a)), this.p.y+(w.fRad*Math.sin(a)), w.wp.type, w.wp.spd,a+ofs,w.damage,w.pierce+(0.2*w.specialStat), w));
+                }
+                this.p.scene.sound.play("gun_10",{volume: 0.7});
+                break;
+            } default: {
                 break;
             }
         }

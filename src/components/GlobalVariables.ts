@@ -5,10 +5,11 @@ import { WeaponButton } from "./WeaponFunctions/WeaponButton";
 
 export class GlobalVariables {
 
-    public curGunID: number = -999999999;
+    public curGunID: number = -999999999+1;
     public inv: Armory;
     public maxAugOverLevel: number = 13;
     public maxAugLevel: number = 10;
+    public boxCount: number = 0;
 
     public augmentWeights: number[][] = [
         [0, 2], // default
@@ -32,7 +33,7 @@ export class GlobalVariables {
         [18, 2], // special augment
     ];
 
-    public lootBoxes: number[] = [0,0,0,0];
+    public lootBoxes: number[] = [0];
 
     public lootTable: number[][] = [
 
@@ -50,7 +51,7 @@ export class GlobalVariables {
         {name: "Swiftload", index: 4, level: 0, maxlv: 10, lvcap: 10, desc: "Faster reload speed. +10% per upgrade"}, //Reload, -5% each
         {name: "Melter", index: 5, level: 0, maxlv: 10, lvcap: 10, desc: "Additional damage over time. +10% per upgrade"}, //DoT damage, +10% each
         {name: "Flaying", index: 6, level: 0, maxlv: 10, lvcap: 10, desc: "Ignores a portion of resistances. +1 flat armor ignore and +5% armor ignore per upgrade."}, //Armor pen, +5% each
-        {name: "Razor Shot", index: 7, level: 0, maxlv: 10, lvcap: 10, desc: "Increased on-hit damage. +10% and +5 flat damage per upgrade."}, //On hit damage, +10% each
+        {name: "Razor Shot", index: 7, level: 0, maxlv: 10, lvcap: 10, desc: "Increased on-hit damage. +10% and +3 flat damage per upgrade."}, //On hit damage, +10% each
         
         {name: "Demolition", index: 8, level: 0, maxlv: 10, lvcap: 10, desc: "Enlarged blast radius. +5% per upgrade."}, //Blast radius, +5% each
         {name: "Penetrator", index: 9, level: 0, maxlv: 10, lvcap: 10, desc: "Increases penetration capability. +10% per upgrade."}, //Pierce, +10% each
@@ -78,44 +79,49 @@ export class GlobalVariables {
     */
     public gunList: Map<number,WeaponParams> = new Map([
         //starting weps
-        [0, {type:0,name:"WS-Lontra",class:"pistol", dmg: 115, spd: 20000, rof: 5, spcd: 10000, shots: 1, pen: 1, pcd: 20, clip: 18, load: 1.5, width: 1, rad: 1,
+        [0, {type:0,name:"WS-Lontra",class:"pistol", dmg: 115, spd: 20000, rof: 5, spcd: 10000, shots: 1, pen: 1, pcd: 20, clip: 18, load: 1.25, width: 1, rad: 1,
          acc: 2, arpen: [0,0], crit: [0.001,2.75], ele: 1, onhit: 0, weight: 0, rarity: 1, dot: [], augs: [0,1,1,1, 1,0,1,1, 0,1,1,1, 1,1,0,0, 1,1,0], customaug: {name: "default", index: 18, level: 0, maxlv: 10, lvcap: 10, desc: ""}, 
          passives: [{name: "Hi-Point", desc: "Base damage increased by 30%. Base pierce increased by 1.", activated: false}]}],
-        [1, {type:1,name:"WS-Windmill",class:"smg", dmg: 95, spd: 20000, rof: 8, spcd: 10000, shots: 1, pen: 1.5, pcd: -999, clip: 32, load: 1.5, width: 1, rad: 1,
+        [1, {type:1,name:"WS-Windmill",class:"smg", dmg: 95, spd: 20000, rof: 8, spcd: 10000, shots: 1, pen: 1.5, pcd: -999, clip: 32, load: 1.25, width: 1, rad: 1,
          acc: 6.5, arpen: [0,0], crit: [0.001,1.75], ele: 1, onhit: 0, weight: 0.025, rarity: 1, dot: [], augs: [0,1,1,1, 1,0,1,1, 0,1,1,1, 1,1,0,0, 1,1,0], customaug: {name: "default", index: 18, level: 0, maxlv: 10, lvcap: 10, desc: ""}, 
          passives: [{name: "Full Tilt", desc: "Magazine size increased by 25% and rate-of-fire increased by 10%. Hits further increase the rate-of-fire by 2% each, up to 20. Bonus resets on switch.", activated: false}]}],
         [2, {type:2,name:"ANTIK",class:"shotgun", dmg: 115, spd: 20000, rof: 2.5, spcd: 10000, shots: 6, pen: 1.5, pcd: -999, clip: 8, load: 2.5, width: 1, rad: 1,
          acc: 15, arpen: [0,0], crit: [0.001,1.5], ele: 1, onhit: 0, weight: 0.125, rarity: 1, dot: [], augs: [0,1,1,1, 1,0,1,1, 0,1,1,1, 1,1,0,0, 1,1,0], customaug: {name: "default", index: 18, level: 0, maxlv: 10, lvcap: 10, desc: ""}, 
          passives: [{name: "Timeless", desc: "+3 pellets and +1 flat rate of fire",activated:false}]}],
         
-        [3, {type:3,name:"WS-Broadhead",class:"sniper", dmg: 765, spd: 50000, rof: 1.5, spcd: 10000, shots: 1, pen: 3, pcd: -999, clip: 5, load: 1.75, width: 1, rad: 1,
+        [3, {type:3,name:"WS-Broadhead",class:"sniper", dmg: 765, spd: 50000, rof: 1.5, spcd: 10000, shots: 1, pen: 3, pcd: -999, clip: 5, load: 2, width: 1, rad: 1,
          acc: 0, arpen: [0,0], crit: [0.001,3], ele: 1, onhit: 0, weight: 0.35, rarity: 1, dot: [], augs: [0,1,1,1, 1,0,1,1, 0,1,0,1, 1,1,0,0, 1,1,0], customaug: {name: "default", index: 18, level: 0, maxlv: 10, lvcap: 10, desc: ""}, passives: [
             {name: "Long Bolts", desc: "+40% crit chance",activated:false}]}],
-        [4, {type:4,name:"BJURÖN",class:"assault", dmg: 175, spd: 28000, rof: 6, spcd: 10000, shots: 1, pen: 2, pcd: -999, clip: 40, load: 2, width: 1, rad: 1,
-         acc: 4, arpen: [0,0], crit: [0.001,2.5], ele: 1, onhit: 0, weight: 0.125, rarity: 1, dot: [], augs: [0,1,1,1, 1,0,1,1, 0,1,1,1, 1,1,0,0, 1,1,0], customaug: {name: "default", index: 18, level: 0, maxlv: 10, lvcap: 10, desc: ""}, 
+        [4, {type:4,name:"BJURÖN",class:"assault", dmg: 175, spd: 28000, rof: 6, spcd: 10000, shots: 1, pen: 2.5, pcd: -999, clip: 40, load: 2, width: 1, rad: 1,
+         acc: 2.5, arpen: [0,0], crit: [0.001,2.5], ele: 1, onhit: 0, weight: 0.125, rarity: 1, dot: [], augs: [0,1,1,1, 1,0,1,1, 0,1,1,1, 1,1,0,0, 1,1,0], customaug: {name: "default", index: 18, level: 0, maxlv: 10, lvcap: 10, desc: ""}, 
          passives: [{name: "Clearance", desc: "Hits from this weapon have a 40% chance to deal damage twice.", activated: false}]}],
-        [5, {type:5,name:"TS-Cropper",class:"lmg", dmg: 215, spd: 28000, rof: 7, spcd: 10000, shots: 1, pen: 2.5, pcd: -999, clip: 60, load: 3.5, rad: 1,
-         width: 1, acc: 7, arpen: [0,0], crit: [0.001,2.5], ele: 1, onhit: 0, weight: 0.25, rarity: 1, dot: [], augs: [0,1,1,1, 1,0,1,1, 0,1,1,1, 1,1,0,0, 1,1,0], customaug: {name: "default", index: 18, level: 0, maxlv: 10, lvcap: 10, desc: ""}, 
+        [5, {type:5,name:"WS-Cropper",class:"lmg", dmg: 215, spd: 28000, rof: 7, spcd: 10000, shots: 1, pen: 2.5, pcd: -999, clip: 75, load: 3, rad: 1,
+         width: 1, acc: 7, arpen: [0,0], crit: [0.001,2.75], ele: 1, onhit: 0, weight: 0.25, rarity: 1, dot: [], augs: [0,1,1,1, 1,0,1,1, 0,1,1,1, 1,1,0,0, 1,1,0], customaug: {name: "default", index: 18, level: 0, maxlv: 10, lvcap: 10, desc: ""}, 
          passives: [{name: "Shear", desc: "+2 flat rate of fire, +1 flat pierce.",activated:false}]}],
         [6, {type:6,name:"LOSSNEN",class:"rocket", dmg: 1655, spd: 5000, rof: 1, spcd: 10000, shots: 1, pen: 1, pcd: -999, clip: 2, load: 2.5, width: 1, rad: 280,
          acc: 0.05, arpen: [0,0], crit: [0,1], ele: 1, onhit: 0, weight: 0.3, rarity: 1, dot: [], augs: [0,1,1,1, 1,0,1,1, 1,0,1,0, 0,1,0,0, 1,1,0], customaug: {name: "default", index: 0, level: 18, maxlv: 10, lvcap: 10, desc: ""}, passives: [
             {name: "Wholesale", desc: "+60% total damage",activated:false}]}],
-
         [7, {type:7,name:"Ottertail",class:"smg", dmg: 185, spd: 22000, rof: 11, spcd: 10000, shots: 1, pen: 1.25, pcd: -999, clip: 42, load: 1.75, width: 1, rad: 1,
          acc: 9, arpen: [0,0], crit: [0.001,1.75], ele: 1, onhit: 0, weight: 0.15, rarity: 1, dot: [], augs: [0,1,1,1, 1,0,1,1, 0,1,1,1, 1,1,0,0, 1,1,1], customaug: {name: "Rambunctious", index: 18, level: 0, maxlv: 10, lvcap: 10, desc: "Increased damage when triggering Romp. +20% per upgrade."},
         passives: [{name: "Romp", desc: "Hits from this weapon apply a stack of Romp. At 7 stacks, trigger to deal ", activated: true},
             {name: "Screwdriver", desc: "Alt-fire to shoot a rapid burst of 7 shots.", activated: true},
-            {name: "Otter Space", desc: "Each shot inflicts an additional stack of Romp.", activated: true}
+            {name: "Otter Space", desc: "Each shot inflicts an additional stack of Romp.", activated: false}
         ]}],
-        [8, {type:8,name:"NTR-141",class:"pistol", dmg: 60, spd: 20000, rof: 16, spcd: 10000, shots: 1, pen: 1, pcd: -999, clip: 21, load: 1.75, width: 1, rad: 1,
+        [8, {type:8,name:"NTR-141",class:"pistol", dmg: 60, spd: 20000, rof: 16, spcd: 10000, shots: 1, pen: 1, pcd: -999, clip: 21, load: 1, width: 1, rad: 1,
          acc: 2, arpen: [0,0], crit: [0.001,2.75], ele: 1, onhit: 0, weight: 0.05, rarity: 1, dot: [], augs: [0,1,1,1, 1,0,1,1, 0,1,1,1, 1,1,0,0, 1,1,0], customaug: {name: "default", index: 18, level: 0, maxlv: 10, lvcap: 10, desc: ""}, 
          passives: [{name: "Quality and Quantity", desc: "+22 flat on-hit damage", activated: false}]}],
-        [9, {type:9,name:"Two-Fanged Wolf",class:"smg", dmg: 140, spd: 20000, rof: 7, spcd: 10000, shots: 2, pen: 1.75, pcd: -999, clip: 21, load: 1.75, width: 1, rad: 1,
+        [9, {type:9,name:"Two-Fanged Wolf",class:"smg", dmg: 140, spd: 20000, rof: 7, spcd: 10000, shots: 2, pen: 2, pcd: -999, clip: 50, load: 1.75, width: 1, rad: 1,
          acc: 1.5, arpen: [0,0], crit: [0.001,2.25], ele: 1, onhit: 0, weight: 0.1, rarity: 1, dot: [], augs: [0,1,1,1, 1,0,1,1, 0,1,1,1, 1,1,0,0, 1,1,0], customaug: {name: "default", index: 18, level: 0, maxlv: 10, lvcap: 10, desc: ""}, 
          passives: [{name: "Snaggletooth", desc: "50% chance to fire a third, inaccurate shot with 35% increased critical strike chance.", activated: true},
             {name: "Pack Tactics", desc: "All shots will critically strike if any shot rolls a critical strike.", activated: true},
             {name: "Domination", desc: "Third shot fire chance and critical strike chance increased by 35% each.", activated: false},
          ]}],
+        [10, {type:10,name:"WS-Crossfade SE",class:"pistol", dmg: 90, spd: 20000, rof: 9, spcd: 10000, shots: 1, pen: 1, pcd: 20, clip: 13, load: 1.15, width: 1, rad: 1,
+        acc: 8, arpen: [0,0], crit: [0.001,1.5], ele: 1, onhit: 10, weight: 0.05, rarity: 1, dot: [], augs: [0,1,1,1, 1,0,1,1, 0,0,1,1, 1,1,0,0, 1,1,1], customaug: {name: "Split Shot", index: 18, level: 0, maxlv: 10, lvcap: 10, desc: "Additional flat pierce and onhit damage. +0.2 / +2 per level."}, 
+        passives: [{name: "Flail", desc: "Randomly fire 1, 2 or 3 projectiles per shot.", activated: true},
+            {name: "Havoc", desc: "Fires 1, 2, 3 or 4 projectiles per shot.", activated: true}
+        ]}],
+        
     ]);
 
     public side: WeaponEntry;
@@ -140,6 +146,23 @@ export class GlobalVariables {
             }
         } else {
             console.log("NO WEAPON PARAM OF: " + n);
+            return this.copyParam(this.defaultParam);
+        }
+    }
+
+    getGunParams(we: WeaponEntry): WeaponParams{
+        let tmp = this.copyParam(this.defaultParam);
+        if(this.gunList.has(we.wID)){
+            let k = this.gunList.get(we.wID);
+            if(k != null) {
+                tmp = this.copyParam(k);
+                tmp.passives = this.inv.copyPassiveList(we.passives);
+                return tmp;
+            } else {
+                return this.copyParam(this.defaultParam);
+            }
+        } else {
+            console.log("NO WEAPON PARAM OF: " + we.wID);
             return this.copyParam(this.defaultParam);
         }
     }
@@ -180,6 +203,38 @@ export class GlobalVariables {
                 } 
             }
         }
+        return this.inv.storeNewGun(r,ap,this.getGunID());
+    }
+
+    generateMaxGun(ix: number): number{
+        let r = this.getParams(ix);
+        for(let p = 0; p < r.passives.length; p++){
+            if(!r.passives[p].activated){
+                if(Math.random() < 0.25){
+                    r.passives[p].activated = true;
+                }
+            }
+        }
+        let ap: Augment[] = [];
+        ap.push(this.inv.generateAugment(0,0,10,10));
+        ap.push(this.inv.generateAugment(0,0,10,10));
+        ap.push(this.inv.generateAugment(0,0,10,10));
+        ap.push(this.inv.generateAugment(0,0,10,10));
+        return this.inv.storeNewGun(r,ap,this.getGunID());
+    }
+
+    generateSuperMaxGun(ix: number): number{
+        let r = this.getParams(ix);
+        for(let p = 0; p < r.passives.length; p++){
+            if(!r.passives[p].activated){
+                r.passives[p].activated = true;
+            }
+        }
+        let ap: Augment[] = [];
+        ap.push(this.inv.generateAugment(0,0,13,13));
+        ap.push(this.inv.generateAugment(0,0,13,13));
+        ap.push(this.inv.generateAugment(0,0,13,13));
+        ap.push(this.inv.generateAugment(0,0,13,13));
         return this.inv.storeNewGun(r,ap,this.getGunID());
     }
 
@@ -312,6 +367,20 @@ export class GlobalVariables {
             console.log("No augment with the specified id exists to copy: " + id);
             return {name: "default", index: 0, level: 0, maxlv: 10, lvcap: 10, desc: ""};
         }
+    }
+
+    makeBox(): number{
+        let e = 0;
+        this.boxCount++;
+        if((this.boxCount % 10) == 0){
+            e = 999;
+        }
+        if(this.boxCount == 50){
+            e = 9999;
+            this.boxCount = 0;
+        }
+
+        return e;
     }
 
     swapLoadout(){

@@ -43,6 +43,11 @@ export class Target extends Phaser.GameObjects.Container{
         this.tdisp.setDepth(10);
     }
 
+    setDifficulty(){
+        this.difficulty = this.scene.difficulty;
+        this.hp = Math.trunc((1+(0.15*this.difficulty))*this.hp);
+    }
+
     updateLogs(t:number,d:number){
         this.bLog.forEach((value: HitLog, key: number) => {
             if(value.cooldown > 0) {

@@ -93,6 +93,7 @@ export class Weapon {
     public speed: number = 1;
     public repeats: number[] = [];
     public dh: number = 0;
+    public shots: number = 1;
 
 
     constructor(scene: BaseScene, wp: WeaponParams, augments: Augment[] = []){
@@ -149,12 +150,12 @@ export class Weapon {
         this.maxCD = 1/this.rof;
         this.pierce = this.wp.pen*(1+(0.1*this.augVars[9]));
         this.pcd = this.wp.pcd;
+        this.shots = this.wp.shots;
         this.img = ("gun_"+this.wp.type);
         this.curAmmo = Math.trunc(Math.round(this.wp.clip)*((1+(0.1*this.augVars[3]))));
         this.maxAmmo = Math.trunc(Math.round(this.wp.clip)*((1+(0.1*this.augVars[3]))));
         this.maxLoad = (1/(1+(0.1*this.augVars[4])))*this.wp.load*1000;
-        this.onHit = (this.wp.onhit*(1+(0.1*this.augVars[7])))+(5*this.augVars[7]);
-        this.specialStat = this.augVars[18];
+        this.onHit = (this.wp.onhit*(1+(0.1*this.augVars[7])))+(3*this.augVars[7]);
         this.arpen = [this.wp.arpen[0]+(this.augVars[6]), this.wp.arpen[1]+(this.augVars[6]*0.05)];
         this.acc = this.wp.acc*(1/(1+(0.1*this.augVars[10])));
         this.crit[0] = this.wp.crit[0]+(0.025*this.augVars[11]);
@@ -162,6 +163,20 @@ export class Weapon {
         this.blast = this.wp.rad*(1+(0.05*this.augVars[8]));
         this.speed = (1-this.wp.weight)+(0.05*this.augVars[16]);
         this.dh += 0.1*this.augVars[13];
+        this.specialStat = this.augVars[18];
+        this.parseSpecialStat()
+    }
+
+    parseSpecialStat(){
+        switch(this.type){
+            case 10: {
+                this.pierce += 0.2*this.specialStat;
+                this.onHit += 2*this.specialStat;
+                break;
+            } default: {
+                break;
+            }
+        }
     }
 
     initiatePassive(name: string){
@@ -171,7 +186,9 @@ export class Weapon {
                 this.parseBasePassives(name);
                 break;
             } case "Timeless": {
-                this.pvalue[0] += 3;
+                this.rof += 1;
+                this.maxCD = 1/this.rof;
+                this.shots += 3;
                 break;
             } case "Full Tilt": {
                 this.maxAmmo = Math.trunc(Math.round(this.maxAmmo *= 1.25));
@@ -196,6 +213,10 @@ export class Weapon {
             } case "Clearance": {
                 this.repeats.push(0.4);
                 break;
+            } case "Flail": {
+                break;
+            } case "Havoc": {
+                this.pvalue[0] = 1;
             } default: {
                 break;
             }

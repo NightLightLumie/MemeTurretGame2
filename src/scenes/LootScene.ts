@@ -137,6 +137,18 @@ export class LootScene extends BaseScene{
             this.state = "transition";
             this.waitTime[0] = 500;
             let r = this.masterData.generateGun(this.curBox.selectedGun);
+            switch(this.curBox.lv){
+                case 999: {
+                    r = this.masterData.generateMaxGun(this.curBox.selectedGun);
+                    break;
+                } case 9999: {
+                    r = this.masterData.generateSuperMaxGun(this.curBox.selectedGun);
+                    break;
+                } default: {
+                    break;
+                }
+            }
+
             let w = this.masterData.inv.fetchGun(r);
             this.curBox.setAlpha(0.5);
             this.gImage.setTexture("gun_"+w.wID);

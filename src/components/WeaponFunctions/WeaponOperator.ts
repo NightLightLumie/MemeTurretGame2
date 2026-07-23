@@ -78,6 +78,15 @@ export class WeaponOperator{
     }
 
 
+    fire(a:number, w: Weapon){
+        if(w.bursts.length > 0){
+            w.bursts.forEach((b) => {
+                if(b.curCD <= 0){
+                    b.curCD += b.maxCD;
+                }
+            })
+        }
+    }
 
     shoot(a:number, w: Weapon, recur: boolean = false, unsafe: boolean = false){
         if(!unsafe){

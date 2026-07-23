@@ -34,7 +34,7 @@ export class Weapon {
 
     public scene: BaseScene;
     public active: boolean = false;
-    public bursts: number[][];
+    public bursts: BurstTracker[];
     public type: number;
     public sprite: string;
 
@@ -147,7 +147,7 @@ export class Weapon {
         this.type = this.wp.type;
         this.damage = this.wp.dmg*(1+(0.1*this.augVars[1]));
         this.rof = (this.wp.rof*(1+(0.1*this.augVars[2])));
-        this.maxCD = 1/this.rof;
+        this.maxCD = 1000/this.rof;
         this.pierce = this.wp.pen*(1+(0.1*this.augVars[9]));
         this.pcd = this.wp.pcd;
         this.shots = this.wp.shots;
@@ -187,14 +187,14 @@ export class Weapon {
                 break;
             } case "Timeless": {
                 this.rof += 1;
-                this.maxCD = 1/this.rof;
+                this.maxCD = 1000/this.rof;
                 this.shots += 3;
                 break;
             } case "Full Tilt": {
                 this.maxAmmo = Math.trunc(Math.round(this.maxAmmo *= 1.25));
                 this.curAmmo = this.maxAmmo;
                 this.killtracker = [0,8];
-                this.maxCD = 1/(this.rof*(1+0.1+(0.05*this.killtracker[2])));
+                this.maxCD = 1000/(this.rof*(1+0.1+(0.05*this.killtracker[2])));
                 break;
             } case "Snaggletooth": {
                 this.pvalue[0] += 0.5
@@ -234,7 +234,7 @@ export class Weapon {
                 break;
             } case "Shear": {
                 this.rof += 2;
-                this.maxCD = 1/(this.rof);
+                this.maxCD = 1000/(this.rof);
                 this.pierce += 1;
                 break;
             } case "Long Bolts": {
@@ -321,13 +321,17 @@ export class Weapon {
     }
 
     updateCooldown(){
-        if(Math.abs(this.overflow) < (this.maxCD*1000)){
-            this.cooldown = this.overflow+(this.maxCD*1000);
+        if(Math.abs(this.overflow) < (this.maxCD)){
+            this.cooldown = this.overflow+(this.maxCD);
             //console.log(this.wp.name + "CURRENT COOLDOWN: " + this.cooldown);
             this.overflow = 0;
         } else {
             this.handleOverflow();
         }
+    }
+
+    updateBurstCD(b: BurstTracker){
+        
     }
 
     updateAmmo(n: number){

@@ -33,7 +33,7 @@ export class GlobalVariables {
         [18, 2], // special augment
     ];
 
-    public lootBoxes: number[] = [0];
+    public lootBoxes: number[] = [0,0,0,0,0,0,0,0,9999];
 
     public lootTable: number[][] = [
 
@@ -88,7 +88,6 @@ export class GlobalVariables {
         [2, {type:2,name:"ANTIK",class:"shotgun", dmg: 115, spd: 20000, rof: 2.5, spcd: 10000, shots: 6, pen: 1.5, pcd: -999, clip: 8, load: 2.5, width: 1, rad: 1,
          acc: 15, arpen: [0,0], crit: [0.001,1.5], ele: 1, onhit: 0, weight: 0.125, rarity: 1, dot: [], augs: [0,1,1,1, 1,0,1,1, 0,1,1,1, 1,1,0,0, 1,1,0], customaug: {name: "default", index: 18, level: 0, maxlv: 10, lvcap: 10, desc: ""}, 
          passives: [{name: "Timeless", desc: "+3 pellets and +1 flat rate of fire",activated:false}]}],
-        
         [3, {type:3,name:"WS-Broadhead",class:"sniper", dmg: 765, spd: 50000, rof: 1.5, spcd: 10000, shots: 1, pen: 3, pcd: -999, clip: 5, load: 2, width: 1, rad: 1,
          acc: 0, arpen: [0,0], crit: [0.001,3], ele: 1, onhit: 0, weight: 0.35, rarity: 1, dot: [], augs: [0,1,1,1, 1,0,1,1, 0,1,0,1, 1,1,0,0, 1,1,0], customaug: {name: "default", index: 18, level: 0, maxlv: 10, lvcap: 10, desc: ""}, passives: [
             {name: "Long Bolts", desc: "+40% crit chance",activated:false}]}],
@@ -119,7 +118,7 @@ export class GlobalVariables {
         [10, {type:10,name:"WS-Crossfade SE",class:"pistol", dmg: 90, spd: 20000, rof: 9, spcd: 10000, shots: 1, pen: 1, pcd: 20, clip: 13, load: 1.15, width: 1, rad: 1,
         acc: 8, arpen: [0,0], crit: [0.001,1.5], ele: 1, onhit: 10, weight: 0.05, rarity: 1, dot: [], augs: [0,1,1,1, 1,0,1,1, 0,0,1,1, 1,1,0,0, 1,1,1], customaug: {name: "Split Shot", index: 18, level: 0, maxlv: 10, lvcap: 10, desc: "Additional flat pierce and onhit damage. +0.2 / +2 per level."}, 
         passives: [{name: "Flail", desc: "Randomly fire 1, 2 or 3 projectiles per shot.", activated: true},
-            {name: "Havoc", desc: "Fires 1, 2, 3 or 4 projectiles per shot.", activated: true}
+            {name: "Havoc", desc: "Fires 1, 2, 3 or 4 projectiles per shot.", activated: false}
         ]}],
         
     ]);
@@ -140,30 +139,41 @@ export class GlobalVariables {
         if(this.gunList.has(n)){
             let k = this.gunList.get(n);
             if(k != null) {
-                return this.copyParam(k);
+                return k;
             } else {
-                return this.copyParam(this.defaultParam);
+                return this.defaultParam;
             }
         } else {
             console.log("NO WEAPON PARAM OF: " + n);
-            return this.copyParam(this.defaultParam);
+            return this.defaultParam;
         }
     }
 
     getGunParams(we: WeaponEntry): WeaponParams{
-        let tmp = this.copyParam(this.defaultParam);
         if(this.gunList.has(we.wID)){
             let k = this.gunList.get(we.wID);
             if(k != null) {
-                tmp = this.copyParam(k);
-                tmp.passives = this.inv.copyPassiveList(we.passives);
-                return tmp;
+                return k;
             } else {
-                return this.copyParam(this.defaultParam);
+                return this.defaultParam;
             }
         } else {
             console.log("NO WEAPON PARAM OF: " + we.wID);
-            return this.copyParam(this.defaultParam);
+            return this.defaultParam;
+        }
+    }
+
+    copyGunParams(we: WeaponEntry): WeaponParams{
+        if(this.gunList.has(we.wID)){
+            let k = this.gunList.get(we.wID);
+            if(k != null) {
+                return structuredClone(k);
+            } else {
+                return structuredClone(this.defaultParam);
+            }
+        } else {
+            console.log("NO WEAPON PARAM OF: " + we.wID);
+            return structuredClone(this.defaultParam);
         }
     }
 
@@ -184,8 +194,23 @@ export class GlobalVariables {
         return this.getParams(ix).passives;
     }
 
+    getNewParams(n: number): WeaponParams{
+        if(this.gunList.has(n)){
+            let k = this.gunList.get(n);
+            if(k != null) {
+                return structuredClone(k);
+            } else {
+                return structuredClone(this.defaultParam);
+            }
+        } else {
+            console.log("NO WEAPON PARAM OF: " + n);
+            return structuredClone(this.defaultParam);
+        }
+    }
+
+
     generateGun(ix: number): number{
-        let r = this.getParams(ix);
+        let r = this.getNewParams(ix);
         let ap: Augment[] = [];
         let ac = Math.random();
         if(ac < 0.75) {
@@ -207,7 +232,7 @@ export class GlobalVariables {
     }
 
     generateMaxGun(ix: number): number{
-        let r = this.getParams(ix);
+        let r = this.getNewParams(ix);
         for(let p = 0; p < r.passives.length; p++){
             if(!r.passives[p].activated){
                 if(Math.random() < 0.25){
@@ -224,7 +249,7 @@ export class GlobalVariables {
     }
 
     generateSuperMaxGun(ix: number): number{
-        let r = this.getParams(ix);
+        let r = this.getNewParams(ix);
         for(let p = 0; p < r.passives.length; p++){
             if(!r.passives[p].activated){
                 r.passives[p].activated = true;
@@ -307,12 +332,11 @@ export class GlobalVariables {
         }
     }
 
+    /*
     copyParam(w: WeaponParams): WeaponParams {
-        return {
-            type:w.type,name:w.name,class:w.class, dmg:w.dmg, spd:w.spd, rof:w.rof, spcd:w.spcd, shots:w.shots, pen:w.pen, pcd:w.pcd, clip:w.clip, load:w.load,
-             width:w.width, rad:w.rad, acc:w.acc, arpen:w.arpen, crit:w.crit, ele:w.ele, augs:w.augs, onhit:w.onhit, weight: w.weight, rarity: w.rarity, dot: w.dot,
-             customaug:w.customaug, passives: w.passives};
+        return structuredClone(w);
     }
+*/
 
     checkAugCompatibility(w: number, aug: number): boolean{
         if(this.gunList.has(w)){

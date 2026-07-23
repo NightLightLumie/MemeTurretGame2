@@ -25,12 +25,12 @@ const images: Image[] = [
 	image('items/box_0', 'box_0'),
 	image('items/arm_r_0', 'arm_r_0'),
 	image('items/arm_l_0', 'arm_l_0'),
-	image('items/box_0', 'box_999'),
-	image('items/arm_r_0', 'arm_r_999'),
-	image('items/arm_l_0', 'arm_l_999'),
-	image('items/box_0', 'box_9999'),
-	image('items/arm_r_0', 'arm_r_9999'),
-	image('items/arm_l_0', 'arm_l_9999'),
+	image('items/box_999', 'box_999'),
+	image('items/arm_r_999', 'arm_r_999'),
+	image('items/arm_l_999', 'arm_l_999'),
+	image('items/box_9999', 'box_9999'),
+	image('items/arm_r_9999', 'arm_r_9999'),
+	image('items/arm_l_9999', 'arm_l_9999'),
 
 
 	//spells

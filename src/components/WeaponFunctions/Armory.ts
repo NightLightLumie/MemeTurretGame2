@@ -97,9 +97,9 @@ export class Armory {
         let gun = {
             gID: id,
             wID: wp.type,
-            augs: auglist,
-            passives: wp.passives,
-        }
+            augs: structuredClone(auglist),
+            passives: structuredClone(wp.passives),
+        } satisfies WeaponEntry;
         this.addGun(gun.gID,gun);
     }
 
@@ -107,23 +107,13 @@ export class Armory {
         let gun = {
             gID: id,
             wID: wp.type,
-            augs: auglist,
-            passives: wp.passives,
-        }
+            augs: structuredClone(auglist),
+            passives: structuredClone(wp.passives),
+        } satisfies WeaponEntry;
         this.addGun(gun.gID,gun);
         console.log("Stored additional gun: " + JSON.stringify(gun));
         return gun.gID;
     }
-    /*
-
-    rollRandomAugment(tab: number[]): Augment{
-        let ap = [];
-        for let
-
-    }
-
-    */
-
 
     generateSpecialAugment(wp: number, lv: number, mxlv: number, lvcap: number): Augment{
         if(this.reference.gunList.has(wp)){
@@ -145,7 +135,7 @@ export class Armory {
     }
 
     addGun(i: number, w: WeaponEntry){
-        this.gunList.set(i, this.copy(w));
+        this.gunList.set(i, w);
     }
     
     updateAug(id: number, index: number, ref: Augment){
@@ -208,8 +198,8 @@ export class Armory {
         return {
             gID: w.gID,
             wID: w.wID,
-            augs: w.augs,
-            passives: w.passives,
+            augs: structuredClone(w.augs),
+            passives: structuredClone(w.passives),
         }
     }
 

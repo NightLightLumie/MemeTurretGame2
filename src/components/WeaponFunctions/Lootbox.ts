@@ -29,7 +29,7 @@ export class Lootbox extends Button{
         this.lootTable = table;
         this.selectedGun = this.lootTable[Math.trunc(Math.random()*this.lootTable.length)];
         this.initiateImages();
-        console.log("GENERATED BOX WITH LVL: "+this.lv);
+        //console.log("GENERATED BOX WITH LVL: "+this.lv);
     }
 
     initiateImages(){

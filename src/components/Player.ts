@@ -137,9 +137,9 @@ export class Player extends Phaser.GameObjects.Container {
 	}
 
 	setDefaultLoadout(){
-		let a = this.scene.masterData.getGunParams(this.scene.masterData.side);
-		let b = this.scene.masterData.getGunParams(this.scene.masterData.primary);
-		let c = this.scene.masterData.getGunParams(this.scene.masterData.secondary);
+		let a = this.scene.masterData.copyGunParams(this.scene.masterData.side);
+		let b = this.scene.masterData.copyGunParams(this.scene.masterData.primary);
+		let c = this.scene.masterData.copyGunParams(this.scene.masterData.secondary);
 		console.log("Sidearm: " + a.type);
 		console.log("Primary: " + b.type);
 		console.log("Secondary: " + c.type);

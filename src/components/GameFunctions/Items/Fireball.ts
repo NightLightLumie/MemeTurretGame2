@@ -1,5 +1,5 @@
 import { GameScene } from "@/scenes/GameScene";
-import { Player } from "../Player";
+import { Player } from "../../Player";
 import { Item } from "./Item";
 
 export class Fireball extends Item{

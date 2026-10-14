@@ -33,9 +33,44 @@ const images: Image[] = [
 	image('items/arm_l_9999', 'arm_l_9999'),
 
 
-	//spells
+	//spells - ui
 	image('items/itemtile', 'itemtile'),
-
+	image('items/item_gr', 'item_gr'),
+	image('items/item_rd', 'item_rd'),
+	//defensives
+	image('items/canceldeath', 'canceldeath'),
+	image('items/mandrake', 'mandrake'),
+	image('items/ultrasonicbarrier', 'ultrasonicbarrier'),
+	image('items/reactivebarrier', 'reactivebarrier'),
+	image('items/spinach', 'spinach'),
+	image('items/yinyangorb', 'yinyangorb'),
+	image('items/zoomies', 'zoomies'),
+	image('items/vaccine', 'vaccine'),
+	image('items/focussash', 'focussash'),
+	image('items/gunfu', 'gunfu'),
+	image('items/eatcement', 'eatcement'),
+	image('items/fortify', 'fortify'),
+	image('items/bindingshots', 'bindingshots'),
+	image('items/phoenixtail', 'phoenixtail'),
+	image('items/lightdragon', 'lightdragon'),
+	image('items/disproportionation', 'disproportionation'),
+	//attacks
+	image('items/fireball', 'fireball'),
+	image('items/starprism', 'starprism'),
+	image('items/stickybomb', 'stickybomb'),
+	image('items/koboldmininova', 'koboldmininova'),
+	image('items/basicmagic', 'basicmagic'),
+	image('items/arrowraid', 'arrowraid'),
+	image('items/ultravibration', 'ultravibration'),
+	image('items/voiddragon', 'voiddragon'),
+	image('items/echolocator', 'echolocator'),
+	image('items/arcanemissile', 'arcanemissile'),
+	image('items/hugerod', 'hugerod'),
+	image('items/lavabucket', 'lavabucket'),
+	image('items/castgun', 'castgun'),
+	image('items/runecircle', 'runecircle'),
+	image('items/hipowerrounds', 'hipowerrounds'),
+	image('items/danmakucharm', 'danmakucharm'),
 	// UI
 	image('ui/hud', 'hud'),
 	image('ui/panelred', 'panelred'),
@@ -45,6 +80,7 @@ const images: Image[] = [
 	//item shop
 	image('ui/itemframeback', 'itemframeback'),
 	image('ui/itemshop', 'itemshop'),
+	image('ui/shop_panel', 'shop_panel'),
 	// Titlescreen
 	image('titlescreen/sky', 'title_sky'),
 	image('titlescreen/background', 'title_background'),
@@ -175,6 +211,7 @@ const audios: Audio[] = [
 
 	sound('tree/dropbox', 'dropbox', 0.5),
 
+	sound('player/miss', 'miss', 0.5),
 
 	sound('tree/ufobullet_fire', 'ufobullet_fire', 0.5),
 

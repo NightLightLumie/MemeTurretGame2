@@ -60,7 +60,7 @@ export class EnemyBullet extends Phaser.GameObjects.Container{
         let r = this.playerDist();
         if(r < (this.radius+this.scene.player.hitsize)){
             this.scene.playSound("turret_hit", 0.5);
-            this.scene.player.takeDamage(this.damage);
+            this.scene.player.takeHit(this.damage);
             this.scene.addPlayerEffect(new BasicEffect(this.scene,this.hitAnim,this.x,this.y,this.hitAnimFrames,150,false,0,Math.random()*360,[1,1]));
             this.deleteFlag = true;
         }

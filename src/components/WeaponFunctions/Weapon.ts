@@ -28,6 +28,7 @@ export interface BurstTracker{
     maxCD: number;
     special: boolean;
     ignoreAmmo: boolean;
+    stored: number;
 }
 
 export class Weapon {

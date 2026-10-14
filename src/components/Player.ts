@@ -2,16 +2,13 @@ import { GameScene } from "@/scenes/GameScene";
 import { WeaponDisplay } from "./WeaponDisplay";
 import { Bullet } from "./WeaponFunctions/Bullet";
 import { Weapon } from "./WeaponFunctions/Weapon";
-import { Item } from "./GameFunctions/Item";
+import { Item } from "./GameFunctions/Items/Item";
 
 const ACCELERATION = 350;
 const MAX_SPEED = 500;
 const FRICTION = 0.7;
 const TAPPING_TIMER = 200; // ms
-console.assert(
-	ACCELERATION / (1 - FRICTION) >= MAX_SPEED,
-	"Max speed unreachable"
-);
+
 
 //
 //
@@ -24,7 +21,7 @@ export class Player extends Phaser.GameObjects.Container {
 	private sprite: Phaser.GameObjects.Sprite;
 	private inventory: number;
 	private tween: Phaser.Tweens.Tween;
-	public hitsize: number = 40;
+
 
 	// Controls
 	private keyboard: any;
@@ -34,7 +31,7 @@ export class Player extends Phaser.GameObjects.Container {
 	private inputVec: Phaser.Math.Vector2; // Just used for keyboard -> vector
 	private touchPos: Phaser.Math.Vector2;
 	public velocity: Phaser.Math.Vector2;
-	public radius: number = 100;
+
 	private border: { [key: string]: number };
 	private hbox: Phaser.GameObjects.Sprite;
 	private wpDisp: WeaponDisplay;
@@ -44,14 +41,51 @@ export class Player extends Phaser.GameObjects.Container {
 	private cd: number = 0;
 	private maxCD: number = 250;
 	private gfx: Phaser.GameObjects.Graphics;
+
+
+//Spell modifiable variables
+
+	public radius: number = 100;
+	public hitsize: number = 40;
+	public shrink: number = 0;
+
+	public baseHP: number = 1000;
+	public bonusHP: number = 0;
+	public maxHP: number = 1000;
 	public health: number = 1000;
+	public overShield: number = 0;
+	public maxShield: number = 0;
+	public shields: number = 0;
+	public items: Item[];
+	public itemIndices: number[];
+
+	public curIFrames: number = 0;
+	public maxIFrames: number = 250;
+
+	public bonusGunDamage: number = 0;
+	public bonusSpellDamage: number = 0;
+
+	public bonusAccel: number = 0;
+	public maxAccel: number = ACCELERATION;
+	public bonusSpeed: number = 0;
+	public maxSpeed: number = MAX_SPEED;
+	
+	public redHP: number = 0;
+	public deferDamage: number = 0.5;
+	public dmgRes: number = 0;
+	public dmgCap: number = 1;
+
+	public smite: number = 0;
+	public execute: number = 0;
+
 	public loadout: [Weapon,Weapon,Weapon];
 	public activeWeapon: number = 0;
 	public spMod: number = 1;
-	public items: Item[] = [];
 
-	public hp: number[] = [1000,1000];
+	//public hp: number[] = [1000,1000];
 	public hpBar: Phaser.GameObjects.Rectangle;
+	public rhpBar: Phaser.GameObjects.Rectangle;
+	public globalTickTimer: number[] = [250,250];
 
 	constructor(scene: GameScene, x: number, y: number) {
 		super(scene, x, y);
@@ -130,10 +164,20 @@ export class Player extends Phaser.GameObjects.Container {
 			bottom: 1080,
 		};
 
+		this.rhpBar = this.scene.add.rectangle(-128,128,256,32,0xff0000,1);
+		this.rhpBar.setOrigin(0,0);
+		this.add(this.rhpBar);
+		this.rhpBar.setVisible(false);
+
 		this.hpBar = this.scene.add.rectangle(-128,128,256,32,0x00ff00,1);
 		this.hpBar.setOrigin(0,0);
 		this.add(this.hpBar);
 		this.hpBar.setVisible(false);
+
+		this.sprite.setDepth(6);
+		this.hbox.setDepth(7);
+		this.rhpBar.setDepth(8);
+		this.hpBar.setDepth(9);
 	}
 
 	setDefaultLoadout(){
@@ -155,16 +199,83 @@ export class Player extends Phaser.GameObjects.Container {
 		//this.loadout[0] = new Weapon (this.scene, this.scene.masterData.)
 	}
 
+	upgradeHP(n: number){
+		this.bonusHP += n;
+		this.health += n;
+		this.maxHP = this.baseHP + this.bonusHP;
+	}
+
+	upgradeSpeed(n: number){
+		this.bonusSpeed += (n*MAX_SPEED);
+		this.maxSpeed = MAX_SPEED+this.bonusSpeed;
+		this.bonusAccel += (n*ACCELERATION);
+		this.maxAccel = ACCELERATION+this.bonusAccel;
+	}
+
+	takeHit(n: number){
+		if(this.curIFrames > 0){
+			this.scene.sound.play("miss", {volume: 1});
+		} else if(this.maxIFrames > 0){
+			this.curIFrames = this.maxIFrames;
+		}
+		//adjust damage prior to stuff like reactive barrier
+		if(this.dmgRes > 0){
+			n *= (1-this.dmgRes);
+		}
+		if(this.dmgCap < 1){
+			if(n > (this.dmgCap*this.maxHP)){
+				n = this.dmgCap*this.maxHP;
+			}
+		}
+		if(this.shields > 0){
+			this.takeShieldDamage(n);
+		} else {
+			this.takeDamage(n);
+		}
+		
+	}
+
+	takeShieldDamage(n: number){
+		if(n <= this.shields){
+			this.shields -= n;
+		}
+		else {
+			this.shields = 0;
+			n -= this.shields;
+			this.takeDamage(n);
+		}
+	}
+
 	takeDamage(n: number){
-		this.hp[0] -= n;
-		if(this.hp[0] <= 0){ 
-			this.hp[0] = 0;
+		this.redHP = 0;
+		if(this.deferDamage > 0){
+			this.redHP += n*this.deferDamage;
+			n -= (n*this.deferDamage);
+		}
+		this.health -= n;
+		if(this.health <= 0){ 
+			this.health = 0;
 			this.die();
 		}
 	}
 
 	die(){
 		this.scene.die();
+	}
+
+	updateGlobalTickEvents(){
+		if(this.redHP > 0){
+			if(this.redHP < (0.01 * this.maxHP)){
+				this.health += this.redHP;
+				this.redHP = 0;
+			} else {
+				this.health += (0.01*this.maxHP);
+				this.redHP -= (0.01*this.maxHP);
+			}
+			if(this.health > this.maxHP){
+				this.health = this.maxHP;
+			}
+		}
 	}
 
 	update(time: number, delta: number) {
@@ -179,20 +290,24 @@ export class Player extends Phaser.GameObjects.Container {
 		*/
 
 		//this.ttText.setText("Position: " + this.x + ", " + this.y );
-		if(this.hp[0] >= this.hp[1]){
-			this.hpBar.setVisible(false);
-		} else {
-			this.hpBar.setVisible(true);
-			this.hpBar.setScale(this.hp[0]/this.hp[1],1);
-			
+		if(this.globalTickTimer[0] > 0){
+			this.globalTickTimer[0] -= delta;
+			if(this.globalTickTimer[0] <= 0){
+				this.updateGlobalTickEvents();
+				this.globalTickTimer[0] += this.globalTickTimer[1];
+			}
 		}
-		if(((this.hp[0]/this.hp[1]) <= 0.65) && ((this.hp[0]/this.hp[1]) > 0.3)) {
-			this.hpBar.fillColor = 0xFFFF00;
-		} else if (((this.hp[0]/this.hp[1]) <= 0.3)) {
-			this.hpBar.fillColor = 0xFF0000;
-		} else {
-			this.hpBar.fillColor = 0x00FF00;
+
+		if(this.curIFrames > 0){
+			this.curIFrames -= delta;
+			this.sprite.setAlpha(0.75);
+			if(this.curIFrames <= 0) {
+				this.curIFrames = 0;
+				this.sprite.setAlpha(1);
+			}
 		}
+
+		this.updateHPDisplay();
 
         const pointer = this.scene.input.activePointer;
         const worldX = this.scene.cameras.main.getWorldPoint(pointer.x, pointer.y).x;
@@ -213,26 +328,11 @@ export class Player extends Phaser.GameObjects.Container {
 		}
 		if(this.firing) {
 			this.scene.handler.shoot(a,this.getActiveWeapon());
-				/*
-				ofs = Phaser.Math.DegToRad(-25+(Math.random()*50));
-				this.scene.addBullet(new Bullet(this.scene,this.x+(this.fRad*Math.cos(a)), this.y+(this.fRad*Math.sin(a)),10000,a+ofs));
-				ofs = Phaser.Math.DegToRad(-25+(Math.random()*50));
-				this.scene.addBullet(new Bullet(this.scene,this.x+(this.fRad*Math.cos(a)), this.y+(this.fRad*Math.sin(a)),10000,a+ofs));
-				ofs = Phaser.Math.DegToRad(-25+(Math.random()*50));
-				this.scene.addBullet(new Bullet(this.scene,this.x+(this.fRad*Math.cos(a)), this.y+(this.fRad*Math.sin(a)),10000,a+ofs));
-				ofs = Phaser.Math.DegToRad(-25+(Math.random()*50));
-				this.scene.addBullet(new Bullet(this.scene,this.x+(this.fRad*Math.cos(a)), this.y+(this.fRad*Math.sin(a)),10000,a+ofs));
-				ofs = Phaser.Math.DegToRad(-25+(Math.random()*50));
-				this.scene.addBullet(new Bullet(this.scene,this.x+(this.fRad*Math.cos(a)), this.y+(this.fRad*Math.sin(a)),10000,a+ofs));
-				ofs = Phaser.Math.DegToRad(-25+(Math.random()*50));
-				this.scene.addBullet(new Bullet(this.scene,this.x+(this.fRad*Math.cos(a)), this.y+(this.fRad*Math.sin(a)),10000,a+ofs));
-
-				*/
 		}
 
 		this.inputVec.limit(1);
 		// this.inputVec.normalize();
-		this.inputVec.scale(ACCELERATION);
+		this.inputVec.scale(this.maxAccel);
 		//console.log("Speed modifier: " + this.spMod);
 
 		if(!((this.inputVec.x == 0) && (this.inputVec.y == 0))){
@@ -247,7 +347,7 @@ export class Player extends Phaser.GameObjects.Container {
 		} else {
 			this.velocity.scale(FRICTION);
 			this.velocity.add(this.inputVec);
-			this.velocity.limit(MAX_SPEED);
+			this.velocity.limit(this.maxSpeed);
 		}
 
 		this.x += (this.velocity.x*this.spMod * delta) / 1000;
@@ -262,6 +362,31 @@ export class Player extends Phaser.GameObjects.Container {
 		// Animation (Change to this.sprite.setScale if needed)
 		const squish = 1.0 + 0.02 * Math.sin((6 * time) / 1000);
 		this.setScale(1.0, squish);
+	}
+
+	updateHPDisplay(){
+		if(this.health >= this.maxHP){
+			this.hpBar.setVisible(false);
+		} else {
+			this.hpBar.setVisible(true);
+			this.hpBar.setScale(this.health/this.maxHP,1);
+			
+		}
+
+		if(this.redHP <= 0){
+			this.rhpBar.setVisible(false);
+		} else {
+			this.rhpBar.setVisible(true);
+			this.rhpBar.setScale((this.health+this.redHP)/this.maxHP,1);
+		}
+
+		if(((this.health/this.maxHP) <= 0.65) && ((this.health/this.maxHP) > 0.3)) {
+			this.hpBar.fillColor = 0xFFFF00;
+		} else if (((this.health/this.maxHP) <= 0.3)) {
+			this.hpBar.fillColor = 0xFF0000;
+		} else {
+			this.hpBar.fillColor = 0xFF8900;
+		}
 	}
 
 	updateItems(t:number, d:number){
@@ -399,10 +524,6 @@ export class Player extends Phaser.GameObjects.Container {
 
 	renderWeapon(){
 
-	}
-
-	takeHit(){
-		
 	}
 
 	doABarrelRoll() {

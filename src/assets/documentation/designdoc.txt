@@ -5,7 +5,7 @@ Passive: Close Combat -> increased movespeed and damage to nearby enemies
 
 Vanguard:
 Passive: Bastion -> regen x hp per second
-1. Bracing Fire -> deal x% increased damage and regen x% ammo per second while fighting, oeduced movespeed
+1. Bracing Fire -> deal x% increased damage and regen x% ammo per second while fighting, reduced movespeed
 2. EMP Grenade -> heavily slow enemies and mark for vulnerable
 
 Sharpshooter:
@@ -17,22 +17,50 @@ Passive: Hawkeye -> Critical strike chance and damage increased by 10%.
 
 Items
     //Items: Carry up to 6.
-    //Cancel Death: Press x in deathbomb timer to cancel dying. Invuln for 1s. (250 ms window base, 30s cd, -5
-    //NFT: Increases difficulty by 5
-    //Explosive Magazine: Release fireballs when reloading, dealing 100 damage
-    //Rune Circle: Deals damage equal to your current health every 5 seconds in a moderate radius around you
-    //Hi-Power Rounds: All gun damage increased by 10%
-    //White Dragon Gem: The first hit on an enemy deals an additional 20% of its max health as true damage
-    //Black Dragon Gem: Enemies explode when defeated, dealing 10% of their max health to nearby enemies
-    //Prism of Stars: Shoot stars in cardinal, then intercardinal directions every 5 shots
-    //Cast Gun: Spells additionally do 100% of your gun damage as bonus damage.
-    //Kobold Mini-Nova: Deal 5 damage per second to all enemies on the field
-    //Ultrasonic Shield: Gain a slowly recharging shield equal to 25% of your max HP
-    //Reactive Barrier: Negates one hit every 20s, dealing damage equal to 50x the base damage in a moderate radius around you
-    //Phoenix's tail: Gain 3 extra lives
-    //Sticky Bomb: Enemies struck by your spell projectiles explode after 3s for 50 damage
-    //Zoomies: Gain 20% movement speed
-    //Fortify: Reduce incoming damage by 20%
+
+    //Defensive items
+    //Cancel Death: Press x in deathbomb timer to cancel dying. If activated successfully, become invulnerable for 1 second. (250 ms window base, 40s cd, level to 10. +50ms per level, +0.2s invuln). +
+    //Mandrake: Defeating an enemy heals you for 1% of its max hp rounded down, up to a cap of 10 per enemy. (2s cd, level to 10, +1 heal cap per level) +
+    //Spinach: Increases max HP by 5% (one time use, stacks infinitely) + 
+    //Ultrasonic Shield: Gain a slowly recharging shield equal to 25% of your max HP (regen 1% shield per second, level to 10, +2.5% max hp per level) +
+    //Reactive Barrier: Negates one hit every 60s, dealing damage equal to 5x the base damage in a moderate radius around you (level to 10, +1x reflected damage per level) +
+    //Yin-Yang Orb: Shrink your hitbox by 5% (level to 10, -5% size per level) +
+    //Zoomies: Gain 20% movement speed (level to 10, +5% speed per level); +
+    //Fortify: Reduce incoming damage by 15% (level to 10, +1% resistance per level); +
+    //Phoenix's tail: Gain 3 extra lives. The last life grants 1% regen/s if below 25% hp. +
+    //Light Dragon's Blessing: Take +100% extra damage, but damage can't exceed 25% of your hp per hit. (Level to 10, -5% damage taken, -1% damage threshold per level) +
+    //Binding shots: Damaged enemies deal 15% less damage (level to 10, +1.5% damage reduction per level) +
+    //Gun-Fu: Gain a shield after reloading (30s cd). The more ammo reloaded, the larger the shield. Starts at 2.5 per ammo. (level to 10, +0.75 per ammo per level) +
+    //Focus Sash: The next lethal hit is negated if you are above 25% hp. 180s cd. (level to 10, -2.5% hp threshold, -3s cd per level) +
+    //Eat Cement: Every 10 spell casts stores a stack, 15s cd. On hit, consume a stack to brace the attack and receive -50% damage. (level to 10, -0.5s stack generation, -4% damage taken) +
+    //Vaccine: Grants invulnerability frames on hit, 0.1s duration. (level to 10, +0.015s invulnerability per level); +
+    //Disproportionation: 20% of damage taken gets converted to red health. Red health regenerates slowly but is lost if further damage is taken. (level to 10, +3% damage deferral per level); +
+    
+    //Offensive Items
+    //Explosive Magazine: Release a random spread of 6 fireballs when reloading, dealing 250 damage. (level to 10, +50 dmg per level) +
+    //Rune Circle: Deals damage equal to 50% of your current health every 5 seconds in a moderate radius around you (level to 10, +5% current hp dmg per level) +
+    //Hi-Power Rounds: All gun damage increased by 5% (one-time use, stacks infinitely); +
+    //Huge Rod: All spell damage increased by 10% (one-time use, stacks infinitely); +
+    //Void Dragon's Blessing: The first hit on an enemy deals an additional 15% of its max health as true damage. 50% effectiveness on bosses. (level to 10, +1% initial damage per level) +
+    //Prism of Stars: Shoot stars in cardinal, then intercardinal directions every 5 shots, up to twice per second. Each star does 150 damage and pierces enemies (level to 10, +15 damage per level) +
+    //Cast Gun: Spells additionally do 100% of your gun damage as bonus damage. (level to 10, +10% gun damage per level) +
+    //Kobold Mini-Nova: Deal 5 damage per second to all enemies on the field (level to 10, +2 dmg per level) +
+    //Sticky Bomb: Enemies struck by your spell projectiles explode after 3s for 50 +5% max hp additional damage (level to 10 ) +
+    //Echolocator: Gun damage increases spell damage by 10%, stacking up to 10 times. Spell damage increases gun damage by 5%, stacking up to 10 times. (level to 10, +1% damage amp per stack) +
+    //Arrow Raid: Fires a spread of 3 arrows from your gun every 300 pixels moved. Each arrow deals 225 damage and penetrates up to 3 enemies. (level to 1, +1 arrow per level) +
+    //Basic Attack Magic: Fires a magic blast from directly above or below the cursor every 10s, dealing 200 damage and piercing enemies. 10% chance to critically strike for double damage. (level to 10, +15 dmg per shot/+1% crit/-0.75s cd per level) +
+    //Lava Bucket: Randomly spawns a lava puddle within a predetermined radius. The puddle deals 100 damage per second to enemies touching it. (level to 10, +15 dps, +1% puddle size per level) +
+    //Ultravibration: Enemies under 5% hp are executed upon taking damage. (level to 10, +1% execution threshold per level); +
+    //Arcane Missile: Automatically attack the closest enemy within range for 300 damage. 3s cd (level up to 10, -0.2s cd, +35 dmg per level) +
+    //Danmaku Charm: Empowers your next shot to explode in a ring of 16 random bullets. Each bullet does 125 damage. 10s cd (level up to 10, -0.5s cd, +15 damage per pullet per level) +
+
+    //Active Items
+
+
+    //System Items
+    //NFT: Increases difficulty by 5. (level to 5, +5 difficulty per level)
+    //Line Go Up: Increases all money gained by 50% (level to 10, +20% money per level)
+
 
 Companies
 WC Weapons Supply (wc.ws)
@@ -42,19 +70,14 @@ Voracity-- ** Has been replaced with Feral Complex (FC)
 Lawson Securities
 PYROFOX
 
-
-
 New Brand Names:
 WC.Weapons Supply
-
-
 
 Perks:
 Precise (15% base crit)
 Merciless (30% extra damage below 50% hp)
 Featherweight (-25% movement penalty)
 Dominus (+30% damage to bosses and big mobs)
-
 
 Weapon types:
 Sidearms
@@ -67,7 +90,6 @@ Lawson 33
 
 ARs:
 WS-005
-
 
 Shotguns:
 WC-015 N-class
@@ -85,3 +107,11 @@ Lawson CHKi
 
 Special:
 Grater
+
+
+Other concepts:
+Shrapnel spawning sniper
+TJI-Rawhide KOBA
+Quicksilver Storm gun
+Ricochet gun
+Luxx fire blaster

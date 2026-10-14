@@ -179,7 +179,7 @@ export class Thug extends Target{
                 this.scene.sound.play("turret_hit", {volume: 0.5});
                 this.scene.addPlayerEffect(new BoneEffect(this.scene, this.scene.player.x, this.scene.player.y, this.scene.player));
                 this.aCD[0] = this.aCD[1];   
-                this.scene.player.takeDamage(75);
+                this.scene.player.takeHit(75);
             }
         } else {
             this.aCD[0] -= d;

@@ -1,5 +1,5 @@
 import { GameScene } from "@/scenes/GameScene";
-import { Item } from "./Item";
+import { Item } from "./Items/Item";
 import { Player } from "../Player";
 
 export class Spell extends Item{

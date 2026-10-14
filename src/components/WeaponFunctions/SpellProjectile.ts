@@ -3,7 +3,7 @@ import { Missile } from "./Missile";
 import { Weapon } from "./Weapon";
 import { Target } from "../Target";
 import { BasicEffect } from "../BasicEffect";
-import { Item } from "../GameFunctions/Item";
+import { Item } from "../GameFunctions/Items/Item";
 
 export class SpellProjectile extends Missile{
     public scene: GameScene;
@@ -11,14 +11,17 @@ export class SpellProjectile extends Missile{
     private eScale: number = 1;
     public sfile: string = "";
     public blast: number = 0;
+    public pierce: number = 0;
     private multiplier: number = 1;
     private ref: Item;
+    private stored: number[];
     constructor(scene: GameScene, x: number, y: number, name: string, angle: number, owner: Weapon, ref: Item){
         super(scene,x,y,name,angle);
         this.scene = scene;
         this.owner = owner;
         this.ref = ref;
         this.damage = 100;
+        this.stored = [];
         this.initiateParams();
     }
 
@@ -43,8 +46,15 @@ export class SpellProjectile extends Missile{
 
     processHit(t: Target): void {
         if(!this.deleteFlag){
-            if(t.takeDamage(this.damage)){
-                this.deleteFlag = true;
+            if(t.takeDamage(this.damage) && (!this.stored.includes(t.tID))){
+                if(this.pierce == 0){
+                    this.deleteFlag = true;
+                } else {
+                    if(this.pierce > 0){
+                        this.pierce--;
+                    }
+                    this.stored.push(t.tID);
+                }
                 this.scene.playSound("meme_explosion",0.5);
                 this.scene.addHitEffect(new BasicEffect(this.scene,"exp",this.x,this.y,25,15,false,2,Math.random()*360,[this.eScale,this.eScale]));
             }

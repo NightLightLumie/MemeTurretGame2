@@ -1,18 +1,24 @@
 import { GameScene } from "@/scenes/GameScene";
-import { Player } from "../Player";
+import { Player } from "../../Player";
 
 export class Item {
     protected owner: Player;
     protected key: string;
-    constructor(scene: GameScene, p: Player, name: string){
+    protected level: number;
+    protected maxLevel: number;
+    constructor(scene: GameScene, p: Player, id: string){
         this.owner = p;
-        this.key = name;
+        this.key = id;
     }
     
     update(t: number, d: number){
+    }
+
+    levelUp(){
 
     }
 
+    
 
     //Items: Carry up to 6.
     //Cancel Death: Press x in deathbomb timer to cancel dying. Invuln for 1s. 

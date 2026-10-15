@@ -4,31 +4,14 @@
     {
       "name": "Launch Vite DEV server",
       "request": "launch",
-      "type": "node",
       "runtimeExecutable": "npx",
       "runtimeArgs": ["vite"],
-      "presentation": {
-        "hidden": true
+      "type": "node",
+      "serverReadyAction": {
+        "action": "debugWithChrome",
+        "pattern": "localhost:.*m([0-9]+)",
+        "uriFormat": "http://localhost:%s"
       }
-    },
-    {
-      "name": "Attach Browser",
-      "type": "chrome",
-      "request": "attach",
-      "port": 9222,
-      "url": "http://localhost:5173/*",
-      "webRoot": "${workspaceFolder}/src",
-      "preLaunchTask": "Launch Browser",
-      "presentation": {
-        "hidden": true
-      }
-    }
-  ],
-  "compounds": [
-    {
-      "name": "Debug",
-      "configurations": ["Launch Vite DEV server", "Attach Browser"],
-      "stopAll": true
     }
   ]
 }

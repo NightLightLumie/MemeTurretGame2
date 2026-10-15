@@ -56,11 +56,11 @@ export class Player extends Phaser.GameObjects.Container {
 	public overShield: number = 0;
 	public maxShield: number = 0;
 	public shields: number = 0;
-	public items: Item[];
+	public items: Item[] = [];
 	public itemIndices: number[];
 
 	public curIFrames: number = 0;
-	public maxIFrames: number = 250;
+	public maxIFrames: number = 0;
 
 	public bonusGunDamage: number = 0;
 	public bonusSpellDamage: number = 0;
@@ -71,7 +71,7 @@ export class Player extends Phaser.GameObjects.Container {
 	public maxSpeed: number = MAX_SPEED;
 	
 	public redHP: number = 0;
-	public deferDamage: number = 0.5;
+	public deferDamage: number = 0;
 	public dmgRes: number = 0;
 	public dmgCap: number = 1;
 
@@ -265,12 +265,12 @@ export class Player extends Phaser.GameObjects.Container {
 
 	updateGlobalTickEvents(){
 		if(this.redHP > 0){
-			if(this.redHP < (0.01 * this.maxHP)){
+			if(this.redHP < (0.01*(this.globalTickTimer[1]/1000)*this.maxHP)){
 				this.health += this.redHP;
 				this.redHP = 0;
 			} else {
-				this.health += (0.01*this.maxHP);
-				this.redHP -= (0.01*this.maxHP);
+				this.health += (0.01*(this.globalTickTimer[1]/1000)*this.maxHP);
+				this.redHP -= (0.01*(this.globalTickTimer[1]/1000)*this.maxHP);
 			}
 			if(this.health > this.maxHP){
 				this.health = this.maxHP;
@@ -300,7 +300,7 @@ export class Player extends Phaser.GameObjects.Container {
 
 		if(this.curIFrames > 0){
 			this.curIFrames -= delta;
-			this.sprite.setAlpha(0.75);
+			this.sprite.setAlpha(0.35);
 			if(this.curIFrames <= 0) {
 				this.curIFrames = 0;
 				this.sprite.setAlpha(1);
@@ -383,9 +383,9 @@ export class Player extends Phaser.GameObjects.Container {
 		if(((this.health/this.maxHP) <= 0.65) && ((this.health/this.maxHP) > 0.3)) {
 			this.hpBar.fillColor = 0xFFFF00;
 		} else if (((this.health/this.maxHP) <= 0.3)) {
-			this.hpBar.fillColor = 0xFF0000;
-		} else {
 			this.hpBar.fillColor = 0xFF8900;
+		} else {
+			this.hpBar.fillColor = 0x00FF00;
 		}
 	}
 

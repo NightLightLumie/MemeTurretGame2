@@ -141,6 +141,7 @@ const images: Image[] = [
 	image('spells/arcanemissile', 'arcaneshot'),
 	image('spells/greenparticle', 'greenparticle'),
 	image('spells/greensq', 'greensq'),
+	image('spells/firesq', 'firesq'),
 	// Enemies
 	image('enemies/enemy_1', 'enemy_1'),
 	image('enemies/fragments/e1/f1-0', 'f1-0'),
@@ -191,6 +192,7 @@ const spritesheets: SpriteSheet[] = [
 	spritesheet("items/boxlight", "boxlight", 720, 600),
 	spritesheet("anims/boneattack", "boneattack", 128, 128),
 	spritesheet("anims/lava", "lava", 256, 256),
+	spritesheet("anims/fireshot", "fireshot", 320, 280),
 ];
 
 /* Audios */

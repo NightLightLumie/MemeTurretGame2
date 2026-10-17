@@ -17,6 +17,10 @@ export class Missile extends Phaser.GameObjects.Container{
     public globalDamageScale: number = 0;
     protected spin: number = 0;
     protected vscale: number = 0;
+    protected doAnim: boolean = false;
+    protected fLen: number[] = [0,100,0];
+    protected maxFrames: number = 0;
+    protected trail: Phaser.GameObjects.Particles.ParticleEmitter;
     constructor(scene: GameScene, x: number, y: number, name: string, angle: number, vscale: number = 1){
         super(scene,x,y);
         this.scene = scene;
@@ -39,10 +43,27 @@ export class Missile extends Phaser.GameObjects.Container{
     }
 
     update(t: number, d: number){
+        if(this.doAnim){
+            this.updateAnim(t,d);
+        }
         this.x += this.v[0]*(d/1000);
         this.y += this.v[1]*(d/1000);
         this.spr.angle += this.spin*(d/1000);
         this.checkBounds();
+    }
+
+    updateAnim(t: number, d: number){
+        if(this.fLen[0] < this.fLen[1]){
+            this.fLen[0] += d;
+            if(this.fLen[0] >= this.fLen[1]){
+                this.fLen[0] = 0;
+                this.fLen[2] += 1;
+                if(this.fLen[2] >= this.maxFrames){
+                    this.fLen[2] = 0;
+                }
+                this.spr.setFrame(this.fLen[2]);
+            }
+        }
     }
 
     checkBounds(){

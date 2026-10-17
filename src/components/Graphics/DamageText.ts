@@ -77,14 +77,14 @@ export class DamageText extends Effect{
                 break;
             } case "stack": {
                 size = 60;
-                color1 = "aqua";
+                color1 = "dodgerblue";
                 color2 = "white";
                 flash = true;
                 break;
             } case "spell": {
                 size = 60;
-                color1 = "hotpink";
-                color2 = "lightpink";
+                color1 = "mediumturquoise";
+                color2 = "hotpink";
                 flash = true;
                 break;
             } default: {

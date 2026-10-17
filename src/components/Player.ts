@@ -214,7 +214,7 @@ export class Player extends Phaser.GameObjects.Container {
 		this.rhpBar.setDepth(8);
 		this.hpBar.setDepth(9);
 		this.curGunAngle = 0;
-		this.items.push(new ArcaneMissile(this.scene,this,"Arcane Missile"));
+		this.items.push(new Fireball(this.scene,this,"Explosive Magazine"));
 	}
 
 	setDefaultLoadout(){

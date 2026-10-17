@@ -2,8 +2,9 @@ import { GameScene } from "@/scenes/GameScene";
 import { Missile } from "./Missile";
 import { Weapon } from "./Weapon";
 import { Target } from "../Target";
-import { BasicEffect } from "../BasicEffect";
+import { BasicEffect } from "../Graphics/BasicEffect";
 import { Item } from "../GameFunctions/Items/Item";
+import { DamageText } from "../Graphics/DamageText";
 
 export class SpellProjectile extends Missile{
     public scene: GameScene;
@@ -15,13 +16,18 @@ export class SpellProjectile extends Missile{
     private multiplier: number = 1;
     private ref: Item;
     private stored: number[];
-    constructor(scene: GameScene, x: number, y: number, name: string, angle: number, owner: Weapon, ref: Item){
-        super(scene,x,y,name,angle);
+    private effectName: string;
+    private boom: boolean;
+    private hitScale: number[] = [1,1];
+    constructor(scene: GameScene, x: number, y: number, name: string, angle: number, owner: Weapon, ref: Item, vscale: number = 1){
+        super(scene,x,y,name,angle, vscale);
         this.scene = scene;
         this.owner = owner;
         this.ref = ref;
         this.damage = 100;
         this.stored = [];
+        this.effectName = "spellhitpink";
+        this.boom = false;
         this.initiateParams();
     }
 
@@ -30,11 +36,34 @@ export class SpellProjectile extends Missile{
             case "fireball": {
                 this.v[0] *= 1800;
                 this.v[1] *= 1800;
-                this.damage = this.owner.damage;
+                this.damage = this.ref.fetchItemData()[0];
                 this.radius = 18;
+                this.pierce = 0;
+                this.effectName = "spellhitorange";
+                this.boom = true; 
                 break;
-            }
-             default: {
+            } case "starshot": {
+                this.v[0] *= 1600;
+                this.v[1] *= 1600;
+                this.damage = this.ref.fetchItemData()[0];
+                this.pierce = -1;
+                this.radius = 120;
+                this.spr.setScale(2);
+                this.spin = -720 + (Math.random()*1440);
+                this.effectName = "spellhitblue";
+                this.boom = false; 
+                break;
+            } case "arrow": {
+                let k = (Math.random()*800);
+                this.v[0] *= 2800+k;
+                this.v[1] *= 2800+k;
+                this.damage = this.ref.fetchItemData()[0];
+                this.radius = 20;
+                this.pierce = 3;
+                this.effectName = "spellhitshadow";
+                this.boom = false; 
+                break;
+            } default: {
                 break;
             }
         }
@@ -44,9 +73,18 @@ export class SpellProjectile extends Missile{
         
     }
 
+
+    hitCheck(t: Target){
+        let r = this.targetDist(t);
+        if(r < (this.radius+t.radius)){
+            this.processHit(t);
+        }
+    }
     processHit(t: Target): void {
         if(!this.deleteFlag){
-            if(t.takeDamage(this.damage) && (!this.stored.includes(t.tID))){
+            if(this.stored.includes(t.tID)){
+                return;
+            } else if(t.takeDamage(this.damage)){
                 if(this.pierce == 0){
                     this.deleteFlag = true;
                 } else {
@@ -55,8 +93,14 @@ export class SpellProjectile extends Missile{
                     }
                     this.stored.push(t.tID);
                 }
-                this.scene.playSound("meme_explosion",0.5);
-                this.scene.addHitEffect(new BasicEffect(this.scene,"exp",this.x,this.y,25,15,false,2,Math.random()*360,[this.eScale,this.eScale]));
+                if(this.boom){
+                    this.scene.playSound("meme_explosion",0.5);
+                    this.scene.addHitEffect(new BasicEffect(this.scene,"exp",this.x,this.y,25,15,false,2,Math.random()*360,[this.eScale,this.eScale]));
+                }
+                this.scene.addHitEffect(new BasicEffect(this.scene,this.effectName,t.x,t.y,3,100,false,0,Math.random()*360,this.hitScale));
+                this.scene.addHitEffect(new DamageText(this.scene,t.x+(-40+(Math.random()*80)),t.y+(-40+(Math.random()*80)),""+this.damage, "spell"));
+
+
             }
 
         }

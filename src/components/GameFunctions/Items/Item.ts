@@ -1,21 +1,43 @@
 import { GameScene } from "@/scenes/GameScene";
 import { Player } from "../../Player";
+import { ItemTile } from "./ItemTile";
 
-export class Item {
+export class Item extends Phaser.Events.EventEmitter{
     protected owner: Player;
-    protected key: string;
-    protected level: number;
-    protected maxLevel: number;
+    public key: string;
+    protected level: number = 0;
+    protected maxLevel: number = 10;
+    public scene: GameScene;
+    public gfx: ItemTile;
+    public value: number;
+    public cooldown: number = 1;
+    public maxCD: number = 1;
+    public tileType: string = "item_gr";
     constructor(scene: GameScene, p: Player, id: string){
+        super();
         this.owner = p;
         this.key = id;
+        this.scene = scene;
+        this.value = 0;
     }
     
     update(t: number, d: number){
     }
 
+    addEffect(){
+
+    }
+
     levelUp(){
 
+    }
+
+    setCooldown(): boolean{
+        return false;
+    }
+
+    fetchItemData(): number[]{
+        return [0,0,0,0,0,0];
     }
 
     

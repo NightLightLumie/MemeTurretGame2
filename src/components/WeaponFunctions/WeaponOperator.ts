@@ -72,11 +72,27 @@ export class WeaponOperator{
     }
 
     copyParam(w: WeaponParams): WeaponParams {
-        return {
-            type:w.type,name:w.name,class:w.class, dmg:w.dmg, spd:w.spd, rof:w.rof, spcd:w.spcd, shots:w.shots, pen:w.pen, pcd:w.pcd, clip:w.clip, load:w.load,
-             width:w.width, rad:w.rad, acc:w.acc, arpen:w.arpen, crit:w.crit, ele:w.ele, onhit:w.onhit, weight: w.weight, rarity: w.rarity, dot: w.dot, augs:w.augs, customaug:w.customaug, passives: w.passives};
+        return structuredClone(w);
     }
 
+
+
+
+
+    /*
+        handleOverflow(){
+        this.overflow = Math.abs(this.overflow);
+        if(this.overflow > (this.maxCD*1000)){
+            this.stored += Math.trunc(this.overflow/(this.maxCD*1000));
+            this.overflow -= (this.stored*this.maxCD*1000);
+            this.cooldown = (this.maxCD*1000) - this.overflow;
+            if(this.cooldown < 0){
+                this.cooldown = 0.0001;
+            }
+            this.overflow = 0;
+        }
+    }
+    */
 
     fire(a:number, w: Weapon){
         if(w.bursts.length > 0){
@@ -88,7 +104,7 @@ export class WeaponOperator{
         }
     }
 
-    shoot(a:number, w: Weapon, recur: boolean = false, unsafe: boolean = false){
+    shoot(a:number, w: Weapon, recur: boolean = false, unsafe: boolean = false, index: number = 0){
         if(!unsafe){
             if(!w.canShoot()){
                 return;
@@ -97,14 +113,17 @@ export class WeaponOperator{
 
         
         if((!recur) && (w.curAmmo >= 2)){ //take care of overflow shots, if the firing interval is lower than the tick rate of the computer
-            if((w.stored > 0) && (w.curAmmo >= 2)) {
+            if((w.stored > 0)) {
                 let rr = w.stored;
                 console.log("STORED SHOTS: " + w.stored);
                 for(let n = 0; n < rr; n++) {
-                    this.shoot(a,w,true,false);
+                    if((w.curAmmo >= 2)){
+                        this.shoot(a,w,true,false);
+                    }
                 }
             }
             w.updateCooldown(); //DO NOT MOVE ME - here so it skips cooldown update for extra shots to not make them fail
+            this.p.trackShots++; //Don't track overflow shots, avoid weirdness
         } else {
             w.stored -= 1;
         }

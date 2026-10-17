@@ -1,8 +1,8 @@
 import { GameScene } from "@/scenes/GameScene";
 import { Enemy } from "./Enemy";
-import { BasicEffect } from "./BasicEffect";
+import { BasicEffect } from "./Graphics/BasicEffect";
 //import { TurretParams } from "./PowerUpHandler";
-import { TextEffect } from "./TextEffect";
+import { TextEffect } from "./Graphics/TextEffect";
 export interface ProjectileParams {
     velocity: number;
     radius: number;

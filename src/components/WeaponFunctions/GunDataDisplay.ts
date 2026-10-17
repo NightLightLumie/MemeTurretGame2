@@ -1,6 +1,7 @@
 import { BaseScene } from "@/scenes/BaseScene";
 import { UpgradeScene } from "@/scenes/UpgradeScene";
 import { WeaponEntry } from "./Armory";
+import { WeaponFrame } from "./WeaponFrame";
 import { WeaponParams } from "./WeaponOperator";
 import { Weapon } from "./Weapon";
 
@@ -123,7 +124,7 @@ export class GunDataDisplay extends Phaser.GameObjects.Container{
     xredraw(tmp:WeaponEntry): WeaponEntry{
         let e = this.scene.masterData.getGunParams(tmp);
         let ag = this.scene.masterData.inv.augmentToArray(tmp.augs);
-        let wp = new Weapon(this.scene,e,tmp.augs)
+        let wp = new WeaponFrame(this.scene,e,tmp.augs)
         this.ndisp.setText(e.name);
         let dtg = ""
         if(e.shots == 1){

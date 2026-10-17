@@ -3,6 +3,12 @@ import { WeaponDisplay } from "./WeaponDisplay";
 import { Bullet } from "./WeaponFunctions/Bullet";
 import { Weapon } from "./WeaponFunctions/Weapon";
 import { Item } from "./GameFunctions/Items/Item";
+import { Fireball } from "./GameFunctions/Items/Fireball";
+import { ScalingEffect } from "./Graphics/ScalingEffect";
+import { StarPrism } from "./GameFunctions/Items/StarPrism";
+import { ArrowRaid } from "./GameFunctions/Items/ArrowRaid";
+import { RuneCircle } from "./GameFunctions/Items/RuneCircle";
+import { ArcaneMissile } from "./GameFunctions/Items/ArcaneMissile";
 
 const ACCELERATION = 350;
 const MAX_SPEED = 500;
@@ -12,6 +18,11 @@ const TAPPING_TIMER = 200; // ms
 
 //
 //
+export interface ShieldSource{
+	source: Item;
+	amount: number;
+	duration: number;
+}
 
 export class Player extends Phaser.GameObjects.Container {
 	public scene: GameScene;
@@ -41,6 +52,7 @@ export class Player extends Phaser.GameObjects.Container {
 	private cd: number = 0;
 	private maxCD: number = 250;
 	private gfx: Phaser.GameObjects.Graphics;
+	public curGunAngle: number;
 
 
 //Spell modifiable variables
@@ -53,11 +65,20 @@ export class Player extends Phaser.GameObjects.Container {
 	public bonusHP: number = 0;
 	public maxHP: number = 1000;
 	public health: number = 1000;
-	public overShield: number = 0;
+
+	public shieldList: ShieldSource[];
+	public pShield: number[] = [0,0];
 	public maxShield: number = 0;
 	public shields: number = 0;
+
+	public sashed: boolean = false;
+	public reactive: boolean = false;
+
+	public trackShots: number = 0;
+	public dmgTracker: boolean[] = [false,false];
+
 	public items: Item[] = [];
-	public itemIndices: number[];
+	public itemKeys: string[];
 
 	public curIFrames: number = 0;
 	public maxIFrames: number = 0;
@@ -77,6 +98,11 @@ export class Player extends Phaser.GameObjects.Container {
 
 	public smite: number = 0;
 	public execute: number = 0;
+	public cancelTime: number = 250;
+	public killThisTick: boolean = false;
+	public distanceElapsed: number = 0;
+
+	public defaultItem: Item;
 
 	public loadout: [Weapon,Weapon,Weapon];
 	public activeWeapon: number = 0;
@@ -93,6 +119,7 @@ export class Player extends Phaser.GameObjects.Container {
 		this.scene = scene;
 
 		/* Sprite */
+		this.shieldList = [];
 		this.spriteSize = 200;
 		this.sprite = this.scene.add.sprite(0, 0, "turretbase");
 		this.hbox = this.scene.add.sprite(0, 0, "heart");
@@ -134,6 +161,8 @@ export class Player extends Phaser.GameObjects.Container {
 				scrollforward: "E",
 				tracer: "T",
 				cleartracer: "T",
+				canceldeath: "X",
+				reload: "R",
 			});
 			this.scene.input.keyboard
 				.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE)
@@ -150,6 +179,12 @@ export class Player extends Phaser.GameObjects.Container {
 			this.scene.input.keyboard
 				.addKey(Phaser.Input.Keyboard.KeyCodes.Y)
 				.on("down", this.clearTracer, this);
+			this.scene.input.keyboard
+				.addKey(Phaser.Input.Keyboard.KeyCodes.X)
+				.on("down", this.cancelDeath, this);
+			this.scene.input.keyboard
+				.addKey(Phaser.Input.Keyboard.KeyCodes.R)
+				.on("down", this.forceReload, this);	
 		}
 		this.isTouched = false;
 		this.isTapped = false;
@@ -178,6 +213,8 @@ export class Player extends Phaser.GameObjects.Container {
 		this.hbox.setDepth(7);
 		this.rhpBar.setDepth(8);
 		this.hpBar.setDepth(9);
+		this.curGunAngle = 0;
+		this.items.push(new ArcaneMissile(this.scene,this,"Arcane Missile"));
 	}
 
 	setDefaultLoadout(){
@@ -218,6 +255,17 @@ export class Player extends Phaser.GameObjects.Container {
 		} else if(this.maxIFrames > 0){
 			this.curIFrames = this.maxIFrames;
 		}
+
+		if(this.reactive){
+			let rb = this.findItem("Reactive Barrier");
+			if(rb.setCooldown()){
+				this.reactive = false;
+				this.scene.simpleExplode(rb.fetchItemData()[0]*n,this.x,this.y,400,"spell");
+				this.scene.addHitEffect(new ScalingEffect(this.scene, this.x, this.y, "barrierboom", 250, Math.random()*360,0,[1,0.01],[0.9,0.4]));
+			}
+		}
+
+		this.emit("ouch");
 		//adjust damage prior to stuff like reactive barrier
 		if(this.dmgRes > 0){
 			n *= (1-this.dmgRes);
@@ -247,10 +295,21 @@ export class Player extends Phaser.GameObjects.Container {
 	}
 
 	takeDamage(n: number){
+		if((this.sashed) && (n >= this.health)){
+			let itm = this.findItem("Focus Sash");
+			if((this.health/this.maxHP) > itm.value){
+				if(itm.setCooldown()){
+					n = this.health-1;
+				}
+			}
+		}
 		this.redHP = 0;
 		if(this.deferDamage > 0){
-			this.redHP += n*this.deferDamage;
-			n -= (n*this.deferDamage);
+			if(n<this.health){
+				this.redHP += n*this.deferDamage;
+			} else {
+				this.redHP += this.health*this.deferDamage;
+			}
 		}
 		this.health -= n;
 		if(this.health <= 0){ 
@@ -261,6 +320,25 @@ export class Player extends Phaser.GameObjects.Container {
 
 	die(){
 		this.scene.die();
+	}
+
+	findItem(key: string): Item {
+		for(let p = 0; p < this.items.length; p++){
+			if(this.items[p].key == key){
+				return this.items[p];
+			}
+		}
+		return this.defaultItem;
+
+	}
+
+	cancelDeath(){
+		if(this.itemKeys.includes("Cancel Death")){
+			if(this.findItem("Cancel Death").setCooldown()){
+				this.scene.cancelDie();
+				let n = 0;
+			}
+		}
 	}
 
 	updateGlobalTickEvents(){
@@ -276,6 +354,14 @@ export class Player extends Phaser.GameObjects.Container {
 				this.health = this.maxHP;
 			}
 		}
+	}
+
+	getGunPos(): number[]{
+		return[];
+	}
+
+	getGunAngle(): number{
+		return 0;
 	}
 
 	update(time: number, delta: number) {
@@ -312,8 +398,8 @@ export class Player extends Phaser.GameObjects.Container {
         const pointer = this.scene.input.activePointer;
         const worldX = this.scene.cameras.main.getWorldPoint(pointer.x, pointer.y).x;
         const worldY = this.scene.cameras.main.getWorldPoint(pointer.x, pointer.y).y;
-		let a = Math.atan2((worldY-this.y),(worldX-this.x));
-		this.wpDisp.update(time,delta,a);
+		this.curGunAngle = Math.atan2((worldY-this.y),(worldX-this.x));
+		this.wpDisp.update(time,delta,this.curGunAngle);
 		// Movement
 		this.handleInput();
 
@@ -327,7 +413,7 @@ export class Player extends Phaser.GameObjects.Container {
 			this.loadout[this.activeWeapon].update(time,delta);
 		}
 		if(this.firing) {
-			this.scene.handler.shoot(a,this.getActiveWeapon());
+			this.scene.handler.shoot(this.curGunAngle,this.getActiveWeapon());
 		}
 
 		this.inputVec.limit(1);
@@ -349,13 +435,16 @@ export class Player extends Phaser.GameObjects.Container {
 			this.velocity.add(this.inputVec);
 			this.velocity.limit(this.maxSpeed);
 		}
+		let xr = this.x;
+		let yr = this.y;
 
 		this.x += (this.velocity.x*this.spMod * delta) / 1000;
 		this.y += (this.velocity.y*this.spMod * delta) / 1000;
 
+		this.distanceElapsed = Math.abs(Math.sqrt(Math.pow(this.x-xr, 2)+Math.pow(this.y-yr, 2)));
 
 		this.updateItems(time,delta);
-
+		this.trackShots = 0;
 		// Border collision
 		this.checkBounds();
 
@@ -395,6 +484,11 @@ export class Player extends Phaser.GameObjects.Container {
 				i.update(t,d);
 			})
 		}
+	}
+
+	forceReload(){
+		this.loadout[this.activeWeapon].startReload();
+		this.emit("startReload");
 	}
 
 	scrollForward(){

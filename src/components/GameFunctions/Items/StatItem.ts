@@ -5,6 +5,7 @@ import { Player } from "@/components/Player";
 export class StatItem extends Item{
     constructor(scene:GameScene, p: Player, id: string, slot: number){
         super(scene, p, id);
+        this.addEffect();
     }
 
     update(t: number, d: number){

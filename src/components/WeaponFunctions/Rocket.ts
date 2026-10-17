@@ -2,7 +2,7 @@ import { GameScene } from "@/scenes/GameScene";
 import { Missile } from "./Missile";
 import { Weapon } from "./Weapon";
 import { Target } from "../Target";
-import { BasicEffect } from "../BasicEffect";
+import { BasicEffect } from "../Graphics/BasicEffect";
 
 export class Rocket extends Missile{
     public scene: GameScene;
@@ -11,8 +11,8 @@ export class Rocket extends Missile{
     public sfile: string = "";
     public blast: number = 0;
     private multiplier: number = 1;
-    constructor(scene: GameScene, x: number, y: number, name: string, angle: number, owner: Weapon){
-        super(scene,x,y,name,angle);
+    constructor(scene: GameScene, x: number, y: number, name: string, angle: number, owner: Weapon, vscale: number = 1){
+        super(scene,x,y,name,angle, vscale);
         this.scene = scene;
         this.owner = owner;
         this.damage = this.owner.damage;
@@ -20,6 +20,8 @@ export class Rocket extends Missile{
     }
 
     initiateParams(){
+        this.globalDamageScale = 1+this.scene.player.bonusGunDamage;
+        this.damage *= this.globalDamageScale;
         switch(this.owner.wp.type){
             case 6: {
                 this.v[0] *= this.owner.wp.spd;

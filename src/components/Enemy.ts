@@ -1,6 +1,6 @@
 import { GameScene } from "@/scenes/GameScene";
-import { BasicEffect } from "./BasicEffect";
-import { TextEffect } from "./TextEffect";
+import { BasicEffect } from "./Graphics/BasicEffect";
+import { TextEffect } from "./Graphics/TextEffect";
 import { EnemyProjectile, EnemyBulletParam } from "./EnemyProjectile";
 import { Projectile } from "./Projectile";
 import { GibEffect } from "./GibEffect";

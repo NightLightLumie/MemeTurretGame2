@@ -1,5 +1,5 @@
 import { BaseScene } from "@/scenes/BaseScene";
-import { Effect } from "./Effect";
+import { Effect } from "./Graphics/Effect";
 
 export class GibEffect extends Effect {
     private t: number[] = [5000,5000];

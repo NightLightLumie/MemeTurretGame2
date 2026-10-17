@@ -1,6 +1,6 @@
 import { GameScene } from "@/scenes/GameScene";
 import { Player } from "../Player";
-import { BasicEffect } from "../BasicEffect";
+import { BasicEffect } from "../Graphics/BasicEffect";
 import { Target } from "../Target";
 
 export class Missile extends Phaser.GameObjects.Container{
@@ -14,14 +14,18 @@ export class Missile extends Phaser.GameObjects.Container{
     protected hitAnimFrames: number = 3;
     public deleteFlag: boolean = false; 
     public vangle: number = 0;
-    constructor(scene: GameScene, x: number, y: number, name: string, angle: number){
+    public globalDamageScale: number = 0;
+    protected spin: number = 0;
+    protected vscale: number = 0;
+    constructor(scene: GameScene, x: number, y: number, name: string, angle: number, vscale: number = 1){
         super(scene,x,y);
         this.scene = scene;
         this.spr = this.scene.add.sprite(0,0,name);
         this.add(this.spr);
         this.key = name;
-        this.v = [Math.cos(angle),Math.sin(angle)];
+        this.v = [vscale*Math.cos(angle),vscale*Math.sin(angle)];
         this.vangle = angle;
+        this.vscale = vscale;
         //console.log("BULLET ANGLE: " + this.angle);
         this.setAngle(this.vangle*(180/Math.PI));
     }
@@ -37,6 +41,7 @@ export class Missile extends Phaser.GameObjects.Container{
     update(t: number, d: number){
         this.x += this.v[0]*(d/1000);
         this.y += this.v[1]*(d/1000);
+        this.spr.angle += this.spin*(d/1000);
         this.checkBounds();
     }
 

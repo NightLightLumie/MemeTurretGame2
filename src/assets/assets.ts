@@ -132,6 +132,15 @@ const images: Image[] = [
 	image('weapons/blank', 'blank'),
 	image('weapons/stackcircle', 'stackcircle'),
 
+	// Static Anims
+	image('spells/redring', 'redring'),
+	image('spells/barrierboom', 'barrierboom'),
+	image('spells/starshot', 'starshot'),
+	image('spells/arrow', 'arrow'),
+	image('spells/bigrune', 'bigrune'),
+	image('spells/arcanemissile', 'arcaneshot'),
+	image('spells/greenparticle', 'greenparticle'),
+	image('spells/greensq', 'greensq'),
 	// Enemies
 	image('enemies/enemy_1', 'enemy_1'),
 	image('enemies/fragments/e1/f1-0', 'f1-0'),
@@ -165,6 +174,10 @@ const spritesheets: SpriteSheet[] = [
 	spritesheet("enemies/enemy_2", "enemy_2", 360, 360),
 	spritesheet("anims/hit_spark", "hit_spark", 128, 128),
 	spritesheet("anims/hit_purple", "hit_purple", 128, 128),
+	spritesheet("anims/spellhitpink", "spellhitpink", 200, 200),
+	spritesheet("anims/spellhitblue", "spellhitblue", 200, 200),
+	spritesheet("anims/spellhitorange", "spellhitorange", 200, 200),
+	spritesheet("anims/spellhitshadow", "spellhitshadow", 200, 200),
 	spritesheet("ui/aug", "aug", 48, 64),
 	spritesheet("ui/aug_extra", "aug_extra", 48, 64),
 	spritesheet("ui/aug_button_frame", "aug_button_frame", 64, 64),
@@ -177,6 +190,7 @@ const spritesheets: SpriteSheet[] = [
 	spritesheet("ui/nxtscene", "nxtscene", 300, 200),
 	spritesheet("items/boxlight", "boxlight", 720, 600),
 	spritesheet("anims/boneattack", "boneattack", 128, 128),
+	spritesheet("anims/lava", "lava", 256, 256),
 ];
 
 /* Audios */

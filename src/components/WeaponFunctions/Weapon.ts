@@ -1,5 +1,7 @@
 import { BaseScene } from "@/scenes/BaseScene";
+import { GameScene } from "@/scenes/GameScene";
 import { WeaponOperator, WeaponParams } from "./WeaponOperator";
+import { emit } from "node:cluster";
 //10 upgrade slots
 //up to 3, +1 for augmentation
 //level goes to 10, + 13 for augmentation
@@ -28,12 +30,13 @@ export interface BurstTracker{
     maxCD: number;
     special: boolean;
     ignoreAmmo: boolean;
+    overflow: number;
     stored: number;
 }
 
-export class Weapon {
+export class Weapon extends Phaser.Events.EventEmitter{
 
-    public scene: BaseScene;
+    public scene: GameScene;
     public active: boolean = false;
     public bursts: BurstTracker[];
     public type: number;
@@ -97,7 +100,8 @@ export class Weapon {
     public shots: number = 1;
 
 
-    constructor(scene: BaseScene, wp: WeaponParams, augments: Augment[] = []){
+    constructor(scene: GameScene, wp: WeaponParams, augments: Augment[] = []){
+        super();
         this.scene = scene;
         this.wp = wp;
         this.augs = augments;
@@ -197,7 +201,7 @@ export class Weapon {
                 this.killtracker = [0,8];
                 this.maxCD = 1000/(this.rof*(1+0.1+(0.05*this.killtracker[2])));
                 break;
-            } case "Snaggletooth": {
+            } case "Snaggletooths036": {
                 this.pvalue[0] += 0.5
                 this.pvalue[1] += 0.35;
                 break;
@@ -311,6 +315,7 @@ export class Weapon {
                     this.loadTime = 0;
                     this.loading = false;
                     this.curAmmo = this.maxAmmo;
+                    this.scene.player.emit("finishReload");
                 }
             }
         }
@@ -338,9 +343,16 @@ export class Weapon {
     updateAmmo(n: number){
         this.curAmmo -= n;
         if(this.curAmmo <= 0){
+            this.startReload();
+        }
+    }
+
+    startReload(){
+        if((!this.loading) && (this.curAmmo < this.maxAmmo)){
             this.scene.sound.play("start_reload", {volume:0.75});
             this.loadTime = this.maxLoad;
             this.loading = true;
+            this.scene.player.emit("startReload");
         }
     }
 

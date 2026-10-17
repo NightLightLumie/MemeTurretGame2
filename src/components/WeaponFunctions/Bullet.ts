@@ -5,7 +5,7 @@
 import { GameScene } from "@/scenes/GameScene";
 import { Vector } from "matter";
 import { Target } from "../Target";
-import { BasicEffect } from "../BasicEffect";
+import { BasicEffect } from "../Graphics/BasicEffect";
 import { HitInfo } from "./WeaponOperator";
 import { Tracer } from "./Tracer";
 import { Weapon } from "./Weapon";
@@ -76,6 +76,8 @@ export class Bullet extends Phaser.GameObjects.Container{
 
     public repeat: number = 0;
 
+    public globalDamageScale: number = 0;
+
     public cmds: BonusCommand[] = [];
 
     constructor(scene:GameScene,x:number,y:number, wp: number, v:number,a:number,dmg: number, pen: number, own: Weapon, cmds: BonusCommand[] = []){
@@ -114,6 +116,9 @@ export class Bullet extends Phaser.GameObjects.Container{
         });
         this.calculateCrit();
         this.calculateDirectHit();
+        this.globalDamageScale = 1+this.scene.player.bonusGunDamage;
+
+        this.dmg *= this.globalDamageScale;
         //add to display done in game for layer reasons
 
     }
@@ -431,9 +436,10 @@ export class Bullet extends Phaser.GameObjects.Container{
             } else {
                 b = "onhit";
             }
-            if(this.thits[n].tg.takeDamage(this.owner.onHit)){
+            //need to scale onhit damage here as it's not included up top
+            if(this.thits[n].tg.takeDamage(this.owner.onHit*this.globalDamageScale)){
                 tr = "";
-                tr += this.owner.onHit;
+                tr += (this.owner.onHit*this.globalDamageScale).toFixed(1);
                 ofsx = -20+Math.random()*40;
                 ofsy = -20+Math.random()*40;
                 this.scene.addHitEffect(new DamageText(this.scene,this.hX+ofsx,this.hY+ofsy,tr,b));

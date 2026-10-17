@@ -4,7 +4,7 @@ import { Player } from "@/components/Player";
 import { UI } from "@/components/UI";
 import { Bullet } from "@/components/WeaponFunctions/Bullet";
 import { LineSegment } from "@/components/WeaponFunctions/LineSegment";
-import { Effect } from "@/components/Effect";
+import { Effect } from "@/components/Graphics/Effect";
 import { Target } from "@/components/Target";
 import { Thug } from "@/components/Thug";
 import { WeaponOperator } from "@/components/WeaponFunctions/WeaponOperator";
@@ -21,7 +21,7 @@ import { NextSceneButton } from "@/components/GameFunctions/NextSceneButton";
 import { EnemyBullet } from "@/components/EnemyBullet";
 import { Ufo } from "@/components/Enemies/Ufo";
 import { Missile } from "@/components/WeaponFunctions/Missile";
-import { TextEffect } from "@/components/TextEffect";
+import { TextEffect } from "@/components/Graphics/TextEffect";
 
 export class GameScene extends BaseScene {
 	private background: Phaser.GameObjects.Image;
@@ -74,13 +74,16 @@ export class GameScene extends BaseScene {
 	private upgrading: boolean = false;
 	private dead: boolean = false;
 	private stageMusic: Phaser.Sound.WebAudioSound;
-	private dTimer: number[] = [250,250];
+	public dbTimer: number[] = [250,250];
+	private dbScreen: Phaser.GameObjects.Rectangle;
 	private eTimer: number[] = [1000,1000];
 	private ended: boolean = false;
 	private zoom: number[] = [0.5,0.5];
 	public enemyCap: number = 500;
 	public score: number = 0;
 	public difficulty: number = 0;
+	public closestTarget: Target | null;
+	public closestDist: number = 999999;
 
 	private nextButton: NextSceneButton;
 
@@ -113,11 +116,17 @@ export class GameScene extends BaseScene {
 		this.endScreen.setDepth(100);
 		this.endScreen.setAlpha(0);
 
+		this.dbScreen = this.add.rectangle(0,0,2120,1280,0xff0000,1);
+		this.dbScreen.setOrigin(0.5,0.5);
+		this.dbScreen.setScale(2);
+		this.add.existing(this.dbScreen);
+		this.dbScreen.setVisible(false);
+		this.dbScreen.setDepth(99);
+
 		this.cameras.main.setBounds(-5000,-5000,10000,10000);
 		this.cameras.main.setZoom(this.zoom[0],this.zoom[1]);
 		this.cameras.main.setPosition(0,0);
 		this.chunks = new TileChecker([-6200,6200], [-6200,6200],[250,250]);
-
 
 		this.tyText = this.addText({
 			x: 0,
@@ -217,6 +226,7 @@ export class GameScene extends BaseScene {
 
 	resetVariables(){
 		super.resetVariables();
+		this.tracing = false;
 		this.paused = false;
 		this.dead = false;
 		this.eTimer = [1000,1000];
@@ -224,6 +234,7 @@ export class GameScene extends BaseScene {
 		this.enemyCap = 500;
 		this.score = 0;
 		this.difficulty = 0;
+		this.dbTimer = [250,250];
 	}
 
 	initiateTestObjects(){
@@ -254,7 +265,30 @@ export class GameScene extends BaseScene {
 		this.dead = true;
 		this.paused = true;
 		this.endScreen.setPosition(this.player.x,this.player.y);
+		this.dbScreen.setPosition(this.player.x,this.player.y);
+		this.dbScreen.setVisible(true);
 		this.sound.play("turret_dead", {volume: 0.5});
+	}
+	
+	cancelDie(): boolean {
+		if((this.dbTimer[0] > 0) && (this.dbTimer[0] < this.dbTimer[1])){
+			this.dbScreen.setVisible(false);
+			this.dbScreen.setAlpha(1);
+			this.dead = false;
+			this.paused = false;
+			this.eTimer[0] = this.eTimer[1];
+			this.dbTimer[0] = this.dbTimer[1];
+			this.player.curIFrames += 1000;
+			return true;
+		} else {
+			return false;
+		}
+
+	}
+
+	swapToDeathScreen(){
+		this.dbScreen.setVisible(false);
+		this.dbScreen.setAlpha(0);
 		this.swapMusic("m_gameover");
 		this.sound.play("darksouls", {volume:0.5});
 		this.nextButton.setPosition(this.player.x, this.player.y + 600);
@@ -262,12 +296,19 @@ export class GameScene extends BaseScene {
 	}
 
 	update(time: number, delta: number) {
-
 		const pointer = this.input.activePointer;
 		const worldX = this.cameras.main.getWorldPoint(pointer.x, pointer.y).x;
  		const worldY = this.cameras.main.getWorldPoint(pointer.x, pointer.y).y;
 		if(this.dead){
-			if(this.eTimer[0] > 0){
+			if(this.dbTimer[0] > 0){
+				this.dbTimer[0] -= delta;
+				if(this.dbTimer[0] <= 0){
+					this.dbTimer[0] = 0;
+					this.swapToDeathScreen();
+				} else {
+					this.dbScreen.setAlpha(this.dbTimer[0]/this.dbTimer[1]);
+				}
+			} else if (this.eTimer[0] > 0){
 				this.eTimer[0] -= delta;
 				if(this.eTimer[0] <= 0){
 					this.eTimer[0] = 0;
@@ -372,6 +413,8 @@ export class GameScene extends BaseScene {
 	}
 
 	updateTargets(t:number,d:number){
+		this.closestDist = 999999;
+		this.closestTarget = null;
 		this.chunks.clear();
 		for(let i = (this.tList.length-1); i >= 0; i--){
 			this.tList[i].update(t, d);
@@ -381,6 +424,10 @@ export class GameScene extends BaseScene {
 			} else {
 				this.tList[i].mychunk = [Math.trunc(this.tList[i].x/this.chunks.divider[0]), Math.trunc(this.tList[i].y/this.chunks.divider[1])];
 				this.chunks.index(this.tList[i]);
+				if(this.tList[i].playerDist() < this.closestDist){
+					this.closestDist = this.tList[i].playerDist();
+					this.closestTarget = this.tList[i];
+				}
 			}
 		}
 	}
@@ -566,12 +613,12 @@ export class GameScene extends BaseScene {
 		}
 	}
 	
-	simpleExplode(dmg: number, x:number, y:number, radius:number){
+	simpleExplode(dmg: number, x:number, y:number, radius: number, type: string = "explosion"){
 		this.tList.forEach((t)=>{
 			if((t != null) && (t.deleteFlag != true)){
 				if(t.distanceTo(x,y) < (t.radius+radius)){
 					t.takeDamage(dmg);
-					this.addHitEffect(new DamageText(this,t.x,t.y,""+dmg,"explosion"));
+					this.addHitEffect(new DamageText(this,t.x,t.y,""+dmg, type));
 				}
 			}
 		})
@@ -707,4 +754,12 @@ export class GameScene extends BaseScene {
 	getCameraDiag(): number{
 		return Math.hypot(1920/this.zoom[0],1080/this.zoom[1]);
 	}
+
+	referForDelete(p: Phaser.GameObjects.Particles.ParticleEmitter){
+		p.on("complete", ()=> {
+			p.destroy();
+			console.log("destroyed emitter")
+		}, this);
+	}
+
 }

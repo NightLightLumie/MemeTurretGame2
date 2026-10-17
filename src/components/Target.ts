@@ -1,6 +1,6 @@
 import { GameScene } from "@/scenes/GameScene";
 import { DmgStack, HitLog } from "./WeaponFunctions/WeaponOperator";
-import { BasicEffect } from "./BasicEffect";
+import { BasicEffect } from "./Graphics/BasicEffect";
 import { DamageText } from "./Graphics/DamageText";
 
 export class Target extends Phaser.GameObjects.Container{
@@ -82,11 +82,11 @@ export class Target extends Phaser.GameObjects.Container{
             if(value.curhits >= value.maxhits) {
                 tmpr = value.curhits-value.maxhits;
                 value.image.setAlpha(1);
-                this.takeDamage(value.damage);
+                this.takeDamage(value.damage*(1+this.scene.player.bonusGunDamage));
                 //console.log("boom");
                 this.scene.sound.play(value.sound,{volume: 1});
                 this.scene.addHitEffect(new BasicEffect(this.scene,"hit_spark",this.x,this.y,3,100,false,0,Math.random()*360));
-                this.scene.addHitEffect(new DamageText(this.scene,this.x,this.y,(""+value.damage),"stack"));
+                this.scene.addHitEffect(new DamageText(this.scene,this.x,this.y,(""+(value.damage*(1+this.scene.player.bonusGunDamage)).toFixed(1)),"stack"));
                 if(tmpr >= 0){
                     value.curhits = tmpr;
                     value.bop = true;

@@ -1,5 +1,5 @@
 import { GameScene } from "@/scenes/GameScene";
-import { Effect } from "../Effect";
+import { Effect } from "./Effect";
 
 export class DamageText extends Effect{
     public scene: GameScene;
@@ -79,6 +79,12 @@ export class DamageText extends Effect{
                 size = 60;
                 color1 = "aqua";
                 color2 = "white";
+                flash = true;
+                break;
+            } case "spell": {
+                size = 60;
+                color1 = "hotpink";
+                color2 = "lightpink";
                 flash = true;
                 break;
             } default: {

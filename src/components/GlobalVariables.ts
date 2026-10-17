@@ -20,10 +20,10 @@ export class GlobalVariables {
     public boxCount: number = 0;
 
     public itemList: ItemParams[] = [
-        {id: 0, name: "Cancel Death", curLevel:0, maxLevel:10, desc:"Press x immediately after being hit to negate fatal damage (250 ms window). If activated, become invulnerable for 1s. 40s cd."},
+        {id: 0, name: "Cancel Death", curLevel:0, maxLevel:10, desc:"Press ''x'' immediately after being hit to negate fatal damage (250 ms window). If activated, become invulnerable for 1s. 40s cd. Missing the the window places this ability on full cooldown."},
         {id: 1, name: "Mandrake", curLevel:0, maxLevel:10, desc:"Defeating an enemy heals you for 1% of its max hp rounded down, up to a cap of 10 per enemy. 1s cd."},
         {id: 2, name: "Spinach", curLevel:-1, maxLevel:-1, desc:"Increases your HP by 5% of the base value. Can be stacked indefinitely and does not occupy an item slot."},
-        {id: 3, name: "Ultrasonic Shield", curLevel:0, maxLevel:10, desc:"Gain a slowly recharging shield equal to 25% of your max HP. The shield regenerates at a rate of 2% per second."},
+        {id: 3, name: "Ultrasonic Shield", curLevel:0, maxLevel:10, desc:"Gain a slowly recharging shield equal to 25% of your max HP. The shield regenerates at a rate equal to 1% max HP per second. Taking damage disables the shield regeneration for 3s."},
         {id: 4, name: "Reactive Barrier", curLevel:0, maxLevel:10, desc:"Negates one hit every 60s, dealing damage equal to 5x the base damage in a moderate radius around you."},
         {id: 5, name: "Yin-Yang Orb", curLevel:0, maxLevel:10, desc:"Shrink your hitbox by 20%."},
         {id: 6, name: "Zoomies", curLevel:0, maxLevel:10, desc:"Gain 20% movement speed."},
@@ -47,7 +47,7 @@ export class GlobalVariables {
         {id: 23, name: "Kobold Mini-Nova", curLevel:0, maxLevel:10, desc:"Deal 5 damage per second to all enemies on the field."},
         {id: 24, name: "Sticky Bomb", curLevel:0, maxLevel:10, desc:"Enemies struck by your spell projectiles explode after 3s for 50 additional damage."},
         {id: 25, name: "Echolocator", curLevel:0, maxLevel:10, desc:"Gun damage increases spell damage by 10%, stacking up to 10 times. Spell damage increases gun damage by 5%, stacking up to 10 times. 1s cd per stack. Stacks last 10s."},
-        {id: 26, name: "Arrow Raid", curLevel:0, maxLevel:10, desc:"Fires a spread of 3 arrows from your gun every 300 pixels moved. Each arrow deals 225 damage and penetrates up to 3 enemies."},
+        {id: 26, name: "Arrow Raid", curLevel:0, maxLevel:10, desc:"Fires a spread of 3 arrows from your gun every 600 pixels moved. Each arrow deals 295 damage and penetrates up to 3 enemies."},
         {id: 27, name: "Basic Attack Magic", curLevel:0, maxLevel:10, desc:"Fires a vertical magic blast from offscreen above or below the cursor every 10s, dealing 200 damage and piercing enemies. 10% chance to critically strike for double damage."},
         {id: 28, name: "Lava Bucket", curLevel:0, maxLevel:10, desc:"Randomly spawns a lava puddle within a moderate radius. The puddle deals 100 damage per second to enemies touching it."},
         {id: 29, name: "Ultravibration", curLevel:0, maxLevel:10, desc:"Enemies under 5% hp are executed upon taking damage."},

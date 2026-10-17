@@ -1,6 +1,6 @@
 import { GameScene } from "@/scenes/GameScene";
 import { Player } from "./Player";
-import { BasicEffect } from "./BasicEffect";
+import { BasicEffect } from "./Graphics/BasicEffect";
 
 export class EnemyBullet extends Phaser.GameObjects.Container{
     private spr: Phaser.GameObjects.Sprite;

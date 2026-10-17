@@ -2,7 +2,7 @@ import { GameScene } from "@/scenes/GameScene";
 import { GibEffect } from "../GibEffect";
 import { WeaponData } from "../WeaponFunctions/Weapon";
 import { DmgStack,HitLog } from "../WeaponFunctions/WeaponOperator";
-import { BasicEffect } from "../BasicEffect";
+import { BasicEffect } from "../Graphics/BasicEffect";
 import { Target } from "../Target";
 import { EnemyBullet } from "../EnemyBullet";
 

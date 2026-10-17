@@ -1,5 +1,5 @@
 import { BaseScene } from "@/scenes/BaseScene";
-import { Effect } from "../Effect";
+import { Effect } from "./Effect";
 import { GameScene } from "@/scenes/GameScene";
 import { Player } from "../Player";
 

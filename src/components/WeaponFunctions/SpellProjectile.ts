@@ -20,6 +20,7 @@ export class SpellProjectile extends Missile{
     private effectName: string;
     private boom: boolean;
     private hitScale: number[] = [1,1];
+    private gunBonus: number = 0;
 
 
     constructor(scene: GameScene, x: number, y: number, name: string, angle: number, owner: Weapon, ref: Item, vscale: number = 1){

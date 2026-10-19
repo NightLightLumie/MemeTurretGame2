@@ -45,7 +45,7 @@ export class Fireball extends Item{
     }
 
     fetchItemData(): number[] {
-        return[this.damage*(1+this.owner.bonusSpellDamage), 0];
+        return[this.damage*(1+this.owner.bonusSpellDamage), (1+this.owner.bonusGunDamage)*this.owner.conversion*this.owner.getActiveWeapon().damage];
     }
 
     shootFireballs(){
@@ -57,6 +57,7 @@ export class Fireball extends Item{
             rad = Math.random()*2*Math.PI;
             vector = 0.8+(Math.random()*0.4);
         }
+        this.owner.bankedCasts++;
     }
 
 }

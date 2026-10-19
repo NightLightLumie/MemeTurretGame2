@@ -3,6 +3,15 @@ import { DmgStack, HitLog } from "./WeaponFunctions/WeaponOperator";
 import { BasicEffect } from "./Graphics/BasicEffect";
 import { DamageText } from "./Graphics/DamageText";
 
+export interface DamageBatch{
+    key: string;
+    amt: number;
+    interval: number[];
+    type: string;
+    deleteFlag: boolean;
+    params: string[];
+}
+
 export class Target extends Phaser.GameObjects.Container{
     public scene: GameScene;
     public radius: number = 100;
@@ -19,12 +28,15 @@ export class Target extends Phaser.GameObjects.Container{
     protected tpr: number[] = [];
     protected unstackFactor: number = 500;
     public hp: number = 500;
+    public maxHP: number = 500;
     public difficulty: number = 0;
     public tID: number = 0;
     public invuln: boolean = false;
     protected tdisp: Phaser.GameObjects.Container;
     protected armor: number[] = [0,0];
     protected value: number = 20;
+
+    public batchedDamage: DamageBatch[];
     //public pID: number = 0;
 
 
@@ -33,6 +45,7 @@ export class Target extends Phaser.GameObjects.Container{
         this.scene = scene;
         this.bLog = new Map(); //log for pierce shots
         this.stackLog = new Map(); //logs of stacks for procs
+        this.batchedDamage = [];
 
 
     }
@@ -46,9 +59,39 @@ export class Target extends Phaser.GameObjects.Container{
     setDifficulty(){
         this.difficulty = this.scene.difficulty;
         this.hp = Math.trunc((1+(0.15*this.difficulty))*this.hp);
+        this.maxHP = this.hp;
+    }
+    
+    processBatchedDamage(t: number, d: number){
+        for(let h = (this.batchedDamage.length-1); h >= 0; h--){
+            if(this.batchedDamage[h].interval[0] < this.batchedDamage[h].interval[1]){
+                this.batchedDamage[h].interval[0] += d;
+                if(this.batchedDamage[h].interval[0] >= this.batchedDamage[h].interval[1]){
+                    if(this.takeDamage(this.batchedDamage[h].amt)){
+                        this.scene.addHitEffect(new DamageText(this.scene,this.x,this.y,""+this.batchedDamage[h].amt.toFixed(2), this.batchedDamage[h].type));
+                        if(this.batchedDamage[h].type == "spell"){
+                            let sp = "spellhitorange";
+                            if(this.batchedDamage[h].params.length > 0){
+                                sp = this.batchedDamage[h].params[0];
+                            }
+                            this.scene.addHitEffect(new BasicEffect(this.scene,"spellhitorange",this.x,this.y,3,100,false,0,Math.random()*360,[1,1]));
+                        }
+                        this.batchedDamage[h].amt = 0;
+                        this.batchedDamage[h].deleteFlag = true;
+
+                    }
+                    this.batchedDamage[h].interval[0] -= this.batchedDamage[h].interval[1];
+                }
+            }
+			if(this.batchedDamage[h].deleteFlag) {
+				this.batchedDamage.splice(h,1);
+			}
+		}
     }
 
     updateLogs(t:number,d:number){
+        this.processBatchedDamage(t,d);
+
         this.bLog.forEach((value: HitLog, key: number) => {
             if(value.cooldown > 0) {
                 value.cooldown -= d;
@@ -124,15 +167,44 @@ export class Target extends Phaser.GameObjects.Container{
     }
 
     takeDamage(n: number): boolean{
-        if(this.invuln){
+        if(this.invuln || (this.hp<=0)){
             return false;
         }
         this.hp -= n;
         if(this.hp <= 0) {
             this.die();
+        } else {
+            if(this.hp < (this.scene.player.execute*this.maxHP)){
+                this.die();
+                this.scene.addHitEffect(new DamageText(this.scene,this.x,this.y,""+(Math.round(this.hp))+"!", "execute"));
+                this.hp = 0;
+            }
         }
         return true;
     }
+
+    takeBatchedDamage(nkey: string, namt: number, dtype: string, params: string[] = []){
+        let included = false;
+        this.batchedDamage.forEach((dt) => {
+            if(dt.key == nkey){
+                dt.amt += namt;
+                included = true;
+            }
+        });
+        if(!included){
+            this.batchedDamage.push({
+                key: nkey,
+                amt: namt,
+                interval: [0,250],
+                type: dtype,
+                deleteFlag: false,
+                params: [],
+            });
+        }
+        
+    }
+
+
 
     updateUnstacking(t:number,d:number){
         this.x += (this.unstack[0]*this.unstackFactor*d/1000);

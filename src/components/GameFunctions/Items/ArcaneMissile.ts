@@ -29,7 +29,7 @@ export class ArcaneMissile extends Item{
     }
 
     fetchItemData(): number[] {
-        return[this.damage*(1+this.owner.bonusSpellDamage), 0];
+        return[this.damage*(1+this.owner.bonusSpellDamage), (1+this.owner.bonusGunDamage)*this.owner.conversion*this.owner.getActiveWeapon().damage];
     }
 
     shoot(){
@@ -37,6 +37,7 @@ export class ArcaneMissile extends Item{
             //console.log("Shoot missile");
             this.scene.addPlayerProjectile(new HomingTracer(this.scene,this.owner.x,this.owner.y,"arcaneshot",(-1*Math.PI)+(Math.random()*2*Math.PI),1,this.scene.closestTarget));
             this.cooldown = this.maxCD;
+            this.owner.bankedCasts++;
         } else {
             //console.log("Null target");
         }

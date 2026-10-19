@@ -24,7 +24,7 @@ export class StarPrism extends Item{
     }
 
     fetchItemData(): number[] {
-        return[this.damage*(1+this.owner.bonusSpellDamage), 0];
+        return[this.damage*(1+this.owner.bonusSpellDamage), (1+this.owner.bonusGunDamage)*this.owner.conversion*this.owner.getActiveWeapon().damage];
     }
 
     shootStars(){
@@ -39,6 +39,7 @@ export class StarPrism extends Item{
             this.scene.addPlayerProjectile(new SpellProjectile(this.scene,this.owner.x+(100*Math.cos(5*Math.PI/4)),this.owner.y+(100*Math.sin(5*Math.PI/4)),"starshot",5*Math.PI/4,this.owner.getActiveWeapon(),this,1));
             this.scene.addPlayerProjectile(new SpellProjectile(this.scene,this.owner.x+(100*Math.cos(7*Math.PI/4)),this.owner.y+(100*Math.sin(7*Math.PI/4)),"starshot",7*Math.PI/4,this.owner.getActiveWeapon(),this,1));
         }
+        this.owner.bankedCasts++;
     }
 
     update(t: number, d: number){

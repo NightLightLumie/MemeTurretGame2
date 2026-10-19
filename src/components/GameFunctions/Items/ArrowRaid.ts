@@ -27,7 +27,7 @@ export class ArrowRaid extends Item{
     }
 
     fetchItemData(): number[] {
-        return[this.damage*(1+this.owner.bonusSpellDamage), 0];
+        return[this.damage*(1+this.owner.bonusSpellDamage), (1+this.owner.bonusGunDamage)*this.owner.conversion*this.owner.getActiveWeapon().damage];
     }
 
     shootArrows(){
@@ -39,6 +39,7 @@ export class ArrowRaid extends Item{
         for(let n = 0; n < this.shots; n++){
             this.scene.addPlayerProjectile(new SpellProjectile(this.scene,gx,gy,"arrow",start+(n*slice),this.owner.getActiveWeapon(),this,1));
         }
+        this.owner.bankedCasts++;
     }
 
 

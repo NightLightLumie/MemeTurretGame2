@@ -9,6 +9,13 @@ import { StarPrism } from "./GameFunctions/Items/StarPrism";
 import { ArrowRaid } from "./GameFunctions/Items/ArrowRaid";
 import { RuneCircle } from "./GameFunctions/Items/RuneCircle";
 import { ArcaneMissile } from "./GameFunctions/Items/ArcaneMissile";
+import { BasicAttackMagic } from "./GameFunctions/Items/BasicAttackMagic";
+import { Mandala } from "./Graphics/Mandala";
+import { KoboldMiniNova } from "./GameFunctions/Items/KoboldMiniNova";
+import { LavaBucket } from "./GameFunctions/Items/LavaBucket";
+import { ShieldDisplay } from "./Graphics/ShieldDisplay";
+import { GunFu } from "./GameFunctions/Items/GunFu";
+import { UltrasonicBarrier } from "./GameFunctions/Items/UltrasonicBarrier";
 
 const ACCELERATION = 350;
 const MAX_SPEED = 500;
@@ -69,7 +76,9 @@ export class Player extends Phaser.GameObjects.Container {
 	public shieldList: ShieldSource[];
 	public pShield: number[] = [0,0];
 	public maxShield: number = 0;
-	public shields: number = 0;
+	public tShields: ShieldSource[];
+	public sdp: ShieldDisplay;
+	//public shields: number = 0;
 
 	public sashed: boolean = false;
 	public reactive: boolean = false;
@@ -96,11 +105,16 @@ export class Player extends Phaser.GameObjects.Container {
 	public dmgRes: number = 0;
 	public dmgCap: number = 1;
 
+	public conversion: number = 0;
+
 	public smite: number = 0;
-	public execute: number = 0;
+	public execute: number = 0.7;
 	public cancelTime: number = 250;
 	public killThisTick: boolean = false;
 	public distanceElapsed: number = 0;
+	public trackedCursor: number[] = [0,0];
+	public myMandala: Mandala | null;
+	public bankedCasts: number = 0;
 
 	public defaultItem: Item;
 
@@ -121,6 +135,7 @@ export class Player extends Phaser.GameObjects.Container {
 		/* Sprite */
 		this.shieldList = [];
 		this.spriteSize = 200;
+
 		this.sprite = this.scene.add.sprite(0, 0, "turretbase");
 		this.hbox = this.scene.add.sprite(0, 0, "heart");
 		this.sprite.setOrigin(0.5, 0.5);
@@ -131,7 +146,7 @@ export class Player extends Phaser.GameObjects.Container {
 		this.add(this.hbox);
 		this.wpDisp = new WeaponDisplay(scene,0,0,this);
 		this.add(this.wpDisp);
-		this.wpDisp.setDepth(10);
+		this.moveDown(this.wpDisp);
 		this.gfx = this.scene.add.graphics();
 		this.add(this.gfx);
 		this.gfx.setDepth(15);
@@ -209,12 +224,19 @@ export class Player extends Phaser.GameObjects.Container {
 		this.add(this.hpBar);
 		this.hpBar.setVisible(false);
 
-		this.sprite.setDepth(6);
-		this.hbox.setDepth(7);
-		this.rhpBar.setDepth(8);
-		this.hpBar.setDepth(9);
+		this.tShields = [];
+		this.sdp = new ShieldDisplay(this.scene,0,0,this);
+		this.add(this.sdp);
+
+		this.defaultItem = new Item(this.scene,this,"default");
+		this.sendToBack(this.hpBar);
+		this.sendToBack(this.rhpBar);
 		this.curGunAngle = 0;
-		this.items.push(new Fireball(this.scene,this,"Explosive Magazine"));
+
+		this.items.push(new GunFu(this.scene,this,"Gun Fu"));
+		this.items.push(new UltrasonicBarrier(this.scene,this,"Ultrasonic Shield"));
+
+
 	}
 
 	setDefaultLoadout(){
@@ -230,6 +252,12 @@ export class Player extends Phaser.GameObjects.Container {
 			new Weapon(this.scene, c, this.scene.masterData.secondary.augs),
 		]
 
+	}
+
+	addMandala(){
+		this.myMandala = new Mandala(this.scene,0,0,this,"nova",3,1.5,200,4000,0.6);
+		this.add(this.myMandala);
+		this.sendToBack(this.myMandala);
 	}
 
 	fetchLoadout(){
@@ -255,17 +283,6 @@ export class Player extends Phaser.GameObjects.Container {
 		} else if(this.maxIFrames > 0){
 			this.curIFrames = this.maxIFrames;
 		}
-
-		if(this.reactive){
-			let rb = this.findItem("Reactive Barrier");
-			if(rb.setCooldown()){
-				this.reactive = false;
-				this.scene.simpleExplode(rb.fetchItemData()[0]*n,this.x,this.y,400,"spell");
-				this.scene.addHitEffect(new ScalingEffect(this.scene, this.x, this.y, "barrierboom", 250, Math.random()*360,0,[1,0.01],[0.9,0.4]));
-			}
-		}
-
-		this.emit("ouch");
 		//adjust damage prior to stuff like reactive barrier
 		if(this.dmgRes > 0){
 			n *= (1-this.dmgRes);
@@ -275,7 +292,19 @@ export class Player extends Phaser.GameObjects.Container {
 				n = this.dmgCap*this.maxHP;
 			}
 		}
-		if(this.shields > 0){
+		if(this.reactive){
+			let rb = this.findItem("Reactive Barrier");
+			if(rb.setCooldown()){
+				this.reactive = false;
+				this.scene.simpleExplode(rb.fetchItemData()[0]*n,this.x,this.y,400,"spell");
+				this.scene.addHitEffect(new ScalingEffect(this.scene, this.x, this.y, "barrierboom", 250, Math.random()*360,0,[1,0.01],[0.9,0.4]));
+				this.bankedCasts++;
+				return;
+			}
+		} else {
+			this.emit("ouch");
+		}
+		if((this.tShields.length > 0) || (this.pShield[0] > 0)){
 			this.takeShieldDamage(n);
 		} else {
 			this.takeDamage(n);
@@ -283,15 +312,62 @@ export class Player extends Phaser.GameObjects.Container {
 		
 	}
 
-	takeShieldDamage(n: number){
-		if(n <= this.shields){
-			this.shields -= n;
+	addShield(st: ShieldSource){
+		let logged = false;
+		this.tShields.forEach((sd) => {
+			if(sd.source.key == st.source.key){
+				if(st.amount > sd.amount)
+				{
+					sd.amount = st.amount;
+				}
+				logged = true;
+			}
+		});
+		if(!logged){
+			this.tShields.push(st);
 		}
-		else {
-			this.shields = 0;
-			n -= this.shields;
+
+	}
+
+	takeShieldDamage(n: number){
+		for(let st = (this.tShields.length-1); st >= 0; st--){
+			if(this.tShields[st].amount > 0){
+				if(this.tShields[st].amount > n){
+					this.tShields[st].amount -= n;
+					this.tShields[st].source.deplete(n);
+					n = 0;
+					return;
+				} else {
+					this.tShields[st].amount = 0;
+					n -= this.tShields[st].amount;
+					this.tShields[st].source.deplete(n);
+					this.tShields.splice(st,1);
+				}
+				if(n <= 0){
+					return;
+				}
+			} else {
+				this.tShields.splice(st,1);
+			}
+		}
+
+		if(n > 0){
+			if(this.pShield[0] > 0){
+				if(this.pShield[0] > n){
+					this.pShield[0] -= n
+					n = 0;
+					return;
+				} else {
+					this.pShield[0] = 0;
+					n -= this.pShield[0];
+				}
+			}
+		}
+
+		if(n > 0){
 			this.takeDamage(n);
 		}
+
 	}
 
 	takeDamage(n: number){
@@ -300,6 +376,7 @@ export class Player extends Phaser.GameObjects.Container {
 			if((this.health/this.maxHP) > itm.value){
 				if(itm.setCooldown()){
 					n = this.health-1;
+					this.bankedCasts++;
 				}
 			}
 		}
@@ -337,6 +414,7 @@ export class Player extends Phaser.GameObjects.Container {
 			if(this.findItem("Cancel Death").setCooldown()){
 				this.scene.cancelDie();
 				let n = 0;
+				this.bankedCasts++;
 			}
 		}
 	}
@@ -398,6 +476,7 @@ export class Player extends Phaser.GameObjects.Container {
         const pointer = this.scene.input.activePointer;
         const worldX = this.scene.cameras.main.getWorldPoint(pointer.x, pointer.y).x;
         const worldY = this.scene.cameras.main.getWorldPoint(pointer.x, pointer.y).y;
+		this.trackedCursor = [worldX, worldY];
 		this.curGunAngle = Math.atan2((worldY-this.y),(worldX-this.x));
 		this.wpDisp.update(time,delta,this.curGunAngle);
 		// Movement
@@ -444,6 +523,11 @@ export class Player extends Phaser.GameObjects.Container {
 		this.distanceElapsed = Math.abs(Math.sqrt(Math.pow(this.x-xr, 2)+Math.pow(this.y-yr, 2)));
 
 		this.updateItems(time,delta);
+		if(this.myMandala != null){
+			this.myMandala.update(time, delta);
+		}
+
+		this.sdp.draw();
 		this.trackShots = 0;
 		// Border collision
 		this.checkBounds();

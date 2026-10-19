@@ -107,13 +107,7 @@ export class LavaPool extends Missile{
     }
 
     processHit(t: Target){
-        if(t.takeDamage(this.damage*this.tickLength/1000)){
-            /*
-            this.scene.addHitEffect(new BasicEffect(this.scene,"spellhitorange",t.x,t.y,3,100,false,0,Math.random()*360,[1,1]));
-            this.scene.addHitEffect(new DamageText(this.scene,t.x+(-40+(Math.random()*80)),t.y+(-40+(Math.random()*80)),""+this.damage, "spell"));
-            */
-
-        }
+        t.takeBatchedDamage("lava",(1+this.scene.player.bonusSpellDamage)*this.damage*this.tickLength/1000,"spell",["spellhitorange"]);
     }
 
 }

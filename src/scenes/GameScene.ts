@@ -41,6 +41,7 @@ export class GameScene extends BaseScene {
 	private ftDisp: Phaser.GameObjects.Container;
 	private eDisp: Phaser.GameObjects.Container;
 	private fDisp: Phaser.GameObjects.Container;
+	private grDisp: Phaser.GameObjects.Container;
 
 	private dotter: Phaser.GameObjects.Graphics;
 
@@ -56,6 +57,7 @@ export class GameScene extends BaseScene {
 	private hitEffects: Effect[];
 	private partEffects: Effect[];
 	private tracerList: Tracer[];
+	public globalDamage: number[];
 
 	public cLevel: Levels;
 
@@ -108,7 +110,7 @@ export class GameScene extends BaseScene {
 		this.background = this.add.image(0, 0, "tempbkg");
 		this.background.setOrigin(0.5,0.5);
 		this.background.setScale(4);
-		this.background.setDepth(-10);
+		this.background.setDepth(-100);
 
 		this.endScreen = this.add.image(0, 0, "rip");
 		this.endScreen.setOrigin(0.5,0.5);
@@ -167,6 +169,9 @@ export class GameScene extends BaseScene {
 		this.tracerList = [];
 
 
+		this.globalDamage = [];
+
+
 
 
 
@@ -202,6 +207,10 @@ export class GameScene extends BaseScene {
 		this.add.existing(this.fDisp);
 		this.fDisp.setDepth(6);
 
+		this.grDisp = new Phaser.GameObjects.Container(this,0,0); // display layer for ground effects
+		this.add.existing(this.grDisp);
+		this.grDisp.setDepth(5);
+
 		this.initiateTestObjects();
 
 
@@ -226,6 +235,8 @@ export class GameScene extends BaseScene {
 
 	resetVariables(){
 		super.resetVariables();
+		this.pID = -999999999;
+		this.tID = -999999999;
 		this.tracing = false;
 		this.paused = false;
 		this.dead = false;
@@ -279,6 +290,7 @@ export class GameScene extends BaseScene {
 			this.eTimer[0] = this.eTimer[1];
 			this.dbTimer[0] = this.dbTimer[1];
 			this.player.curIFrames += 1000;
+
 			return true;
 		} else {
 			return false;
@@ -411,6 +423,10 @@ export class GameScene extends BaseScene {
 	refreshGUI(){
 		this.gUI.refresh();
 	}
+	
+	queueGlobalDamage(n: number){
+		this.globalDamage.push(n);
+	}
 
 	updateTargets(t:number,d:number){
 		this.closestDist = 999999;
@@ -418,6 +434,12 @@ export class GameScene extends BaseScene {
 		this.chunks.clear();
 		for(let i = (this.tList.length-1); i >= 0; i--){
 			this.tList[i].update(t, d);
+			this.globalDamage.forEach((dm) => {
+				if(this.tList[i].takeDamage(dm)){
+					this.addHitEffect(new DamageText(this,this.tList[i].x,this.tList[i].y,""+dm, "spell"));
+				}
+			})
+
 			if(this.tList[i].deleteFlag){
 				this.tList[i].destroy();
 				this.tList.splice(i,1);
@@ -430,6 +452,7 @@ export class GameScene extends BaseScene {
 				}
 			}
 		}
+		this.globalDamage = [];
 	}
 
 	updateEffects(t: number, d: number){
@@ -482,7 +505,6 @@ export class GameScene extends BaseScene {
 		}
 
 		for(let pp = (this.playerProjectiles.length-1); pp >= 0; pp--){
-
 			this.playerProjectiles[pp].update(t,d);
 			for(let ex = this.tList.length-1; ex >= 0; ex--) {
 				this.playerProjectiles[pp].hitCheck(this.tList[ex]);
@@ -624,6 +646,28 @@ export class GameScene extends BaseScene {
 		})
 	}
 
+	vExplode(dmg: number, x:number, radius: number, type: string = "explosion"){
+		this.tList.forEach((t)=>{
+			if((t != null) && (t.deleteFlag != true)){
+				if(Math.abs(t.x-x) < (t.radius+radius)){
+					t.takeDamage(dmg);
+					this.addHitEffect(new DamageText(this,t.x,t.y,""+dmg, type));
+				}
+			}
+		})
+	}
+
+	hExplode(dmg: number, y:number, radius: number, type: string = "explosion"){
+		this.tList.forEach((t)=>{
+			if((t != null) && (t.deleteFlag != true)){
+				if(Math.abs(t.y-y) < (t.radius+radius)){
+					t.takeDamage(dmg);
+					this.addHitEffect(new DamageText(this,t.x,t.y,""+dmg, type));
+				}
+			}
+		})
+	}
+
 	initTouchControls() {
 		this.input.addPointer(2);
 
@@ -715,6 +759,11 @@ export class GameScene extends BaseScene {
 	addPlayerProjectile(m: Missile){
 		this.playerProjectiles.push(m);
 		this.bDisp.add(m);
+	}
+
+	addGroundHazard(m: Missile){
+		this.playerProjectiles.push(m);
+		this.grDisp.add(m);
 	}
 
 	dot(x: number, y: number){

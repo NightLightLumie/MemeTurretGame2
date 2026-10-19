@@ -34,7 +34,9 @@ export class DamageText extends Effect{
         let fadeTime = 500;
         let flashTime = 75;
         let size = 40;
-
+        this.dmod = 75*Math.random();
+        this.amod = 2*Math.random();
+        this.negative = valence;
         switch(mode){
             case "crit": {
                 size = 60;
@@ -84,7 +86,21 @@ export class DamageText extends Effect{
             } case "spell": {
                 size = 60;
                 color1 = "mediumturquoise";
-                color2 = "hotpink";
+                color2 = "mediumturquoise";
+                flash = false;
+                break;
+            } case "execute": {
+                size = 100;
+                color1 = "orangered";
+                color2 = "goldenrod";
+                this.negative*=2.5;
+                flash = true;
+                break;
+            } case "smite": {
+                size = 100;
+                color1 = "orangered";
+                color2 = "goldenrod";
+                this.negative*=2.5;
                 flash = true;
                 break;
             } default: {
@@ -122,9 +138,7 @@ export class DamageText extends Effect{
         this.maxFadeTime = fadeTime;
         this.add(this.myText);
         this.myText.setPosition(0,0);
-        this.dmod = 75*Math.random();
-        this.amod = 2*Math.random();
-        this.negative = valence;
+
         this.amp = amplitude;
     }
 

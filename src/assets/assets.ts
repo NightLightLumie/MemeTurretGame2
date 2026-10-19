@@ -142,6 +142,9 @@ const images: Image[] = [
 	image('spells/greenparticle', 'greenparticle'),
 	image('spells/greensq', 'greensq'),
 	image('spells/firesq', 'firesq'),
+	image('spells/superforce', 'superforce'),
+	image('spells/zoltraak', 'zoltraak'),
+	image('spells/nova', 'nova'),
 	// Enemies
 	image('enemies/enemy_1', 'enemy_1'),
 	image('enemies/fragments/e1/f1-0', 'f1-0'),

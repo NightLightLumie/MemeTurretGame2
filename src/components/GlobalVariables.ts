@@ -48,7 +48,7 @@ export class GlobalVariables {
         {id: 24, name: "Sticky Bomb", curLevel:0, maxLevel:10, desc:"Enemies struck by your spell projectiles explode after 3s for 50 additional damage."},
         {id: 25, name: "Echolocator", curLevel:0, maxLevel:10, desc:"Gun damage increases spell damage by 10%, stacking up to 10 times. Spell damage increases gun damage by 5%, stacking up to 10 times. 1s cd per stack. Stacks last 10s."},
         {id: 26, name: "Arrow Raid", curLevel:0, maxLevel:10, desc:"Fires a spread of 3 arrows from your gun every 600 pixels moved. Each arrow deals 295 damage and penetrates up to 3 enemies."},
-        {id: 27, name: "Basic Attack Magic", curLevel:0, maxLevel:10, desc:"Fires a vertical magic blast from offscreen above or below the cursor every 10s, dealing 200 damage and piercing enemies. 10% chance to critically strike for double damage."},
+        {id: 27, name: "Basic Attack Magic", curLevel:0, maxLevel:10, desc:"Fires a vertical or horizontal magic blast through cursor every 6s, dealing 200 damage and piercing enemies. 10% chance to critically strike for double damage."},
         {id: 28, name: "Lava Bucket", curLevel:0, maxLevel:10, desc:"Randomly spawns a lava puddle within a moderate radius. The puddle deals 100 damage per second to enemies touching it."},
         {id: 29, name: "Ultravibration", curLevel:0, maxLevel:10, desc:"Enemies under 5% hp are executed upon taking damage."},
         {id: 30, name: "Arcane Missile", curLevel:0, maxLevel:10, desc:"Automatically attack the closest enemy within range for 300 damage. 3s cd."},

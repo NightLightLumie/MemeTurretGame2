@@ -40,6 +40,10 @@ export class Item extends Phaser.Events.EventEmitter{
         return [0,0,0,0,0,0];
     }
 
+    deplete(n: number){
+
+    }
+
     
 
     //Items: Carry up to 6.

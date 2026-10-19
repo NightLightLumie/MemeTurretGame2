@@ -98,6 +98,7 @@ export class Weapon extends Phaser.Events.EventEmitter{
     public repeats: number[] = [];
     public dh: number = 0;
     public shots: number = 1;
+    public lastAmmoReloaded = 0;
 
 
     constructor(scene: GameScene, wp: WeaponParams, augments: Augment[] = []){
@@ -316,6 +317,7 @@ export class Weapon extends Phaser.Events.EventEmitter{
                     this.loading = false;
                     this.curAmmo = this.maxAmmo;
                     this.scene.player.emit("finishReload");
+                    this.lastAmmoReloaded = 0;
                 }
             }
         }
@@ -352,6 +354,7 @@ export class Weapon extends Phaser.Events.EventEmitter{
             this.scene.sound.play("start_reload", {volume:0.75});
             this.loadTime = this.maxLoad;
             this.loading = true;
+            this.lastAmmoReloaded = this.maxAmmo-this.curAmmo;
             this.scene.player.emit("startReload");
         }
     }

@@ -108,7 +108,7 @@ export class Player extends Phaser.GameObjects.Container {
 	public conversion: number = 0;
 
 	public smite: number = 0;
-	public execute: number = 0.7;
+	public execute: number = 0;
 	public cancelTime: number = 250;
 	public killThisTick: boolean = false;
 	public distanceElapsed: number = 0;

@@ -2,6 +2,7 @@ import { GameScene } from "@/scenes/GameScene";
 import { DmgStack, HitLog } from "./WeaponFunctions/WeaponOperator";
 import { BasicEffect } from "./Graphics/BasicEffect";
 import { DamageText } from "./Graphics/DamageText";
+import { ScalingEffect } from "./Graphics/ScalingEffect";
 
 export interface DamageBatch{
     key: string;
@@ -178,6 +179,7 @@ export class Target extends Phaser.GameObjects.Container{
                 this.die();
                 this.scene.addHitEffect(new DamageText(this.scene,this.x,this.y,""+(Math.round(this.hp))+"!", "execute"));
                 this.scene.sound.play("execute", {volume:0.5});
+                this.scene.addHitEffect(new ScalingEffect(this.scene, this.x, this.y, "vibrator", 250, Math.random()*360,0,[0.01,2],[1,0]));
                 this.hp = 0;
             }
         }
@@ -231,6 +233,7 @@ export class Target extends Phaser.GameObjects.Container{
                 this.die();
                 this.scene.addHitEffect(new DamageText(this.scene,this.x,this.y,""+(Math.round(this.hp))+"!", "execute"));
                 this.scene.sound.play("execute", {volume:0.5});
+                this.scene.addHitEffect(new ScalingEffect(this.scene, this.x, this.y, "vibrator", 250, Math.random()*360,0,[0.01,2],[1,0]));
                 this.hp = 0;
             }
         }

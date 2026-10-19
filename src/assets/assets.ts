@@ -208,6 +208,7 @@ const audios: Audio[] = [
 	sound('tree/rustle', 't_rustle', 0.5),
 	sound('enemies/oof', 'oof', 0.5),
 	sound('enemies/dead', 'dead', 0.5),
+	sound('enemies/execute', 'execute', 0.5),
 	sound('ui/shift', 'shift', 0.5),
 	sound('weapons/machinegun', 'machinegun', 0.5),
 

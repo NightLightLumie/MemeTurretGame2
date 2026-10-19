@@ -177,6 +177,7 @@ export class Target extends Phaser.GameObjects.Container{
             if(this.hp < (this.scene.player.execute*this.maxHP)){
                 this.die();
                 this.scene.addHitEffect(new DamageText(this.scene,this.x,this.y,""+(Math.round(this.hp))+"!", "execute"));
+                this.scene.sound.play("execute", {volume:0.5});
                 this.hp = 0;
             }
         }
@@ -225,7 +226,14 @@ export class Target extends Phaser.GameObjects.Container{
     }
 
     update(t:number,d:number){
-
+        if(this.deleteFlag != true){
+            if(this.hp < (this.scene.player.execute*this.maxHP)){
+                this.die();
+                this.scene.addHitEffect(new DamageText(this.scene,this.x,this.y,""+(Math.round(this.hp))+"!", "execute"));
+                this.scene.sound.play("execute", {volume:0.5});
+                this.hp = 0;
+            }
+        }
     }
 
     addStack(pd: number, ap: DmgStack){

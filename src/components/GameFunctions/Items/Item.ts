@@ -23,7 +23,7 @@ export class Item extends Phaser.Events.EventEmitter{
         this.value = 0;
         this.slot = s;
         let ipm = this.scene.masterData.getItemParams(this.key);
-        console.log("tried to find key: " + this.key + " received: " + ipm.name);
+        //console.log("tried to find key: " + this.key + " received: " + ipm.name);
         if(ipm.name != "default"){
             this.imgs = ipm.spr;
         }

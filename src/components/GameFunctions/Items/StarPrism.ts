@@ -46,6 +46,7 @@ export class StarPrism extends Item{
             this.scene.addPlayerProjectile(new SpellProjectile(this.scene,this.owner.x+(100*Math.cos(5*Math.PI/4)),this.owner.y+(100*Math.sin(5*Math.PI/4)),"starshot",5*Math.PI/4,this.owner.getActiveWeapon(),this,1));
             this.scene.addPlayerProjectile(new SpellProjectile(this.scene,this.owner.x+(100*Math.cos(7*Math.PI/4)),this.owner.y+(100*Math.sin(7*Math.PI/4)),"starshot",7*Math.PI/4,this.owner.getActiveWeapon(),this,1));
         }
+        this.scene.sound.play("starthrow",{volume:0.25});
         this.owner.bankedCasts++;
     }
 

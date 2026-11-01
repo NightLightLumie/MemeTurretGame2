@@ -42,6 +42,7 @@ export class ArrowRaid extends Item{
         for(let n = 0; n < this.shots; n++){
             this.scene.addPlayerProjectile(new SpellProjectile(this.scene,gx,gy,"arrow",start+(n*slice),this.owner.getActiveWeapon(),this,1));
         }
+        this.scene.sound.play("arrowshot", {volume: 0.5});
         this.owner.bankedCasts++;
     }
 

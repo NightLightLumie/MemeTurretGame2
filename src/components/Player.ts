@@ -257,7 +257,7 @@ export class Player extends Phaser.GameObjects.Container {
 		this.danmaku = false;
 		this.items.push(new GunFu(this.scene,this,"Gun-Fu", 0));
 		this.items.push(new StatItem(this.scene,this,"Cast Gun", 1));
-		this.items.push(new StarPrism(this.scene,this,"Prism of Stars", 2));
+		this.items.push(new RuneCircle(this.scene,this,"Rune Circle", 2));
 		this.items.push(new SimpleCDItem(this.scene,this,"Cancel Death", 3));
 		this.items.push(new StatItem(this.scene,this,"Sticky Bomb", 4));
 		this.items.push(new Echolocator(this.scene,this,"Echolocator", 5));

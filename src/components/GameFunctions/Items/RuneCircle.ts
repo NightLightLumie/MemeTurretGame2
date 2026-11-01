@@ -47,6 +47,7 @@ export class RuneCircle extends Item{
             i *= -1;
         }
         this.scene.addHitEffect(new ScalingEffect(this.scene,this.owner.x,this.owner.y,"bigrune",500,Math.random()*360,i,[2.5,2.5],[1,0],"follow"));
+        this.scene.sound.play("runethud", {volume: 0.75});
         this.owner.bankedCasts++;
     }
 

@@ -249,7 +249,12 @@ const audios: Audio[] = [
 	sound('player/megacancel', 'megacancel', 0.5),
 	sound('player/cancelfail', 'cancelfail', 0.5),
 	sound('player/basicmagicblast', 'basicmagicblast', 0.5),
-	
+	sound('player/starthrow', 'starthrow', 0.5),
+	sound('player/arrowshot', 'arrowshot', 0.5),
+	sound('player/magicmissile', 'magicmissile', 0.5),
+	sound('player/expmag', 'expmag', 0.5),
+	sound('player/runethud', 'runethud', 0.5),
+
 	sound('tree/ufobullet_fire', 'ufobullet_fire', 0.5),
 
 	sound('tree/darksouls', 'darksouls', 0.5),

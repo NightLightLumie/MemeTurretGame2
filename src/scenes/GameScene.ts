@@ -310,14 +310,14 @@ export class GameScene extends BaseScene {
 			this.eTimer[0] = this.eTimer[1];
 			this.dbTimer[0] = this.dbTimer[1];
 			this.player.curIFrames += 3000;
-			this.addHitEffect(new ScalingEffect(this,this.player.x,this.player.y,"superforce",500,0,0,[0,6],[1,0]));
+			this.addHitEffect(new ScalingEffect(this,this.player.x,this.player.y,"superforce",500,0,0,[0,6],[1,0], "follow"));
 			this.player.health = 1;
 			this.sound.play("megacancel", {volume:0.5});
 			return true;
 		} else {
 			this.player.curIFrames += 250;
 			this.sound.play("cancelfail", {volume:0.25});
-			this.addHitEffect(new ScalingEffect(this,this.player.x,this.player.y,"superforce",250,0,0,[3,1],[0.5,0]));
+			this.addHitEffect(new ScalingEffect(this,this.player.x,this.player.y,"superforce",250,0,0,[3,1],[0.5,0], "follow"));
 			return false;
 		}
 

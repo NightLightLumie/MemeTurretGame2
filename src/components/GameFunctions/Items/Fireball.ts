@@ -4,10 +4,10 @@ import { Item } from "./Item";
 
 import { SpellProjectile } from "@/components/WeaponFunctions/SpellProjectile";
 
-export class Fireball extends Item{
+export class Fireball extends Item {
     private fired: number[];
     public damage: number = 350;
-    private baseFireballs: number = 8;
+    private baseFireballs: number = 6;
     constructor(scene: GameScene, p: Player, name: string, slot: number){
         super(scene, p, name, slot);
         this.fired = [];
@@ -60,6 +60,7 @@ export class Fireball extends Item{
             rad = Math.random()*2*Math.PI;
             vector = 0.8+(Math.random()*0.4);
         }
+        this.scene.sound.play("expmag", {volume: 0.75});
         this.owner.bankedCasts++;
     }
 

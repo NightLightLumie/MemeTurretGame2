@@ -1,4 +1,4 @@
-import { GameScene } from "@/scenes/GameScene";
+import { DamageInstance, GameScene } from "@/scenes/GameScene";
 import { Player } from "../../Player";
 import { Item } from "./Item";
 
@@ -29,7 +29,13 @@ export class RuneCircle extends Item{
     }
 
     shock(){
-        this.scene.simpleExplode(this.percent*this.owner.health*(1+this.owner.bonusSpellDamage),this.owner.x,this.owner.y,this.dmgRadius,"spell");
+        let dlist: DamageInstance[] = [];
+        dlist.push({amt: this.percent*this.owner.health*(1+this.owner.bonusSpellDamage), type: "spell", tags: ["spell","aoe"]});
+        if(this.owner.conversion > 0){
+            dlist.push({amt: (this.owner.conversion*this.owner.getActiveWeapon().damage), type: "gun", tags: ["gun","aoe"]});
+        }
+
+        this.scene.simpleExplode(dlist,this.owner.x,this.owner.y,this.dmgRadius);
         let i = 360;
         if(Math.random()<0.5){
             i *= -1;

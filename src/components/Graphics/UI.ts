@@ -7,8 +7,6 @@ export class UI extends Phaser.GameObjects.Container {
 	private background: Phaser.GameObjects.Image;
 	private text: Phaser.GameObjects.Text;
 
-
-
 	constructor(scene: GameScene) {
 		super(scene, 0, 0);
 		scene.add.existing(this);

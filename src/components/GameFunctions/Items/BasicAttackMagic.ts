@@ -26,7 +26,7 @@ export class BasicAttackMagic extends Item{
     }
 
     fetchItemData(): number[] {
-        return[this.damage*(1+this.owner.bonusSpellDamage), 0];
+        return[this.damage*(1+this.owner.bonusSpellDamage), this.owner.conversion*this.owner.getActiveWeapon().damage*(1+this.owner.bonusGunDamage)];
     }
 
     shoot(){
@@ -34,7 +34,7 @@ export class BasicAttackMagic extends Item{
         if(Math.random()<0.5){
             st = "y";
         }
-        this.scene.addHitEffect(new VHLaser(this.scene,this.owner.trackedCursor[0], this.owner.trackedCursor[1],"zoltraak",[0,1,0],[50,200],[1,1,0],st));
+        this.scene.addHitEffect(new VHLaser(this.scene,this.owner.trackedCursor[0], this.owner.trackedCursor[1],"zoltraak",[0,1,0],[50,200],[1,1,0],st, this.fetchItemData()));
         this.cooldown = this.maxCD;
         this.owner.bankedCasts++;
         return;

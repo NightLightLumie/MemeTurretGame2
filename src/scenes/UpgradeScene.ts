@@ -1,6 +1,6 @@
 import { BaseScene } from "@/scenes/BaseScene";
 import { Player } from "@/components/Player";
-import { UI } from "@/components/UI";
+import { UI } from "@/components/Graphics/UI";
 import { Armory } from "@/components/WeaponFunctions/Armory";
 import { GlobalVariables } from "@/components/GlobalVariables";
 import { WeaponButton } from "@/components/WeaponFunctions/WeaponButton";

@@ -38,6 +38,12 @@ export class StatItem extends Item{
             } case "Ultravibration": {
                 this.owner.execute += 0.05;
                 break;
+            } case "Sticky Bomb": {
+                this.owner.sticky += 50;
+                break;
+            } case "Cast Gun": {
+                this.owner.conversion += 1;
+                break;
             } default: {
                 console.log("Cannot find item with name: " + this.key);
                 break;
@@ -74,6 +80,12 @@ export class StatItem extends Item{
                 break;
             } case "Ultravibration": {
                 this.owner.execute += 0.01;
+                break;
+            } case "Sticky Bomb": {
+                this.owner.sticky += 5;
+                break;
+            } case "Cast Gun": {
+                this.owner.conversion += 0.05;
                 break;
             } default: {
                 console.log("Cannot find item with name: " + this.key);

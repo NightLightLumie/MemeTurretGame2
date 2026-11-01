@@ -14,7 +14,7 @@ export class EnemyBullet extends Phaser.GameObjects.Container{
     private hitAnimFrames: number = 3;
     public deleteFlag: boolean = false; 
     public vangle: number = 0;
-    constructor(scene: GameScene, x: number, y: number, name: string, difficulty: number, angle: number){
+    constructor(scene: GameScene, x: number, y: number, name: string, difficulty: number, angle: number, debuff: number = 0){
         super(scene,x,y);
         this.scene = scene;
         this.spr = this.scene.add.sprite(0,0,name);

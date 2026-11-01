@@ -1,12 +1,12 @@
 import { BaseScene } from "@/scenes/BaseScene";
 import { DamageText } from "@/components/Graphics/DamageText";
 import { Player } from "@/components/Player";
-import { UI } from "@/components/UI";
+import { UI } from "@/components/Graphics/UI";
 import { Bullet } from "@/components/WeaponFunctions/Bullet";
 import { LineSegment } from "@/components/WeaponFunctions/LineSegment";
 import { Effect } from "@/components/Graphics/Effect";
 import { Target } from "@/components/Target";
-import { Thug } from "@/components/Thug";
+import { Thug } from "@/components/Enemies/Thug";
 import { WeaponOperator } from "@/components/WeaponFunctions/WeaponOperator";
 import { GunUI } from "@/components/WeaponFunctions/GunUI";
 import { GlobalVariables } from "@/components/GlobalVariables";
@@ -22,6 +22,14 @@ import { EnemyBullet } from "@/components/EnemyBullet";
 import { Ufo } from "@/components/Enemies/Ufo";
 import { Missile } from "@/components/WeaponFunctions/Missile";
 import { TextEffect } from "@/components/Graphics/TextEffect";
+import { Weapon } from "@/components/WeaponFunctions/Weapon";
+import { StickyTracer } from "@/components/Graphics/StickyTracer";
+
+export interface DamageInstance{
+	amt: number;
+	type: string;
+	tags: string[];
+}
 
 export class GameScene extends BaseScene {
 	private background: Phaser.GameObjects.Image;
@@ -435,9 +443,7 @@ export class GameScene extends BaseScene {
 		for(let i = (this.tList.length-1); i >= 0; i--){
 			this.tList[i].update(t, d);
 			this.globalDamage.forEach((dm) => {
-				if(this.tList[i].takeDamage(dm)){
-					this.addHitEffect(new DamageText(this,this.tList[i].x,this.tList[i].y,""+dm, "spell"));
-				}
+				this.tList[i].takeTypedDamage({amt: dm, type: "spell", tags: ["spell", "aoe", "global"]},[20,20]);
 			})
 
 			if(this.tList[i].deleteFlag){
@@ -635,34 +641,38 @@ export class GameScene extends BaseScene {
 		}
 	}
 	
-	simpleExplode(dmg: number, x:number, y:number, radius: number, type: string = "explosion"){
+	simpleExplode(dmg: DamageInstance[], x:number, y:number, radius: number){
 		this.tList.forEach((t)=>{
 			if((t != null) && (t.deleteFlag != true)){
 				if(t.distanceTo(x,y) < (t.radius+radius)){
-					t.takeDamage(dmg);
-					this.addHitEffect(new DamageText(this,t.x,t.y,""+dmg, type));
+					dmg.forEach((d) => {
+						t.takeTypedDamage(d,[20,20]);
+					})
+
 				}
 			}
 		})
 	}
 
-	vExplode(dmg: number, x:number, radius: number, type: string = "explosion"){
+	vExplode(dmg: DamageInstance[], x:number, radius: number, type: string = "explosion"){
 		this.tList.forEach((t)=>{
 			if((t != null) && (t.deleteFlag != true)){
 				if(Math.abs(t.x-x) < (t.radius+radius)){
-					t.takeDamage(dmg);
-					this.addHitEffect(new DamageText(this,t.x,t.y,""+dmg, type));
+					dmg.forEach((d) => {
+						t.takeTypedDamage(d,[20,20]);
+					});
 				}
 			}
 		})
 	}
 
-	hExplode(dmg: number, y:number, radius: number, type: string = "explosion"){
+	hExplode(dmg: DamageInstance[], y:number, radius: number, type: string = "explosion"){
 		this.tList.forEach((t)=>{
 			if((t != null) && (t.deleteFlag != true)){
 				if(Math.abs(t.y-y) < (t.radius+radius)){
-					t.takeDamage(dmg);
-					this.addHitEffect(new DamageText(this,t.x,t.y,""+dmg, type));
+					dmg.forEach((d) => {
+						t.takeTypedDamage(d,[20,20]);
+					});
 				}
 			}
 		})
@@ -711,6 +721,10 @@ export class GameScene extends BaseScene {
 				this.player.unfire();
 			}
 		});
+	}
+
+	calculateGunDamage(dmg: DamageInstance[], source: Weapon, tg: Target): boolean{
+		return false;
 	}
 
 	toggleTracer(){

@@ -89,6 +89,12 @@ export class DamageText extends Effect{
                 color2 = "mediumturquoise";
                 flash = false;
                 break;
+            } case "spellcrit": {
+                size = 70;
+                color1 = "mediumturquoise";
+                color2 = "red";
+                flash = true;
+                break;
             } case "execute": {
                 size = 100;
                 color1 = "orangered";

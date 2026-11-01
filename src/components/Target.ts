@@ -1,8 +1,9 @@
-import { GameScene } from "@/scenes/GameScene";
+import { DamageInstance, GameScene } from "@/scenes/GameScene";
 import { DmgStack, HitLog } from "./WeaponFunctions/WeaponOperator";
 import { BasicEffect } from "./Graphics/BasicEffect";
 import { DamageText } from "./Graphics/DamageText";
 import { ScalingEffect } from "./Graphics/ScalingEffect";
+import { StickyTracer } from "./Graphics/StickyTracer";
 
 export interface DamageBatch{
     key: string;
@@ -36,6 +37,8 @@ export class Target extends Phaser.GameObjects.Container{
     protected tdisp: Phaser.GameObjects.Container;
     protected armor: number[] = [0,0];
     protected value: number = 20;
+    public damageScale: number = 1;
+    public debuff: number = 0;
 
     public batchedDamage: DamageBatch[];
     //public pID: number = 0;
@@ -68,7 +71,7 @@ export class Target extends Phaser.GameObjects.Container{
             if(this.batchedDamage[h].interval[0] < this.batchedDamage[h].interval[1]){
                 this.batchedDamage[h].interval[0] += d;
                 if(this.batchedDamage[h].interval[0] >= this.batchedDamage[h].interval[1]){
-                    if(this.takeDamage(this.batchedDamage[h].amt)){
+                    if(this.takeTypedDamage({amt: this.batchedDamage[h].amt, type: this.batchedDamage[h].type, tags: ["spell", "aoe", "batch"]}, [20,20])){
                         this.scene.addHitEffect(new DamageText(this.scene,this.x,this.y,""+this.batchedDamage[h].amt.toFixed(2), this.batchedDamage[h].type));
                         if(this.batchedDamage[h].type == "spell"){
                             let sp = "spellhitorange";
@@ -79,7 +82,6 @@ export class Target extends Phaser.GameObjects.Container{
                         }
                         this.batchedDamage[h].amt = 0;
                         this.batchedDamage[h].deleteFlag = true;
-
                     }
                     this.batchedDamage[h].interval[0] -= this.batchedDamage[h].interval[1];
                 }
@@ -126,7 +128,7 @@ export class Target extends Phaser.GameObjects.Container{
             if(value.curhits >= value.maxhits) {
                 tmpr = value.curhits-value.maxhits;
                 value.image.setAlpha(1);
-                this.takeDamage(value.damage*(1+this.scene.player.bonusGunDamage));
+                this.takeTypedDamage({amt: value.damage*(1+this.scene.player.bonusGunDamage), type: "stack", tags: ["gun", "stack"]},[20,20]);
                 //console.log("boom");
                 this.scene.sound.play(value.sound,{volume: 1});
                 this.scene.addHitEffect(new BasicEffect(this.scene,"hit_spark",this.x,this.y,3,100,false,0,Math.random()*360));
@@ -167,6 +169,8 @@ export class Target extends Phaser.GameObjects.Container{
 
     }
 
+    /*
+
     takeDamage(n: number): boolean{
         if(this.invuln || (this.hp<=0)){
             return false;
@@ -178,6 +182,38 @@ export class Target extends Phaser.GameObjects.Container{
             if(this.hp < (this.scene.player.execute*this.maxHP)){
                 this.die();
                 this.scene.addHitEffect(new DamageText(this.scene,this.x,this.y,""+(Math.round(this.hp))+"!", "execute"));
+                this.scene.sound.play("execute", {volume:0.5});
+                this.scene.addHitEffect(new ScalingEffect(this.scene, this.x, this.y, "vibrator", 250, Math.random()*360,0,[0.01,2],[1,0]));
+                this.hp = 0;
+            }
+        }
+        return true;
+    }
+
+    */
+
+    takeTypedDamage(dmg: DamageInstance, offset: number[] = [0,0]): boolean{
+        if(this.invuln || (this.hp<=0)){
+            return false;
+        }
+        this.hp -= dmg.amt;
+        if(this.scene.player.sticky > 0){
+            if(dmg.tags.includes("spell") && dmg.tags.includes("projectile")){
+                this.scene.player.addSticky(this);
+            }
+        }
+        let nx = "";
+        if((dmg.type == "crit") || (dmg.type == "critrepeat") || (dmg.type=="spellcrit")){
+            nx = "!";
+        }
+        this.scene.addHitEffect(new DamageText(this.scene,(this.x-offset[0])+(2*Math.random()*offset[0]),(this.y-offset[1])+(2*Math.random()*offset[1]),""+this.smartRound(dmg.amt)+nx, dmg.type));
+        this.hitStun = 20;
+        if(this.hp <= 0) {
+            this.die();
+        } else {
+            if(this.hp < (this.scene.player.execute*this.maxHP*this.damageScale)){
+                this.die();
+                this.scene.addHitEffect(new DamageText(this.scene,(this.x-offset[0])+(2*Math.random()*offset[0]),(this.y-offset[1])+(2*Math.random()*offset[1]),""+(this.smartRound(this.hp))+"!", "execute"));
                 this.scene.sound.play("execute", {volume:0.5});
                 this.scene.addHitEffect(new ScalingEffect(this.scene, this.x, this.y, "vibrator", 250, Math.random()*360,0,[0.01,2],[1,0]));
                 this.hp = 0;
@@ -231,7 +267,7 @@ export class Target extends Phaser.GameObjects.Container{
         if(this.deleteFlag != true){
             if(this.hp < (this.scene.player.execute*this.maxHP)){
                 this.die();
-                this.scene.addHitEffect(new DamageText(this.scene,this.x,this.y,""+(Math.round(this.hp))+"!", "execute"));
+                this.scene.addHitEffect(new DamageText(this.scene,this.x,this.y,""+(this.smartRound(this.hp))+"!", "execute"));
                 this.scene.sound.play("execute", {volume:0.5});
                 this.scene.addHitEffect(new ScalingEffect(this.scene, this.x, this.y, "vibrator", 250, Math.random()*360,0,[0.01,2],[1,0]));
                 this.hp = 0;
@@ -244,24 +280,23 @@ export class Target extends Phaser.GameObjects.Container{
         this.stackLog.set(pd,ap);
     }
 
-    takePierceDamage(n: number, p: number, wID: number): boolean{
+    takePierceDamage(d: DamageInstance, p: number, wID: number): boolean{
         if(this.bLog.has(p)){
             let tr = this.bLog.get(p);
             if(tr != null) {
                 if((tr.cooldown > 0) || (tr.cooldown <= -999)){
                     return false;
                 } else {
-                    this.hp -= n;
+                    this.takeTypedDamage(d,[20,20]);
                 }
             } else {
-                this.hp -= n;
+                this.takeTypedDamage(d,[20,20]);
             }
         } else {
-            this.hp -= n;  
+            this.takeTypedDamage(d,[20,20]);
         }
         let mm = this.scene.handler.getParams(wID);
         if(this.hp <= 0) {
-            this.die();
             return true;
         } else {
             if(this.bLog.has(p)){
@@ -308,6 +343,19 @@ export class Target extends Phaser.GameObjects.Container{
 
     unSeek(){
         this.seeking = false;
+    }
+
+    smartRound(n: number): number{
+        let rr = n*100;
+        rr = Math.round(rr);
+        if((rr % 100) == 0){
+            return Math.trunc(rr*0.01);
+        } else if ((rr % 10) == 0) {
+            rr = Math.trunc(rr*0.1);
+            return Math.trunc(rr*0.1);
+        } else {
+            return rr/100;
+        }
     }
 
     checkBulletLog(n: number): boolean{

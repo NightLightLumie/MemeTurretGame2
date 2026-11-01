@@ -47,7 +47,7 @@ export class Rocket extends Missile{
         if(!this.deleteFlag){
             this.deleteFlag = true;
             this.scene.playSound("meme_explosion",0.5);
-            this.scene.simpleExplode(this.damage,this.x,this.y,this.blast);
+            this.scene.simpleExplode([{amt: this.damage, type: "gun", tags: ["projectile", "aoe"]}],this.x,this.y,this.blast);
             this.scene.addHitEffect(new BasicEffect(this.scene,"exp",this.x,this.y,25,15,false,2,Math.random()*360,[this.eScale,this.eScale]));
         }
     }

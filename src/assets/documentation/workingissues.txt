@@ -1,0 +1,2 @@
+1.  Fix the spaghetti code with pierce data tracking (currently tracked on enemy side and sometimes also on projectile side);
+2.  Fix issues with repeats (doesn't look like repeats actually get process for pierce <=1 hits), and unify which side damage text is printed on (enemy vs bullet)

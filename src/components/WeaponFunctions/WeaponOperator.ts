@@ -211,6 +211,9 @@ export class WeaponOperator{
     }
 
     processSpecial(t: Target, wp: number, w: Weapon, dmg: number){
+        if(t.deleteFlag == true){
+            return;
+        }
         let wr = this.getParams(wp);
         switch(wp){
             case 7: {

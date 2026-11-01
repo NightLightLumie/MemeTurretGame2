@@ -1,4 +1,4 @@
-import { GameScene } from "@/scenes/GameScene";
+import { DamageInstance, GameScene } from "@/scenes/GameScene";
 import { WeaponDisplay } from "./WeaponDisplay";
 import { Bullet } from "./WeaponFunctions/Bullet";
 import { Weapon } from "./WeaponFunctions/Weapon";
@@ -16,6 +16,13 @@ import { LavaBucket } from "./GameFunctions/Items/LavaBucket";
 import { ShieldDisplay } from "./Graphics/ShieldDisplay";
 import { GunFu } from "./GameFunctions/Items/GunFu";
 import { UltrasonicBarrier } from "./GameFunctions/Items/UltrasonicBarrier";
+import { DanmakuCharm } from "./GameFunctions/Items/DanmakuCharm";
+import { ReactiveBarrier } from "./GameFunctions/Items/ReactiveBarrier";
+import { CementEater } from "./GameFunctions/Items/CementEater";
+import { BuffDisplay } from "./Graphics/BuffDisplay";
+import { StatItem } from "./GameFunctions/Items/StatItem";
+import { Target } from "./Target";
+import { StickyTracer } from "./Graphics/StickyTracer";
 
 const ACCELERATION = 350;
 const MAX_SPEED = 500;
@@ -39,7 +46,7 @@ export class Player extends Phaser.GameObjects.Container {
 	private sprite: Phaser.GameObjects.Sprite;
 	private inventory: number;
 	private tween: Phaser.Tweens.Tween;
-
+	private buffDisp: BuffDisplay;
 
 	// Controls
 	private keyboard: any;
@@ -49,7 +56,6 @@ export class Player extends Phaser.GameObjects.Container {
 	private inputVec: Phaser.Math.Vector2; // Just used for keyboard -> vector
 	private touchPos: Phaser.Math.Vector2;
 	public velocity: Phaser.Math.Vector2;
-
 	private border: { [key: string]: number };
 	private hbox: Phaser.GameObjects.Sprite;
 	private wpDisp: WeaponDisplay;
@@ -63,61 +69,51 @@ export class Player extends Phaser.GameObjects.Container {
 
 
 //Spell modifiable variables
-
 	public radius: number = 100;
 	public hitsize: number = 40;
 	public shrink: number = 0;
-
 	public baseHP: number = 1000;
 	public bonusHP: number = 0;
 	public maxHP: number = 1000;
 	public health: number = 1000;
-
 	public shieldList: ShieldSource[];
 	public pShield: number[] = [0,0];
 	public maxShield: number = 0;
 	public tShields: ShieldSource[];
 	public sdp: ShieldDisplay;
 	//public shields: number = 0;
-
 	public sashed: boolean = false;
 	public reactive: boolean = false;
-
+	public danmaku: boolean = false;
+	public sticky: number = 0;
 	public trackShots: number = 0;
 	public dmgTracker: boolean[] = [false,false];
-
 	public items: Item[] = [];
 	public itemKeys: string[];
-
 	public curIFrames: number = 0;
 	public maxIFrames: number = 0;
-
 	public bonusGunDamage: number = 0;
 	public bonusSpellDamage: number = 0;
-
 	public bonusAccel: number = 0;
 	public maxAccel: number = ACCELERATION;
 	public bonusSpeed: number = 0;
 	public maxSpeed: number = MAX_SPEED;
-	
 	public redHP: number = 0;
 	public deferDamage: number = 0;
 	public dmgRes: number = 0;
 	public dmgCap: number = 1;
-
 	public conversion: number = 0;
-
+	public tags: string[] = [];
 	public smite: number = 0;
 	public execute: number = 0;
 	public cancelTime: number = 250;
-	public killThisTick: boolean = false;
 	public distanceElapsed: number = 0;
 	public trackedCursor: number[] = [0,0];
 	public myMandala: Mandala | null;
 	public bankedCasts: number = 0;
-
 	public defaultItem: Item;
 
+	//loadout 
 	public loadout: [Weapon,Weapon,Weapon];
 	public activeWeapon: number = 0;
 	public spMod: number = 1;
@@ -228,15 +224,22 @@ export class Player extends Phaser.GameObjects.Container {
 		this.sdp = new ShieldDisplay(this.scene,0,0,this);
 		this.add(this.sdp);
 
-		this.defaultItem = new Item(this.scene,this,"default");
+		this.buffDisp = new BuffDisplay(this.scene,0,0,this);
+		this.add(this.buffDisp);
+
+		this.sendToBack(this.buffDisp);
 		this.sendToBack(this.hpBar);
 		this.sendToBack(this.rhpBar);
+		
+		this.defaultItem = new Item(this.scene,this,"default");
 		this.curGunAngle = 0;
 
 		this.items.push(new GunFu(this.scene,this,"Gun Fu"));
-		this.items.push(new UltrasonicBarrier(this.scene,this,"Ultrasonic Shield"));
-
-
+		this.items.push(new StatItem(this.scene,this,"Cast Gun", 2));
+		this.danmaku = false;
+		this.items.push(new DanmakuCharm(this.scene,this,"Danmaku Charm"));
+		this.items.push(new ReactiveBarrier(this.scene,this,"Reactive Barrier"));
+		this.items.push(new StatItem(this.scene,this,"Sticky Bomb",0));
 	}
 
 	setDefaultLoadout(){
@@ -296,13 +299,29 @@ export class Player extends Phaser.GameObjects.Container {
 			let rb = this.findItem("Reactive Barrier");
 			if(rb.setCooldown()){
 				this.reactive = false;
-				this.scene.simpleExplode(rb.fetchItemData()[0]*n,this.x,this.y,400,"spell");
-				this.scene.addHitEffect(new ScalingEffect(this.scene, this.x, this.y, "barrierboom", 250, Math.random()*360,0,[1,0.01],[0.9,0.4]));
+				let lx: DamageInstance[] = [];
+				lx.push({amt: rb.fetchItemData()[0]*n, type: "spell", tags: ["spell", "aoe"]});
+				/*
+				if(this.conversion > 0){
+					lx.push({amt: this.getActiveWeapon().damage*(1+this.bonusGunDamage)*this.conversion, type: "gun", tags: ["gun", "aoe", "onhit"]});
+				}*/
+				this.scene.simpleExplode(lx,this.x,this.y,400);
+				this.scene.addHitEffect(new ScalingEffect(this.scene, this.x, this.y, "barrierboom", 250, Math.random()*360,0,[0.01,6],[0.9,0]));
+				this.scene.sound.play("rb", {volume: 0.75});
 				this.bankedCasts++;
 				return;
 			}
 		} else {
 			this.emit("ouch");
+		}
+		let cm = this.findItem("Eat Cement");
+		if(cm instanceof CementEater){
+			if(cm.cement >= 1){
+				n*= cm.fetchItemData()[0];
+				cm.cement -= 1;
+				this.scene.sound.play("cmt", {volume: 0.5});
+				this.bankedCasts++;
+			}
 		}
 		if((this.tShields.length > 0) || (this.pShield[0] > 0)){
 			this.takeShieldDamage(n);
@@ -399,6 +418,16 @@ export class Player extends Phaser.GameObjects.Container {
 		this.scene.die();
 	}
 
+	shootDanmaku(x: number, y: number){
+		if(!this.danmaku){
+			return;
+		}
+		let k = this.findItem("Danmaku Charm");
+		if(k instanceof DanmakuCharm){
+			k.shoot(x, y);
+		}
+	}
+
 	findItem(key: string): Item {
 		for(let p = 0; p < this.items.length; p++){
 			if(this.items[p].key == key){
@@ -472,6 +501,7 @@ export class Player extends Phaser.GameObjects.Container {
 		}
 
 		this.updateHPDisplay();
+		this.buffDisp.update(time, delta);
 
         const pointer = this.scene.input.activePointer;
         const worldX = this.scene.cameras.main.getWorldPoint(pointer.x, pointer.y).x;
@@ -573,6 +603,17 @@ export class Player extends Phaser.GameObjects.Container {
 	forceReload(){
 		this.loadout[this.activeWeapon].startReload();
 		this.emit("startReload");
+	}
+
+	addSticky(t: Target){
+		if(this.findItem("Sticky Bomb").key != "default"){
+
+		}
+		let dmgn = [(this.sticky*(1+this.bonusSpellDamage)),0];
+		if(this.conversion > 0){
+			dmgn[1] = this.conversion*this.getActiveWeapon().damage*(1+(this.bonusGunDamage));
+		}
+		this.scene.addHitEffect(new StickyTracer(this.scene,0,0,dmgn,t));
 	}
 
 	scrollForward(){

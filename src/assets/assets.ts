@@ -146,6 +146,13 @@ const images: Image[] = [
 	image('spells/zoltraak', 'zoltraak'),
 	image('spells/nova', 'nova'),
 	image('spells/vibrator', 'vibrator'),
+	image('spells/greenarrow', 'greenarrow'),
+	image('spells/bigblue', 'bigblue'),
+	image('spells/purplecard', 'purplecard'),
+	image('spells/reddiamond', 'reddiamond'),
+	image('spells/yellowknife', 'yellowknife'),
+	image('spells/reactivering', 'reactivering'),
+
 	// Enemies
 	image('enemies/enemy_1', 'enemy_1'),
 	image('enemies/fragments/e1/f1-0', 'f1-0'),
@@ -183,6 +190,7 @@ const spritesheets: SpriteSheet[] = [
 	spritesheet("anims/spellhitblue", "spellhitblue", 200, 200),
 	spritesheet("anims/spellhitorange", "spellhitorange", 200, 200),
 	spritesheet("anims/spellhitshadow", "spellhitshadow", 200, 200),
+	spritesheet("anims/stickylight", "stickylight", 256, 256),
 	spritesheet("ui/aug", "aug", 48, 64),
 	spritesheet("ui/aug_extra", "aug_extra", 48, 64),
 	spritesheet("ui/aug_button_frame", "aug_button_frame", 64, 64),
@@ -197,6 +205,7 @@ const spritesheets: SpriteSheet[] = [
 	spritesheet("anims/boneattack", "boneattack", 128, 128),
 	spritesheet("anims/lava", "lava", 256, 256),
 	spritesheet("anims/fireshot", "fireshot", 320, 280),
+	spritesheet("anims/cementblocks", "cementblocks", 280, 280),
 ];
 
 /* Audios */
@@ -233,7 +242,10 @@ const audios: Audio[] = [
 	sound('tree/dropbox', 'dropbox', 0.5),
 
 	sound('player/miss', 'miss', 0.5),
-
+	sound('player/rb', 'rb', 0.5),
+	sound('player/cmt', 'cmt', 0.5),
+	sound('player/thshoot', 'thshoot', 0.5),
+	
 	sound('tree/ufobullet_fire', 'ufobullet_fire', 0.5),
 
 	sound('tree/darksouls', 'darksouls', 0.5),

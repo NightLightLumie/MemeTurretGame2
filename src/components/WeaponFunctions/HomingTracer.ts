@@ -25,6 +25,12 @@ export class HomingTracer extends Missile {
             this.tg = t;
             //this.lastStoredLocation = [this.tg.x, this.tg.y];
         }
+
+        //this.add(this.px);
+
+    }
+
+    addTrail(){
         this.px = this.scene.add.particles(0,0,"greensq",{
             frame: 0,
             x: 0,
@@ -38,14 +44,8 @@ export class HomingTracer extends Missile {
             rotate: {min: -180, max: 180},
             lifespan: 500,
             blendMode: BlendModes.ADD,
-
-
-
         });
-
         this.scene.referForDelete(this.px);
-        //this.add(this.px);
-
     }
 
     signedHomingTurn(ang: number, d: number){
@@ -185,7 +185,7 @@ export class HomingTracer extends Missile {
             this.deleteFlag = true;
             this.px.stop();
             this.scene.playSound("meme_explosion",0.5);
-            this.scene.simpleExplode(350,this.x,this.y,50);
+            t.takeTypedDamage({amt: 350, type: "spell", tags: ["spell", "projectile"]});
             this.scene.addHitEffect(new BasicEffect(this.scene,"exp",this.x,this.y,25,15,false,2,Math.random()*360,[0.1,0.1]));
         }
     }

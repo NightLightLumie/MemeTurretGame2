@@ -4,9 +4,7 @@ import { Weapon } from "./Weapon";
 import { Target } from "../Target";
 import { BasicEffect } from "../Graphics/BasicEffect";
 import { Item } from "../GameFunctions/Items/Item";
-import { DamageText } from "../Graphics/DamageText";
 import { BlendModes } from "phaser";
-import { StickyTracer } from "../Graphics/StickyTracer";
 
 export class SpellProjectile extends Missile{
     public scene: GameScene;
@@ -167,9 +165,15 @@ export class SpellProjectile extends Missile{
             this.processHit(t);
         }
     }
+
+    logEnemy(t: Target){
+        if(!this.stored.includes(t.tID)){
+            this.stored.push(t.tID);
+        }
+    }
+
     processHit(t: Target): void {
         if(!this.deleteFlag){
-
             if(this.stored.includes(t.tID)){
                 return;
             } else if(t.takeTypedDamage({amt: this.damage,type: this.damageType, tags: this.tags}, [20,20])){
@@ -191,10 +195,6 @@ export class SpellProjectile extends Missile{
                 this.scene.addHitEffect(new BasicEffect(this.scene,this.effectName,t.x,t.y,3,100,false,0,Math.random()*360,this.hitScale));
                 if(this.scene.player.conversion > 0){
                     t.takeTypedDamage({amt: this.gunBonus, type: "gun", tags: ["gun", "projectile", "onhit"]}, [20,20]);
-                }
-                if(this.scene.player.sticky > 0){
-                    this.scene.addHitEffect(new StickyTracer(this.scene,0,0,[this.scene.player.sticky*(1+this.scene.player.bonusSpellDamage), 
-                        (this.scene.player.getActiveWeapon().damage*this.scene.player.conversion*(1+this.scene.player.bonusGunDamage))],t));
                 }
             }
 

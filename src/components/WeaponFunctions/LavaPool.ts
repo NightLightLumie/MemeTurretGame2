@@ -3,8 +3,7 @@ import { GameScene } from "@/scenes/GameScene";
 import { Weapon } from "./Weapon";
 import { Item } from "../GameFunctions/Items/Item";
 import { Target } from "../Target";
-import { BasicEffect } from "../Graphics/BasicEffect";
-import { DamageText } from "../Graphics/DamageText";
+
 
 export class LavaPool extends Missile{
     private owner: Weapon;

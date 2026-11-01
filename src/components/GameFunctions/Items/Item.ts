@@ -5,20 +5,28 @@ import { ItemTile } from "./ItemTile";
 export class Item extends Phaser.Events.EventEmitter{
     protected owner: Player;
     public key: string;
-    protected level: number = 0;
-    protected maxLevel: number = 10;
+    public level: number = 0;
+    public maxLevel: number = 10;
     public scene: GameScene;
     public gfx: ItemTile;
     public value: number;
     public cooldown: number = 1;
     public maxCD: number = 1;
     public tileType: string = "item_gr";
-    constructor(scene: GameScene, p: Player, id: string){
+    public slot: number;
+    public imgs: string[] = ["itemtile", "itemtile"];
+    constructor(scene: GameScene, p: Player, id: string, s: number){
         super();
         this.owner = p;
         this.key = id;
         this.scene = scene;
         this.value = 0;
+        this.slot = s;
+        let ipm = this.scene.masterData.getItemParams(this.key);
+        console.log("tried to find key: " + this.key + " received: " + ipm.name);
+        if(ipm.name != "default"){
+            this.imgs = ipm.spr;
+        }
     }
     
     update(t: number, d: number){

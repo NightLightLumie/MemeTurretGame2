@@ -4,7 +4,7 @@ import { GameScene } from "@/scenes/GameScene";
 import { Target } from "../Target";
 import { BasicEffect } from "../Graphics/BasicEffect";
 
-export class MagicMissle extends HomingTracer{
+export class MagicMissile extends HomingTracer{
     private gdmg: number = 0;
     constructor(scene: GameScene, x: number, y: number, name: string, angle: number, vscale: number, t: Target, ref: Item){
         super(scene,x,y,name,angle,vscale,t);

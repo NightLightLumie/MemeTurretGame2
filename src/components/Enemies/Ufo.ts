@@ -36,7 +36,7 @@ export class Ufo extends Target{
     private curAngle: number = 0;
     private spin: number = 0;
 
-    constructor(scene:GameScene,x:number,y:number, ofs: number = 0){
+    constructor(scene:GameScene,x:number,y:number, ofs: number = 0, diff: number = -1){
         super(scene,x,y);
         this.spr = this.scene.add.sprite(0,0,"enemy_2");
         this.spr.setOrigin(0.5,0.5);
@@ -66,7 +66,7 @@ export class Ufo extends Target{
         }
 
         this.setStackDisplay();
-        this.setDifficulty();
+        this.setDifficulty(diff);
         //this.pID = this.scene.getProjID();
     }
 
@@ -157,7 +157,7 @@ export class Ufo extends Target{
             {
                 this.scene.playSound("ufobullet_fire", 0.5);
                 this.scene.addEnemyBullet(new EnemyBullet(this.scene,this.x+(Math.cos(this.playerAngle())*this.radius),this.y+(Math.sin(this.playerAngle())*this.radius),
-                "ufobullet",this.difficulty,this.playerAngle()));
+                "ufobullet",this.difficulty,this.playerAngle(), this.buff*this.debuff));
                 this.aCD[0] = this.aCD[1];   
             }
         } else {

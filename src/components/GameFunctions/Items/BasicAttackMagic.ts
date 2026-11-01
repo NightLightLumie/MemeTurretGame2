@@ -6,12 +6,13 @@ import { VHLaser } from "@/components/Graphics/VHLaser";
 
 
 export class BasicAttackMagic extends Item{
-    public damage: number = 350;
-    constructor(scene: GameScene, p: Player, name: string){
-        super(scene, p, name);
+    public damage: number = 250;
+    public crit: number = 0.2;
+    constructor(scene: GameScene, p: Player, name: string, slot: number){
+        super(scene, p, name, slot);
         this.tileType = "item_rd";
-        this.cooldown = 500;
-        this.maxCD = 500;
+        this.cooldown = 5000;
+        this.maxCD = 5000;
     }
 
 
@@ -19,14 +20,18 @@ export class BasicAttackMagic extends Item{
         if(this.level < this.maxLevel){
             this.level++;
             this.damage += 20;
-            let e = this.cooldown/this.maxCD;
-            this.maxCD -= 200;
-            this.cooldown = e*this.maxCD;
+            this.crit += 0.03;
+            this.cooldown = this.cooldown/this.maxCD;
+            this.maxCD -= 300;
+            this.cooldown *= this.maxCD;
+        } else {
+            console.log("Item already at max level.");
+            return;
         }
     }
 
     fetchItemData(): number[] {
-        return[this.damage*(1+this.owner.bonusSpellDamage), this.owner.conversion*this.owner.getActiveWeapon().damage*(1+this.owner.bonusGunDamage)];
+        return[this.damage*(1+this.owner.bonusSpellDamage), this.owner.conversion*this.owner.getActiveWeapon().damage*(1+this.owner.bonusGunDamage), this.crit];
     }
 
     shoot(){
@@ -34,7 +39,8 @@ export class BasicAttackMagic extends Item{
         if(Math.random()<0.5){
             st = "y";
         }
-        this.scene.addHitEffect(new VHLaser(this.scene,this.owner.trackedCursor[0], this.owner.trackedCursor[1],"zoltraak",[0,1,0],[50,200],[1,1,0],st, this.fetchItemData()));
+        this.scene.addHitEffect(new VHLaser(this.scene,this.owner.trackedCursor[0], this.owner.trackedCursor[1],"zoltraak",[0,1,0],[50,200],[1,1,0.75],st, this.fetchItemData()));
+        this.scene.sound.play("basicmagicblast", {volume: 0.25});
         this.cooldown = this.maxCD;
         this.owner.bankedCasts++;
         return;

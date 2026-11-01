@@ -5,8 +5,8 @@ import { Player } from "../Player";
 export class Spell extends Item{
 
     protected cd: number[] = [1000,1000];
-    constructor(scene:GameScene, p: Player, name: string){
-        super(scene,p,name);
+    constructor(scene:GameScene, p: Player, name: string, slot: number){
+        super(scene,p,name, slot);
     }
 
     update(t: number, d: number){

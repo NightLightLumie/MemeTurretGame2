@@ -9,7 +9,6 @@ import { BasicEffect } from "../Graphics/BasicEffect";
 import { HitInfo } from "./WeaponOperator";
 import { Tracer } from "./Tracer";
 import { Weapon } from "./Weapon";
-import { DamageText } from "../Graphics/DamageText";
 
 export interface BonusCommand {
     cmd: string,
@@ -373,9 +372,6 @@ export class Bullet extends Phaser.GameObjects.Container{
                 tgs.push("crit");
             }
             if(this.thits[ix].tg.takeTypedDamage({amt: this.dmg, type: b, tags: tgs}, [20,20])){
-                if(this.scene.player.danmaku){
-                    this.scene.player.shootDanmaku(this.thits[ix].tg.x, this.thits[ix].tg.y);
-                }
                 this.processBasicHit(ix);
                 if(this.owner.repeats.length > 0){
                     this.owner.repeats.forEach((r)=>{
@@ -410,9 +406,6 @@ export class Bullet extends Phaser.GameObjects.Container{
             ptgs.push("crit");
         }
         if(this.thits[n].tg.takePierceDamage({amt: this.dmg, type: b, tags: ptgs},this.pID,this.weaponID)){
-            if(this.scene.player.danmaku){
-                this.scene.player.shootDanmaku(this.thits[n].tg.x, this.thits[n].tg.y);
-            }
             this.processBasicHit(n);
             if(this.owner.repeats.length > 0){
                 this.owner.repeats.forEach((r)=>{
@@ -443,6 +436,9 @@ export class Bullet extends Phaser.GameObjects.Container{
             xr *= -1;
         }
         this.playHitSounds();
+        if(this.scene.player.danmaku){
+            this.scene.player.shootDanmaku(this.thits[n].vt.x, this.thits[n].vt.y, this.thits[n].tg);
+        }
         this.scene.addHitEffect(new BasicEffect(this.scene,"splash",this.thits[n].vt.x,this.thits[n].vt.y,4,100,false,0,this.a,[1.75+Math.random()*2.5,xr*(1.25+Math.random()*1.25)]));
 
         let b = "gun";
@@ -456,7 +452,9 @@ export class Bullet extends Phaser.GameObjects.Container{
             }
         }
         //need to scale onhit damage here as it's not included up top
-        this.thits[n].tg.takeTypedDamage({amt: this.owner.onHit*this.globalDamageScale, type: b, tags: otgs}, [30,30]);
+        if(this.owner.onHit > 0){
+            this.thits[n].tg.takeTypedDamage({amt: this.owner.onHit*this.globalDamageScale, type: b, tags: otgs}, [30,30]);
+        }
     }
 
     getDist(v: Phaser.Math.Vector2){

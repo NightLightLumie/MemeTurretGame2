@@ -26,6 +26,7 @@ export class Target extends Phaser.GameObjects.Container{
     public overlap: boolean = false;
     public colrad: number = 75;
     public ghosting: boolean = false;
+    public smited: boolean = false;
     protected seeking: boolean = false;
     protected tpr: number[] = [];
     protected unstackFactor: number = 500;
@@ -38,9 +39,11 @@ export class Target extends Phaser.GameObjects.Container{
     protected armor: number[] = [0,0];
     protected value: number = 20;
     public damageScale: number = 1;
-    public debuff: number = 0;
+    public debuff: number = 1;
+    public buff: number = 1;
 
     public batchedDamage: DamageBatch[];
+    public totalBatchedDamage: number;
     //public pID: number = 0;
 
 
@@ -60,8 +63,16 @@ export class Target extends Phaser.GameObjects.Container{
         this.tdisp.setDepth(10);
     }
 
-    setDifficulty(){
-        this.difficulty = this.scene.difficulty;
+    setDebuffDisplay(){
+
+    }
+
+    setDifficulty(n: number = -1){
+        if(n != -1){
+            this.difficulty = n;
+        } else {
+            this.difficulty = this.scene.difficulty;
+        }
         this.hp = Math.trunc((1+(0.15*this.difficulty))*this.hp);
         this.maxHP = this.hp;
     }
@@ -72,13 +83,16 @@ export class Target extends Phaser.GameObjects.Container{
                 this.batchedDamage[h].interval[0] += d;
                 if(this.batchedDamage[h].interval[0] >= this.batchedDamage[h].interval[1]){
                     if(this.takeTypedDamage({amt: this.batchedDamage[h].amt, type: this.batchedDamage[h].type, tags: ["spell", "aoe", "batch"]}, [20,20])){
-                        this.scene.addHitEffect(new DamageText(this.scene,this.x,this.y,""+this.batchedDamage[h].amt.toFixed(2), this.batchedDamage[h].type));
                         if(this.batchedDamage[h].type == "spell"){
                             let sp = "spellhitorange";
                             if(this.batchedDamage[h].params.length > 0){
                                 sp = this.batchedDamage[h].params[0];
                             }
                             this.scene.addHitEffect(new BasicEffect(this.scene,"spellhitorange",this.x,this.y,3,100,false,0,Math.random()*360,[1,1]));
+                        }
+                        this.totalBatchedDamage -= this.batchedDamage[h].amt;
+                        if(this.totalBatchedDamage <= 0) {
+                            this.totalBatchedDamage = 0;
                         }
                         this.batchedDamage[h].amt = 0;
                         this.batchedDamage[h].deleteFlag = true;
@@ -90,6 +104,22 @@ export class Target extends Phaser.GameObjects.Container{
 				this.batchedDamage.splice(h,1);
 			}
 		}
+    }
+
+    forceBatchedDamage(){
+        this.batchedDamage.forEach((b) => {
+            this.takeTypedDamage({amt: b.amt, type: b.type, tags: ["spell", "aoe", "batch"]}, [20,20]);
+            if(b.type == "spell"){
+                let sp = "spellhitorange";
+                if(b.params.length > 0){
+                    sp = b.params[0];
+                }
+                this.scene.addHitEffect(new BasicEffect(this.scene,"spellhitorange",this.x,this.y,3,100,false,0,Math.random()*360,[1,1]));
+            }
+
+        });
+        this.batchedDamage = [];
+        this.totalBatchedDamage = 0;
     }
 
     updateLogs(t:number,d:number){
@@ -192,18 +222,55 @@ export class Target extends Phaser.GameObjects.Container{
 
     */
 
-    takeTypedDamage(dmg: DamageInstance, offset: number[] = [0,0]): boolean{
-        if(this.invuln || (this.hp<=0)){
-            return false;
-        }
-        this.hp -= dmg.amt;
+    checkPlayerActions(dmg: DamageInstance){
         if(this.scene.player.sticky > 0){
             if(dmg.tags.includes("spell") && dmg.tags.includes("projectile")){
                 this.scene.player.addSticky(this);
             }
         }
+
+        if(dmg.tags.includes("gun")){
+            if(this.scene.player.canResonate[1]){
+                this.scene.player.resonate("gun");
+            }
+
+            if((this.scene.player.inhibitor > 0) && (this.debuff == 1)){
+                this.debuff = 1-this.scene.player.inhibitor;
+            }
+
+            if(this.hp > 0){
+                if(this.scene.player.smite > 0){
+                    if(!this.smited){
+                        let a = Math.random();
+                        if(a < 0.5){
+                            a = -1;
+                        }
+                        this.scene.addHitEffect(new BasicEffect(this.scene,"bad_fire",this.x,this.y-128,6,75,false,0,0,[a,1]));
+                        this.takeTypedDamage({amt: this.maxHP*this.scene.player.smite, type: "smite", tags: ["smite", "truedamage"]}, [40,40]);
+                        this.scene.sound.play("bigfire", {volume:0.5});
+                        this.smited = true;
+                    }
+                }
+            }
+        }
+
+        if(dmg.tags.includes("spell")){
+            if(this.scene.player.canResonate[0]){
+                this.scene.player.resonate("spell");
+            }
+        }
+
+    }
+
+    takeTypedDamage(dmg: DamageInstance, offset: number[] = [0,0]): boolean{
+        if(this.invuln || (this.hp <= 0) || this.deleteFlag){
+            return false;
+        }
+        this.hp -= dmg.amt;
+        this.checkPlayerActions(dmg);
+
         let nx = "";
-        if((dmg.type == "crit") || (dmg.type == "critrepeat") || (dmg.type=="spellcrit")){
+        if((dmg.type == "crit") || (dmg.type == "critrepeat") || (dmg.type=="spellcrit") || (dmg.type == "smite")){
             nx = "!";
         }
         this.scene.addHitEffect(new DamageText(this.scene,(this.x-offset[0])+(2*Math.random()*offset[0]),(this.y-offset[1])+(2*Math.random()*offset[1]),""+this.smartRound(dmg.amt)+nx, dmg.type));
@@ -213,11 +280,14 @@ export class Target extends Phaser.GameObjects.Container{
         } else {
             if(this.hp < (this.scene.player.execute*this.maxHP*this.damageScale)){
                 this.die();
-                this.scene.addHitEffect(new DamageText(this.scene,(this.x-offset[0])+(2*Math.random()*offset[0]),(this.y-offset[1])+(2*Math.random()*offset[1]),""+(this.smartRound(this.hp))+"!", "execute"));
+                this.scene.addHitEffect(new DamageText(this.scene,(this.x-40)+(2*Math.random()*40),(this.y-40)+(2*Math.random()*40),""+(this.smartRound(this.hp))+"!", "execute"));
                 this.scene.sound.play("execute", {volume:0.5});
                 this.scene.addHitEffect(new ScalingEffect(this.scene, this.x, this.y, "vibrator", 250, Math.random()*360,0,[0.01,2],[1,0]));
                 this.hp = 0;
             }
+        }
+        if(this.totalBatchedDamage > (this.hp-(this.scene.player.execute*this.maxHP*this.damageScale))){
+            this.forceBatchedDamage();
         }
         return true;
     }
@@ -240,6 +310,7 @@ export class Target extends Phaser.GameObjects.Container{
                 params: [],
             });
         }
+        this.totalBatchedDamage += namt;
         
     }
 
@@ -272,6 +343,10 @@ export class Target extends Phaser.GameObjects.Container{
                 this.scene.addHitEffect(new ScalingEffect(this.scene, this.x, this.y, "vibrator", 250, Math.random()*360,0,[0.01,2],[1,0]));
                 this.hp = 0;
             }
+        }
+
+        if(this.debuff < 1){
+            this.debuff = 1-this.scene.player.inhibitor;
         }
     }
 
@@ -338,6 +413,11 @@ export class Target extends Phaser.GameObjects.Container{
         if(!this.deleteFlag){
             this.scene.sound.play("dead",{volume:0.25});
         }
+        if(this.scene.player.leech[1] > 0){
+            if((this.scene.player.leech[2]*this.maxHP) > this.scene.player.leech[0]){
+                this.scene.player.leech[0] = (this.scene.player.leech[2]*this.maxHP);
+            }
+        }
         this.deleteFlag = true;
     }
 
@@ -352,7 +432,7 @@ export class Target extends Phaser.GameObjects.Container{
             return Math.trunc(rr*0.01);
         } else if ((rr % 10) == 0) {
             rr = Math.trunc(rr*0.1);
-            return Math.trunc(rr*0.1);
+            return (rr*0.1);
         } else {
             return rr/100;
         }

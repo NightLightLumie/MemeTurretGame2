@@ -4,14 +4,15 @@ import { Item } from "./Item";
 
 import { SpellProjectile } from "@/components/WeaponFunctions/SpellProjectile";
 import { HomingTracer } from "@/components/WeaponFunctions/HomingTracer";
+import { MagicMissile } from "@/components/WeaponFunctions/MagicMissile";
 
 
 export class ArcaneMissile extends Item{
     private mode: number = 0;
     public damage: number = 350;
     private shots: number = 0;
-    constructor(scene: GameScene, p: Player, name: string){
-        super(scene, p, name);
+    constructor(scene: GameScene, p: Player, name: string, slot: number){
+        super(scene, p, name, slot);
         this.tileType = "item_rd";
         this.cooldown = 3000;
         this.maxCD = 3000;
@@ -21,10 +22,13 @@ export class ArcaneMissile extends Item{
     levelUp(){
         if(this.level < this.maxLevel){
             this.level++;
-            this.damage += 20;
-            let e = this.cooldown/this.maxCD;
+            this.damage += 30;
+            this.cooldown = this.cooldown/this.maxCD;
             this.maxCD -= 200;
-            this.cooldown = e*this.maxCD;
+            this.cooldown *= this.maxCD;
+        } else {
+            console.log("Item already at max level.");
+            return;
         }
     }
 
@@ -35,7 +39,7 @@ export class ArcaneMissile extends Item{
     shoot(){
         if(this.scene.closestTarget != null){
             //console.log("Shoot missile");
-            this.scene.addPlayerProjectile(new HomingTracer(this.scene,this.owner.x,this.owner.y,"arcaneshot",(-1*Math.PI)+(Math.random()*2*Math.PI),1,this.scene.closestTarget));
+            this.scene.addPlayerProjectile(new MagicMissile(this.scene,this.owner.x,this.owner.y,"arcaneshot",(-1*Math.PI)+(Math.random()*2*Math.PI),1,this.scene.closestTarget,this));
             this.cooldown = this.maxCD;
             this.owner.bankedCasts++;
         } else {

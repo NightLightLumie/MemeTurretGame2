@@ -4,27 +4,31 @@ import { Item } from "./Item";
 
 import { SpellProjectile } from "@/components/WeaponFunctions/SpellProjectile";
 import { HomingTracer } from "@/components/WeaponFunctions/HomingTracer";
+import { Target } from "@/components/Target";
 
 
 export class DanmakuCharm extends Item{
     private mode: number = 0;
     public damage: number = 120;
-    private shots: number = 0;
-    constructor(scene: GameScene, p: Player, name: string){
-        super(scene, p, name);
+    private shots: number = 16;
+    constructor(scene: GameScene, p: Player, name: string, slot: number){
+        super(scene, p, name, slot);
         this.tileType = "item_rd";
         this.cooldown = 10;
-        this.maxCD = 500;
+        this.maxCD = 8000;
     }
 
 
     levelUp(){
         if(this.level < this.maxLevel){
             this.level++;
-            this.damage += 20;
-            let e = this.cooldown/this.maxCD;
-            this.maxCD -= 200;
-            this.cooldown = e*this.maxCD;
+            this.shots++;
+            this.cooldown = this.cooldown/this.maxCD;
+            this.maxCD -= 600;
+            this.cooldown *= this.maxCD;
+        } else {
+            console.log("Item already at max level.");
+            return;
         }
     }
 
@@ -47,7 +51,7 @@ export class DanmakuCharm extends Item{
         }
     }
 
-    shoot(xx: number, yy: number){
+    shoot(xx: number, yy: number, t: Target){
         let xmode = 0;
 
         switch(xmode){
@@ -56,9 +60,13 @@ export class DanmakuCharm extends Item{
         this.owner.bankedCasts++;
         this.owner.danmaku = false;
         let bb = (-1*Math.PI)+(Math.random()*2*Math.PI);
-        for(let xn = 0; xn < 16; xn++){
-            this.scene.addPlayerProjectile(new SpellProjectile(this.scene,xx,yy,this.getRandomBullet(),bb,this.owner.getActiveWeapon(),this,1));
-            bb += 2*Math.PI/16;
+        for(let xn = 0; xn < this.shots; xn++){
+            let bl = new SpellProjectile(this.scene,xx,yy,this.getRandomBullet(),bb,this.owner.getActiveWeapon(),this,1);
+            if((xn % 2) == 0){
+                bl.logEnemy(t);
+            }
+            this.scene.addPlayerProjectile(bl);
+            bb += 2*Math.PI/this.shots;
             if(bb > Math.PI){
                 bb -= 2*Math.PI;
             }

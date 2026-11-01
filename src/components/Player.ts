@@ -23,6 +23,9 @@ import { BuffDisplay } from "./Graphics/BuffDisplay";
 import { StatItem } from "./GameFunctions/Items/StatItem";
 import { Target } from "./Target";
 import { StickyTracer } from "./Graphics/StickyTracer";
+import { Echolocator } from "./GameFunctions/Items/Echolocator";
+import { SimpleCDItem } from "./GameFunctions/Items/SimpleCDItem";
+import { ItemDisplay } from "./Graphics/ItemDisplay";
 
 const ACCELERATION = 350;
 const MAX_SPEED = 500;
@@ -47,6 +50,13 @@ export class Player extends Phaser.GameObjects.Container {
 	private inventory: number;
 	private tween: Phaser.Tweens.Tween;
 	private buffDisp: BuffDisplay;
+	public sdp: ShieldDisplay;
+	public hpBar: Phaser.GameObjects.Rectangle;
+	public rhpBar: Phaser.GameObjects.Rectangle;
+	private wpDisp: WeaponDisplay;
+	private itDisp: ItemDisplay;
+	private hbox: Phaser.GameObjects.Sprite;
+	private gfx: Phaser.GameObjects.Graphics;
 
 	// Controls
 	private keyboard: any;
@@ -57,18 +67,21 @@ export class Player extends Phaser.GameObjects.Container {
 	private touchPos: Phaser.Math.Vector2;
 	public velocity: Phaser.Math.Vector2;
 	private border: { [key: string]: number };
-	private hbox: Phaser.GameObjects.Sprite;
-	private wpDisp: WeaponDisplay;
 	private ttText: Phaser.GameObjects.Text;
 	private fRad: number = 144;
 	private firing: boolean = false;
 	private cd: number = 0;
 	private maxCD: number = 250;
-	private gfx: Phaser.GameObjects.Graphics;
 	public curGunAngle: number;
 
 
 //Spell modifiable variables
+	//Items
+	public items: Item[] = [];
+	public itemKeys: string[];
+	public defaultItem: Item;
+
+	// Health Shield Hitboxes
 	public radius: number = 100;
 	public hitsize: number = 40;
 	public shrink: number = 0;
@@ -76,32 +89,32 @@ export class Player extends Phaser.GameObjects.Container {
 	public bonusHP: number = 0;
 	public maxHP: number = 1000;
 	public health: number = 1000;
+	public redHP: number = 0;
+	public deferDamage: number = 0;
+	public dmgRes: number = 0;
+	public dmgCap: number = 1;
 	public shieldList: ShieldSource[];
 	public pShield: number[] = [0,0];
 	public maxShield: number = 0;
 	public tShields: ShieldSource[];
-	public sdp: ShieldDisplay;
-	//public shields: number = 0;
+	public curIFrames: number = 0;
+	public maxIFrames: number = 0;
+
+	//Movement
+	public bonusAccel: number = 0;
+	public maxAccel: number = ACCELERATION;
+	public bonusSpeed: number = 0;
+	public maxSpeed: number = MAX_SPEED;
+	
+	//Item Variables
 	public sashed: boolean = false;
 	public reactive: boolean = false;
 	public danmaku: boolean = false;
 	public sticky: number = 0;
 	public trackShots: number = 0;
 	public dmgTracker: boolean[] = [false,false];
-	public items: Item[] = [];
-	public itemKeys: string[];
-	public curIFrames: number = 0;
-	public maxIFrames: number = 0;
 	public bonusGunDamage: number = 0;
 	public bonusSpellDamage: number = 0;
-	public bonusAccel: number = 0;
-	public maxAccel: number = ACCELERATION;
-	public bonusSpeed: number = 0;
-	public maxSpeed: number = MAX_SPEED;
-	public redHP: number = 0;
-	public deferDamage: number = 0;
-	public dmgRes: number = 0;
-	public dmgCap: number = 1;
 	public conversion: number = 0;
 	public tags: string[] = [];
 	public smite: number = 0;
@@ -111,7 +124,11 @@ export class Player extends Phaser.GameObjects.Container {
 	public trackedCursor: number[] = [0,0];
 	public myMandala: Mandala | null;
 	public bankedCasts: number = 0;
-	public defaultItem: Item;
+	public canResonate: boolean[] = [false,false];
+	public lives: number = 3;
+	public eRegenPoint: number = 0;
+	public leech: number[] = [0,0,0];
+	public inhibitor: number = 0;
 
 	//loadout 
 	public loadout: [Weapon,Weapon,Weapon];
@@ -119,8 +136,7 @@ export class Player extends Phaser.GameObjects.Container {
 	public spMod: number = 1;
 
 	//public hp: number[] = [1000,1000];
-	public hpBar: Phaser.GameObjects.Rectangle;
-	public rhpBar: Phaser.GameObjects.Rectangle;
+
 	public globalTickTimer: number[] = [250,250];
 
 	constructor(scene: GameScene, x: number, y: number) {
@@ -140,8 +156,12 @@ export class Player extends Phaser.GameObjects.Container {
 		//this.sprite.setScale(this.spriteSize / this.sprite.width);
 		this.add(this.sprite);
 		this.add(this.hbox);
+		this.refreshHitbox();
+		this.itDisp = new ItemDisplay(scene,0,0,this);
+		this.add(this.itDisp);
 		this.wpDisp = new WeaponDisplay(scene,0,0,this);
 		this.add(this.wpDisp);
+		this.moveDown(this.itDisp);
 		this.moveDown(this.wpDisp);
 		this.gfx = this.scene.add.graphics();
 		this.add(this.gfx);
@@ -231,15 +251,17 @@ export class Player extends Phaser.GameObjects.Container {
 		this.sendToBack(this.hpBar);
 		this.sendToBack(this.rhpBar);
 		
-		this.defaultItem = new Item(this.scene,this,"default");
+		this.defaultItem = new Item(this.scene,this,"default", -1);
 		this.curGunAngle = 0;
 
-		this.items.push(new GunFu(this.scene,this,"Gun Fu"));
-		this.items.push(new StatItem(this.scene,this,"Cast Gun", 2));
 		this.danmaku = false;
-		this.items.push(new DanmakuCharm(this.scene,this,"Danmaku Charm"));
-		this.items.push(new ReactiveBarrier(this.scene,this,"Reactive Barrier"));
-		this.items.push(new StatItem(this.scene,this,"Sticky Bomb",0));
+		this.items.push(new GunFu(this.scene,this,"Gun-Fu", 0));
+		this.items.push(new StatItem(this.scene,this,"Cast Gun", 1));
+		this.items.push(new StarPrism(this.scene,this,"Prism of Stars", 2));
+		this.items.push(new SimpleCDItem(this.scene,this,"Cancel Death", 3));
+		this.items.push(new StatItem(this.scene,this,"Sticky Bomb", 4));
+		this.items.push(new Echolocator(this.scene,this,"Echolocator", 5));
+		this.itDisp.redrawItems();
 	}
 
 	setDefaultLoadout(){
@@ -283,6 +305,7 @@ export class Player extends Phaser.GameObjects.Container {
 	takeHit(n: number){
 		if(this.curIFrames > 0){
 			this.scene.sound.play("miss", {volume: 1});
+			return;
 		} else if(this.maxIFrames > 0){
 			this.curIFrames = this.maxIFrames;
 		}
@@ -411,6 +434,7 @@ export class Player extends Phaser.GameObjects.Container {
 		if(this.health <= 0){ 
 			this.health = 0;
 			this.die();
+			console.log("Current iframes: " + this.curIFrames);
 		}
 	}
 
@@ -418,13 +442,13 @@ export class Player extends Phaser.GameObjects.Container {
 		this.scene.die();
 	}
 
-	shootDanmaku(x: number, y: number){
+	shootDanmaku(x: number, y: number, t: Target){
 		if(!this.danmaku){
 			return;
 		}
 		let k = this.findItem("Danmaku Charm");
 		if(k instanceof DanmakuCharm){
-			k.shoot(x, y);
+			k.shoot(x, y, t);
 		}
 	}
 
@@ -439,8 +463,9 @@ export class Player extends Phaser.GameObjects.Container {
 	}
 
 	cancelDeath(){
-		if(this.itemKeys.includes("Cancel Death")){
-			if(this.findItem("Cancel Death").setCooldown()){
+		let cd = this.findItem("Cancel Death");
+		if(cd.key != "default"){
+			if(cd.setCooldown()){
 				this.scene.cancelDie();
 				let n = 0;
 				this.bankedCasts++;
@@ -449,6 +474,11 @@ export class Player extends Phaser.GameObjects.Container {
 	}
 
 	updateGlobalTickEvents(){
+		if((this.lives <= 1) && (this.eRegenPoint > 0)){
+			if(this.health < (this.maxHP*this.eRegenPoint)){
+				this.health += (this.globalTickTimer[1]/1000)*0.01*this.maxHP;
+			}
+		}
 		if(this.redHP > 0){
 			if(this.redHP < (0.01*(this.globalTickTimer[1]/1000)*this.maxHP)){
 				this.health += this.redHP;
@@ -459,6 +489,7 @@ export class Player extends Phaser.GameObjects.Container {
 			}
 			if(this.health > this.maxHP){
 				this.health = this.maxHP;
+				this.redHP = 0;
 			}
 		}
 	}
@@ -557,6 +588,8 @@ export class Player extends Phaser.GameObjects.Container {
 			this.myMandala.update(time, delta);
 		}
 
+		this.itDisp.update();
+
 		this.sdp.draw();
 		this.trackShots = 0;
 		// Border collision
@@ -564,7 +597,10 @@ export class Player extends Phaser.GameObjects.Container {
 
 		// Animation (Change to this.sprite.setScale if needed)
 		const squish = 1.0 + 0.02 * Math.sin((6 * time) / 1000);
-		this.setScale(1.0, squish);
+		const hsquish = (1-this.shrink) + ((0.02*(1-this.shrink)) * Math.sin((18 * time) / 1000));
+		this.sprite.setScale(squish, 1.0);
+		this.hbox.setScale(1,hsquish,);
+
 	}
 
 	updateHPDisplay(){
@@ -593,11 +629,31 @@ export class Player extends Phaser.GameObjects.Container {
 	}
 
 	updateItems(t:number, d:number){
+		if(this.leech[0] > 0){
+			let lh = this.findItem("Mandrake");
+			if(lh.key != "default"){
+				if(lh.setCooldown()){
+					if(this.leech[0] > this.leech[1]){
+						this.health += this.leech[1];
+					} else {
+						this.health += this.leech[0];
+					}
+					this.leech[0] = 0;
+					if(this.health > this.maxHP){
+						this.health = this.maxHP;
+					}
+				}
+			}
+		}
 		if(this.items.length > 0){
 			this.items.forEach((i)=>{
 				i.update(t,d);
 			})
 		}
+	}
+
+	refreshHitbox(){
+		this.hbox.setScale(1-this.shrink);
 	}
 
 	forceReload(){
@@ -614,6 +670,14 @@ export class Player extends Phaser.GameObjects.Container {
 			dmgn[1] = this.conversion*this.getActiveWeapon().damage*(1+(this.bonusGunDamage));
 		}
 		this.scene.addHitEffect(new StickyTracer(this.scene,0,0,dmgn,t));
+	}
+
+	resonate(tp: string){
+		let p = this.findItem("Echolocator");
+		//console.log(p.key);
+		if(p instanceof Echolocator){
+			p.resonate(tp);
+		}
 	}
 
 	scrollForward(){

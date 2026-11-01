@@ -7,12 +7,12 @@ import { SpellProjectile } from "@/components/WeaponFunctions/SpellProjectile";
 export class ArrowRaid extends Item{
     private mode: number = 0;
     public damage: number = 295;
-    private shots: number = 13;
-    private dist: number = 0;
-    private maxDist: number = 600;
+    private shots: number = 3;
+    public dist: number = 0;
+    public maxDist: number = 600;
     private fRad: number = 144; //super hacky
-    constructor(scene: GameScene, p: Player, name: string){
-        super(scene, p, name);
+    constructor(scene: GameScene, p: Player, name: string, slot: number){
+        super(scene, p, name, slot);
         this.tileType = "item_rd";
         this.cooldown = 0;
         this.maxCD = 500;
@@ -23,6 +23,9 @@ export class ArrowRaid extends Item{
         if(this.level < this.maxLevel){
             this.level++;
             this.shots += 1;
+        } else {
+            console.log("Item already at max level.");
+            return;
         }
     }
 

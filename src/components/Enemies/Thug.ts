@@ -30,7 +30,7 @@ export class Thug extends Target{
     public gx: Phaser.GameObjects.Graphics;
     private radOfs: number = 0;
 
-    constructor(scene:GameScene,x:number,y:number, mode: string = "x", ofs: number = 0, seek: string = "x", diff: number = 1){
+    constructor(scene:GameScene,x:number,y:number, mode: string = "x", ofs: number = 0, seek: string = "x", diff: number = -1){
         super(scene,x,y);
         this.spr = this.scene.add.sprite(0,0,"enemy_1");
         this.spr.setOrigin(0.5,0.5);
@@ -58,7 +58,7 @@ export class Thug extends Target{
             this.gx.closePath();
             this.gx.fillPath();
         }
-        this.setDifficulty();
+        this.setDifficulty(diff);
         //this.pID = this.scene.getProjID();
     }
 
@@ -179,7 +179,7 @@ export class Thug extends Target{
                 this.scene.sound.play("turret_hit", {volume: 0.5});
                 this.scene.addPlayerEffect(new BoneEffect(this.scene, this.scene.player.x, this.scene.player.y, this.scene.player));
                 this.aCD[0] = this.aCD[1];   
-                this.scene.player.takeHit(75);
+                this.scene.player.takeHit(75*this.debuff*this.buff*Math.trunc(1+(0.05*this.difficulty)));
             }
         } else {
             this.aCD[0] -= d;

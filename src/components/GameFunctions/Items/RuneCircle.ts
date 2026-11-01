@@ -9,8 +9,8 @@ export class RuneCircle extends Item{
     public percent: number = 0.5;
     private dmgRadius: number = 600;
     private fRad: number = 144; //super hacky
-    constructor(scene: GameScene, p: Player, name: string){
-        super(scene, p, name);
+    constructor(scene: GameScene, p: Player, name: string, slot: number){
+        super(scene, p, name, slot);
         this.tileType = "item_rd";
         this.cooldown = 5000;
         this.maxCD = 5000;
@@ -20,7 +20,13 @@ export class RuneCircle extends Item{
     levelUp(){
         if(this.level < this.maxLevel){
             this.level++;
-            this.percent += 0.05;
+            this.percent += 0.1;
+            this.cooldown = this.cooldown/this.maxCD;
+            this.maxCD -= 200;
+            this.cooldown *= this.maxCD;
+        } else {
+            console.log("Item already at max level.");
+            return;
         }
     }
 

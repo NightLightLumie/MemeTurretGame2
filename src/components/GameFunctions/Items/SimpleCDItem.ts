@@ -6,7 +6,7 @@ export class SimpleCDItem extends Item{
 
 
     constructor(scene:GameScene, p: Player, id: string, slot: number){
-        super(scene, p, id);
+        super(scene, p, id, slot);
         this.addEffect();
     }
 
@@ -14,13 +14,23 @@ export class SimpleCDItem extends Item{
         switch(this.key){
             case "Cancel Death": {
                 this.cooldown = 0;
-                this.maxCD = 40000;
+                this.scene.dbTimer = [750,750];
+                this.maxCD = 5000;
                 break;
             } case "Focus Sash": {
                 this.cooldown = 0;
                 this.maxCD = 180000;
                 this.value = 0.25;
                 this.owner.sashed = true;
+                break;
+            } case "Mandrake": {
+                this.owner.leech[1] = 10;
+                this.owner.leech[2] = 0.01;
+                this.cooldown = 0;
+                this.maxCD = 1000;
+                break;
+            } default: {
+                console.log("Cannot find item with name: " + this.key);
                 break;
             }
         }
@@ -36,15 +46,37 @@ export class SimpleCDItem extends Item{
             case "Cancel Death": {
                 this.scene.dbTimer[0] += 25;
                 this.scene.dbTimer[1] += 25;
+                this.upgradeCD(1500);
                 break;
             } case "Focus Sash": {
-                let p = this.cooldown/this.maxCD;
-                this.maxCD -= 3000;
-                this.cooldown = this.maxCD*p;
-                this.value += 0.025;
+                this.upgradeCD(3000);
+                this.value -= 0.025;
+                break;
+            } case "Mandrake": {
+                this.owner.leech[1] += 2;
+                this.upgradeCD(50);
+                break;
+            } default: {
+                console.log("Cannot find item with name: " + this.key);
                 break;
             }
         }
+    }
+
+    update(t: number, d: number){
+        super.update(t,d);
+        if(this.cooldown > 0){
+            this.cooldown -= d;
+            if(this.cooldown <= 0){
+                this.cooldown = 0;
+            }
+        }
+    }
+
+    upgradeCD(n: number){
+        this.cooldown = this.cooldown/this.maxCD;
+        this.maxCD -= n;
+        this.cooldown *= this.maxCD;
     }
 
     setCooldown(): boolean{

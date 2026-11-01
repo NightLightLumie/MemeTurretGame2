@@ -8,8 +8,8 @@ export class Fireball extends Item{
     private fired: number[];
     public damage: number = 350;
     private baseFireballs: number = 8;
-    constructor(scene: GameScene, p: Player, name: string){
-        super(scene, p, name);
+    constructor(scene: GameScene, p: Player, name: string, slot: number){
+        super(scene, p, name, slot);
         this.fired = [];
         this.owner.on("startReload", this.logReloadData, this);
         this.owner.on("finishReload", this.clearReloadData, this);
@@ -41,6 +41,9 @@ export class Fireball extends Item{
         if(this.level < this.maxLevel){
             this.level++;
             this.damage += 50;
+        } else {
+            console.log("Item already at max level.");
+            return;
         }
     }
 

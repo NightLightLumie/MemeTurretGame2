@@ -8,8 +8,8 @@ export class CementEater extends Item{
     public cement: number = 3;
     public mitigation: number = 0.5;
 
-    constructor(scene: GameScene, p: Player, name: string){
-        super(scene, p, name);
+    constructor(scene: GameScene, p: Player, name: string, slot: number){
+        super(scene, p, name, slot);
         this.tileType = "item_gr";
         this.cooldown = 0;
         this.maxCD = 15000;
@@ -25,6 +25,9 @@ export class CementEater extends Item{
             this.level++;
             this.mitigation += 0.03;
             this.maxCD -= 500;
+        } else {
+            console.log("Item already at max level.");
+            return;
         }
     }
 

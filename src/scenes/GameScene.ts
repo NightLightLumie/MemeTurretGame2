@@ -1,5 +1,4 @@
 import { BaseScene } from "@/scenes/BaseScene";
-import { DamageText } from "@/components/Graphics/DamageText";
 import { Player } from "@/components/Player";
 import { UI } from "@/components/Graphics/UI";
 import { Bullet } from "@/components/WeaponFunctions/Bullet";
@@ -24,6 +23,7 @@ import { Missile } from "@/components/WeaponFunctions/Missile";
 import { TextEffect } from "@/components/Graphics/TextEffect";
 import { Weapon } from "@/components/WeaponFunctions/Weapon";
 import { StickyTracer } from "@/components/Graphics/StickyTracer";
+import { ScalingEffect } from "@/components/Graphics/ScalingEffect";
 
 export interface DamageInstance{
 	amt: number;
@@ -77,14 +77,14 @@ export class GameScene extends BaseScene {
 	public masterData: GlobalVariables;
 
 	public tracing: boolean = false;
-	private boundary: [number,number,number,number] = [-5000,5000,-5000,5000];
+	public boundary: [number,number,number,number] = [-5000,5000,-5000,5000];
 	private division: [number,number] = [250,250];
 	private chunks: TileChecker;
 	private paused: boolean = false;
 	private upgrading: boolean = false;
 	private dead: boolean = false;
 	private stageMusic: Phaser.Sound.WebAudioSound;
-	public dbTimer: number[] = [250,250];
+	public dbTimer: number[] = [0,0];
 	private dbScreen: Phaser.GameObjects.Rectangle;
 	private eTimer: number[] = [1000,1000];
 	private ended: boolean = false;
@@ -288,6 +288,18 @@ export class GameScene extends BaseScene {
 		this.dbScreen.setVisible(true);
 		this.sound.play("turret_dead", {volume: 0.5});
 	}
+
+	revive(){
+		this.dbScreen.setVisible(false);
+		this.dbScreen.setAlpha(1);
+		this.dead = false;
+		this.paused = false;
+		this.eTimer[0] = this.eTimer[1];
+		this.dbTimer[0] = this.dbTimer[1];
+		this.player.health = this.player.maxHP;
+		this.player.lives--;
+		this.sound.play("revive", {volume: 0.5});
+	}
 	
 	cancelDie(): boolean {
 		if((this.dbTimer[0] > 0) && (this.dbTimer[0] < this.dbTimer[1])){
@@ -297,10 +309,15 @@ export class GameScene extends BaseScene {
 			this.paused = false;
 			this.eTimer[0] = this.eTimer[1];
 			this.dbTimer[0] = this.dbTimer[1];
-			this.player.curIFrames += 1000;
-
+			this.player.curIFrames += 3000;
+			this.addHitEffect(new ScalingEffect(this,this.player.x,this.player.y,"superforce",500,0,0,[0,6],[1,0]));
+			this.player.health = 1;
+			this.sound.play("megacancel", {volume:0.5});
 			return true;
 		} else {
+			this.player.curIFrames += 250;
+			this.sound.play("cancelfail", {volume:0.25});
+			this.addHitEffect(new ScalingEffect(this,this.player.x,this.player.y,"superforce",250,0,0,[3,1],[0.5,0]));
 			return false;
 		}
 
@@ -323,8 +340,12 @@ export class GameScene extends BaseScene {
 			if(this.dbTimer[0] > 0){
 				this.dbTimer[0] -= delta;
 				if(this.dbTimer[0] <= 0){
-					this.dbTimer[0] = 0;
-					this.swapToDeathScreen();
+					if(this.player.lives > 1){
+						this.revive();
+					} else {
+						this.dbTimer[0] = 0;
+						this.swapToDeathScreen();
+					}
 				} else {
 					this.dbScreen.setAlpha(this.dbTimer[0]/this.dbTimer[1]);
 				}

@@ -6,9 +6,11 @@ import { WeaponButton } from "./WeaponFunctions/WeaponButton";
 export interface ItemParams{
     id: number;
     name: string;
+    spr: string[];
     curLevel: number;
     maxLevel: number;
     desc: string;
+    upgradeDesc: string;
 }
 
 export class GlobalVariables {
@@ -20,39 +22,40 @@ export class GlobalVariables {
     public boxCount: number = 0;
 
     public itemList: ItemParams[] = [
-        {id: 0, name: "Cancel Death", curLevel:0, maxLevel:10, desc:"Press ''x'' immediately after being hit to negate fatal damage (250 ms window). If activated, become invulnerable for 1s. 40s cd. Missing the the window places this ability on full cooldown."},
-        {id: 1, name: "Mandrake", curLevel:0, maxLevel:10, desc:"Defeating an enemy heals you for 1% of its max hp rounded down, up to a cap of 10 per enemy. 1s cd."},
-        {id: 2, name: "Spinach", curLevel:-1, maxLevel:-1, desc:"Increases your HP by 5% of the base value. Can be stacked indefinitely and does not occupy an item slot."},
-        {id: 3, name: "Ultrasonic Shield", curLevel:0, maxLevel:10, desc:"Gain a slowly recharging shield equal to 25% of your max HP. The shield regenerates at a rate equal to 1% max HP per second. Taking damage disables the shield regeneration for 3s."},
-        {id: 4, name: "Reactive Barrier", curLevel:0, maxLevel:10, desc:"Negates one hit every 60s, dealing damage equal to 5x the base damage in a moderate radius around you."},
-        {id: 5, name: "Yin-Yang Orb", curLevel:0, maxLevel:10, desc:"Shrink your hitbox by 20%."},
-        {id: 6, name: "Zoomies", curLevel:0, maxLevel:10, desc:"Gain 20% movement speed."},
-        {id: 7, name: "Fortify", curLevel:0, maxLevel:10, desc:"Reduce incoming damage by 15%."},
-        {id: 8, name: "Phoenix's Tail", curLevel:0, maxLevel:0, desc:"Grants 3 extra lives. The last life grants 1% regen per second if under 25% HP."},
-        {id: 9, name: "Light Dragon's Blessing", curLevel:0, maxLevel:10, desc:"Take +100% extra damage, but damage can't exceed 25% of your hp per hit."},
-        {id: 10, name: "Binding Shots", curLevel:0, maxLevel:10, desc:"Enemies deal 15% less damage after taking damage."},
-        {id: 11, name: "Gun-Fu", curLevel:0, maxLevel:10, desc:"Gain a shield after reloading. The more ammo reloaded, the larger the shield, starting at 2.5 shield points per ammo. 30s cd"},
-        {id: 12, name: "Focus Sash", curLevel:0, maxLevel:10, desc:"The next lethal hit is negated if you are above 25% hp. 180s cd."},
-        {id: 13, name: "Eat Cement", curLevel:0, maxLevel:10, desc:"Every 10 spell casts stores a stack, 15s cd. On hit, consume a stack to brace the attack and receive -50% damage."},
-        {id: 14, name: "Vaccine", curLevel:0, maxLevel:10, desc:"Grants invulnerability frames upon taking a hit, 0.1s duration."},
-        {id: 15, name: "Disproportionation", curLevel:0, maxLevel:10, desc:"20% of damage taken is converted to red health. Red health regenerates slowly but is lost if further damage is taken."},
+        {id: -999, name: "default", spr: ["itemtile", "itemtile"], curLevel:0, maxLevel:10, desc:"DEFAULT", upgradeDesc: "DEFAULT"},
+        {id: 0, name: "Cancel Death", spr: ["item_gr", "canceldeath"], curLevel:0, maxLevel:10, desc:"Press ''x'' immediately after being hit to negate fatal damage (250 ms window). If activated, become invulnerable for 3s. 60s cd. Activating too early grants 0.25s of invulnerability and places this ability on full cooldown.", upgradeDesc: "+25 ms window. -1.5s cd."},
+        {id: 1, name: "Mandrake", spr: ["item_gr", "mandrake"], curLevel:0, maxLevel:10, desc:"Defeating an enemy heals you for 1% of its max hp rounded down, up to a cap of 10 per enemy. 1s cd.", upgradeDesc: "-0.05s cd. +2 healing cap."},
+        {id: 2, name: "Spinach", spr: ["item_gr", "spinach"], curLevel:-1, maxLevel:-1, desc:"Increases your HP by 5% of the base value. Can be stacked indefinitely and does not occupy an item slot.", upgradeDesc: ""},
+        {id: 3, name: "Ultrasonic Shield", spr: ["item_gr", "ultrasonicbarrier"], curLevel:0, maxLevel:10, desc:"Gain a slowly recharging shield equal to 25% of your max HP. The shield regenerates at a rate equal to 1% max HP per second.", upgradeDesc: "+1% max HP shielding. +0.1% max HP shield regen rate."},
+        {id: 4, name: "Reactive Barrier", spr: ["item_gr", "reactivebarrier"], curLevel:0, maxLevel:10, desc:"Negates one hit every 60s, dealing damage equal to 5x the base damage in a moderate radius around you.", upgradeDesc: "+1x damage multiplier. -1s cd. "},
+        {id: 5, name: "Yin-Yang Orb", spr: ["item_gr", "yinyangorb"], curLevel:0, maxLevel:10, desc:"Shrink your hitbox against projectiles by 20%.", upgradeDesc: "Shrink hitbox by an additional 3%."},
+        {id: 6, name: "Zoomies", spr: ["item_gr", "zoomies"], curLevel:0, maxLevel:10, desc:"Gain 20% movement speed.", upgradeDesc: "+5% additional movement speed."},
+        {id: 7, name: "Fortify", spr: ["item_gr", "fortify"], curLevel:0, maxLevel:10, desc:"Reduce incoming damage by 15%.", upgradeDesc: "+1% additional damage resistance."},
+        {id: 8, name: "Phoenix's Tail", spr: ["item_gr", "phoenixtail"], curLevel:0, maxLevel:0, desc:"Grants 3 extra lives. The last life grants 1% regen per second if under 25% HP.", upgradeDesc: "+2.5% emergency regeneration HP threshold."},
+        {id: 9, name: "Light Dragon's Blessing", spr: ["item_gr", "lightdragon"], curLevel:0, maxLevel:10, desc:"Take +100% extra damage, but damage can't exceed 25% of your hp per hit.", upgradeDesc: "Extra damage taken reduced by 5%. HP damage cap decreased by 1%."},
+        {id: 10, name: "Binding Shots", spr: ["item_gr", "bindingshots"], curLevel:0, maxLevel:10, desc:"Injured enemies deal 15% less damage.", upgradeDesc: "+1.5% additional damage reduction."},
+        {id: 11, name: "Gun-Fu", spr: ["item_gr", "gunfu"], curLevel:0, maxLevel:10, desc:"Gain a shield after reloading. The more ammo reloaded, the larger the shield, starting at 2 shield points per ammo. 30s cd.", upgradeDesc: "+0.2 shield per ammo. -1.5s cd."},
+        {id: 12, name: "Focus Sash", spr: ["item_gr", "focussash"], curLevel:0, maxLevel:10, desc:"The next lethal hit is negated if you are above 25% hp. 180s cd.", upgradeDesc: "-2.5% hp required to be active. -3s cd."},
+        {id: 13, name: "Eat Cement", spr: ["item_gr", "eatcement"], curLevel:0, maxLevel:10, desc:"Every 10 spell casts stores a stack, 15s cd. On hit, consume a stack to brace the attack and receive -50% damage.", upgradeDesc: "+3% damage mitigation. -0.5s cd."},
+        {id: 14, name: "Vaccine", spr: ["item_gr", "vaccine"], curLevel:0, maxLevel:10, desc:"Grants invulnerability frames upon taking a hit, 0.1s duration.", upgradeDesc: "+15 ms duration."},
+        {id: 15, name: "Disproportionation", spr: ["item_gr", "disproportionation"], curLevel:0, maxLevel:10, desc:"20% of damage taken to HP is converted to red health. Red health regenerates slowly but is lost if further damage is taken.", upgradeDesc: "+3% damage converted to red health."},
 
-        {id: 16, name: "Explosive Magazine", curLevel:0, maxLevel:10, desc:"Release a random spread of 6 fireballs when reloading, dealing 250 damage each."},
-        {id: 17, name: "Rune Circle", curLevel:0, maxLevel:10, desc:"Deals damage equal to 50% of your current health every 5 seconds in a moderate radius around you."},
-        {id: 18, name: "Hi-Power Rounds", curLevel:-1, maxLevel:-1, desc:"Increases gun damage by 5%. Can be stacked indefinitely and does not consume an item slot."},
-        {id: 19, name: "Huge Rod", curLevel:-1, maxLevel:-1, desc:"Increases spell damage by 10%. Can be stacked indefinitely and does not consume an item slot."},
-        {id: 20, name: "Void Dragon's Blessing", curLevel:0, maxLevel:10, desc:"The first weapon hit on an enemy deals an additional 15% of its max health as true damage. 50% effectiveness on bosses."},
-        {id: 21, name: "Prism of Stars", curLevel:0, maxLevel:10, desc:"Shoot stars in cardinal, then intercardinal directions every 5 gunshots, up to twice per second. Each star does 150 damage and pierces through enemies."},
-        {id: 22, name: "Cast Gun", curLevel:0, maxLevel:10, desc:"Spell projectiles additionally do 100% of your gun damage as bonus damage."},
-        {id: 23, name: "Kobold Mini-Nova", curLevel:0, maxLevel:10, desc:"Deal 5 damage per second to all enemies on the field."},
-        {id: 24, name: "Sticky Bomb", curLevel:0, maxLevel:10, desc:"Enemies struck by your spell projectiles explode after 3s for 50 additional damage."},
-        {id: 25, name: "Echolocator", curLevel:0, maxLevel:10, desc:"Gun damage increases spell damage by 10%, stacking up to 10 times. Spell damage increases gun damage by 5%, stacking up to 10 times. 1s cd per stack. Stacks last 10s."},
-        {id: 26, name: "Arrow Raid", curLevel:0, maxLevel:10, desc:"Fires a spread of 3 arrows from your gun every 600 pixels moved. Each arrow deals 295 damage and penetrates up to 3 enemies."},
-        {id: 27, name: "Basic Attack Magic", curLevel:0, maxLevel:10, desc:"Fires a vertical or horizontal magic blast through cursor every 6s, dealing 250 damage and piercing enemies. 20% chance to critically strike for double damage."},
-        {id: 28, name: "Lava Bucket", curLevel:0, maxLevel:10, desc:"Randomly spawns a lava puddle within a moderate radius. The puddle deals 100 damage per second to enemies touching it."},
-        {id: 29, name: "Ultravibration", curLevel:0, maxLevel:10, desc:"Enemies under 5% hp are executed upon taking damage."},
-        {id: 30, name: "Arcane Missile", curLevel:0, maxLevel:10, desc:"Automatically attack the closest enemy within range for 300 damage. 3s cd."},
-        {id: 31, name: "Danmaku Charm", curLevel:0, maxLevel:10, desc:"Empowers your next gunshot to explode in a ring of 16 random bullets. Each bullet does 125 damage. 10s cd."},
+        {id: 16, name: "Explosive Magazine", spr: ["item_rd", "fireball"], curLevel:0, maxLevel:10, desc:"Release a random spread of 6 fireballs when reloading, dealing 350 damage each.", upgradeDesc: "+50 damage per fireball."},
+        {id: 17, name: "Rune Circle", spr: ["item_rd", "runecircle"], curLevel:0, maxLevel:10, desc:"Deals damage equal to 50% of your current health every 5 seconds in a moderate radius around you.", upgradeDesc: "+10% current health as damage. -0.2s cd."},
+        {id: 18, name: "Hi-Power Rounds", spr: ["item_rd", "hipowerrounds"], curLevel:-1, maxLevel:-1, desc:"Increases gun damage by 5%. Can be stacked indefinitely and does not consume an item slot.", upgradeDesc: ""},
+        {id: 19, name: "Huge Rod", spr: ["item_rd", "hugerod"], curLevel:-1, maxLevel:-1, desc:"Increases spell damage by 10%. Can be stacked indefinitely and does not consume an item slot.", upgradeDesc: ""},
+        {id: 20, name: "Void Dragon's Blessing", spr: ["item_rd", "voiddragon"], curLevel:0, maxLevel:10, desc:"The first instance of weapon damage on an enemy deals an additional 15% of its max health as true damage. 50% effectiveness on bosses.", upgradeDesc: "+1% max HP true damage."},
+        {id: 21, name: "Prism of Stars", curLevel:0, spr: ["item_rd", "starprism"], maxLevel:10, desc:"Fire stars in cardinal, then intercardinal directions every 5 gun shots, up once every 0.5s. Each star does 150 damage and pierces through enemies.", upgradeDesc: "+25 damage per star. -0.01s cd."},
+        {id: 22, name: "Cast Gun", spr: ["item_rd", "castgun"], curLevel:0, maxLevel:10, desc:"Spell projectiles additionally do gun damage equivalent to 100% of your current weapon's damage.", upgradeDesc: "+5% bonus damage."},
+        {id: 23, name: "Kobold Mini-Nova", spr: ["item_rd", "koboldmininova"], curLevel:0, maxLevel:10, desc:"Deal 10 damage per second to all enemies on the field.", upgradeDesc: "+4 damage per second."},
+        {id: 24, name: "Sticky Bomb", spr: ["item_rd", "stickybomb"], curLevel:0, maxLevel:10, desc:"Enemies struck by your spell projectiles explode after 3s for 50 additional damage in a small area.", upgradeDesc: "+5 damage."},
+        {id: 25, name: "Echolocator", spr: ["item_rd", "echolocator"], curLevel:0, maxLevel:10, desc:"Gun damage increases spell damage by 10%, stacking up to 10 times. Spell damage increases gun damage by 5%, stacking up to 10 times. 1s cd per stack. Stacks last 10s.", upgradeDesc: "+1% spell damage and +0.5% gun damage per stack. +1s duration of stacks."},
+        {id: 26, name: "Arrow Raid", spr: ["item_rd", "arrowraid"], curLevel:0, maxLevel:10, desc:"Fires a spread of 3 arrows from your gun every 600 pixels moved, up to twice per second. Each arrow deals 295 damage and penetrates up to 3 enemies.", upgradeDesc: "+1 arrows per cast."},
+        {id: 27, name: "Basic Attack Magic", spr: ["item_rd", "basicmagic"], curLevel:0, maxLevel:10, desc:"Fires a vertical or horizontal magic blast through cursor every 5s, dealing 250 damage and piercing enemies. 20% chance to critically strike for double damage.", upgradeDesc: "+20 dmg per blast. -0.3s cd. +3% crit chance."},
+        {id: 28, name: "Lava Bucket", spr: ["item_rd", "lavabucket"], curLevel:0, maxLevel:10, desc:"Randomly spawns a lava puddle within a moderate radius every 15 seconds. The puddle deals 250 damage per second to enemies touching it.", upgradeDesc: "+25 damage per second. -1s cd."},
+        {id: 29, name: "Ultravibration", spr: ["item_rd", "ultravibration"], curLevel:0, maxLevel:10, desc:"Enemies under 5% hp are executed upon taking damage and grant extra gold. 50% effectiveness on bosses.", upgradeDesc: "+1% execute threshold."},
+        {id: 30, name: "Arcane Missile", spr: ["item_rd", "arcanemissile"], curLevel:0, maxLevel:10, desc:"Automatically attack the closest enemy within range for 300 damage. 3s cd.", upgradeDesc: "+30 damage. -0.2s cd."},
+        {id: 31, name: "Danmaku Charm", curLevel:0, spr: ["item_rd", "danmakucharm"], maxLevel:10, desc:"Empowers your next gunshot to explode in a ring of 16 random bullets. The enemy directly struck can only be hit by 50% of the bullets. Each bullet does 120 damage. 8s cd.", upgradeDesc: "+1 bullets fired. -0.6s cd."},
     ];
 
     public augmentWeights: number[][] = [
@@ -177,6 +180,15 @@ export class GlobalVariables {
         this.primary = this.inv.fetchGun(-999999999 - 2);
         this.secondary = this.inv.fetchGun(-999999999 - 1);
         
+    }
+
+    getItemParams(key: string): ItemParams{
+        for(let n = 0; n < this.itemList.length; n++){
+            if(key == this.itemList[n].name){
+                return structuredClone(this.itemList[n]);
+            }
+        }
+        return structuredClone(this.itemList[0]);
     }
 
     getParams(n: number): WeaponParams{
@@ -357,6 +369,7 @@ export class GlobalVariables {
         return ag;
     }
 
+    
 
     getRandomLevel(): number{
         let r = Math.random();

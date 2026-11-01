@@ -34,8 +34,6 @@ export class DamageText extends Effect{
         let fadeTime = 500;
         let flashTime = 75;
         let size = 40;
-        this.dmod = 75*Math.random();
-        this.amod = 2*Math.random();
         this.negative = valence;
         switch(mode){
             case "crit": {
@@ -60,21 +58,21 @@ export class DamageText extends Effect{
                 size = 40;
                 color1 = "goldenrod";
                 color2 = "white";
-                valence *= -1;
+                this.negative *= -1;
                 flash = true;
                 break;
             } case "critrepeat": {
                 size = 60;
                 color1 = "darkmagenta";
                 color2 = "navy";
-                valence *= -1;
+                this.negative *= -1;
                 flash = true;
                 break;
             } case "onhitrepeat": {
                 size = 30;
                 color1 = "aqua";
                 color2 = "white";
-                valence *= -1;
+                this.negative *= -1;
                 flash = true;
                 break;
             } case "stack": {
@@ -98,21 +96,25 @@ export class DamageText extends Effect{
             } case "execute": {
                 size = 100;
                 color1 = "orangered";
-                color2 = "goldenrod";
-                this.negative*=2.5;
+                color2 = "aqua";
+                this.negative*= -2.5;
+                fadeTime = 1000;
                 flash = true;
                 break;
             } case "smite": {
                 size = 100;
                 color1 = "orangered";
                 color2 = "goldenrod";
-                this.negative*=2.5;
+                this.negative *= 2.5;
+                fadeTime = 1000;
                 flash = true;
                 break;
             } default: {
                 break;
             }
         }
+        this.dmod = 75*Math.random();
+        this.amod = 2*Math.random();
 
         if(dh > 1){
             size += Math.trunc(10*dh);
@@ -126,22 +128,22 @@ export class DamageText extends Effect{
 			color: this.color1,
 			text: txt,
 		});
+        this.flashTimer = flashTime;
+        this.maxFlashTimer = flashTime;
+        this.isFlashing = flash;
+        this.fadeTime = fadeTime;
+        this.maxFadeTime = fadeTime;
         this.phase = Math.random();
         if(this.phase > 0.5) {
             this.phase = -1;
         } else {
             this.phase = 1;
         }
-        this.flashTimer = flashTime;
-        this.maxFlashTimer = flashTime;
-        this.isFlashing = flash;
+
         this.color1 = color1;
         this.color2 = color2;
         this.myText.setColor(color1);
         this.myText.setOrigin(0.5, 0.5);
-
-        this.fadeTime = fadeTime;
-        this.maxFadeTime = fadeTime;
         this.add(this.myText);
         this.myText.setPosition(0,0);
 

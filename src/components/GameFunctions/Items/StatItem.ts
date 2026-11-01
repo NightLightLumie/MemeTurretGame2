@@ -4,7 +4,7 @@ import { Player } from "@/components/Player";
 
 export class StatItem extends Item{
     constructor(scene:GameScene, p: Player, id: string, slot: number){
-        super(scene, p, id);
+        super(scene, p, id, slot);
         this.addEffect();
     }
 
@@ -15,6 +15,7 @@ export class StatItem extends Item{
         switch(this.key){
             case "Yin-Yang Orb": {
                 this.owner.shrink += 0.2;
+                this.owner.refreshHitbox();
                 break;
             } case "Zoomies": {
                 this.owner.upgradeSpeed(0.2);
@@ -44,6 +45,13 @@ export class StatItem extends Item{
             } case "Cast Gun": {
                 this.owner.conversion += 1;
                 break;
+            } case "Phoenix's Tail": {
+                this.owner.lives += 3;
+                this.owner.eRegenPoint += 0.25;
+                break;
+            } case "Binding Shots": {
+                this.owner.inhibitor += 0.15;
+                break;
             } default: {
                 console.log("Cannot find item with name: " + this.key);
                 break;
@@ -54,10 +62,14 @@ export class StatItem extends Item{
     levelUp(){
         if(this.level < this.maxLevel){
             this.level++;
+        } else {
+            console.log("Item already max level");
+            return;
         }
         switch(this.key){
             case "Yin-Yang Orb": {
                 this.owner.shrink += 0.03;
+                this.owner.refreshHitbox();
                 break;
             } case "Zoomies": {
                 this.owner.upgradeSpeed(0.05);
@@ -86,6 +98,12 @@ export class StatItem extends Item{
                 break;
             } case "Cast Gun": {
                 this.owner.conversion += 0.05;
+                break;
+            } case "Phoenix's Tail": {
+                this.owner.eRegenPoint += 0.025;
+                break;
+            } case "Binding Shots": {
+                this.owner.inhibitor += 0.015;
                 break;
             } default: {
                 console.log("Cannot find item with name: " + this.key);

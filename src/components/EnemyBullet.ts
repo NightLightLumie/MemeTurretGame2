@@ -14,7 +14,8 @@ export class EnemyBullet extends Phaser.GameObjects.Container{
     private hitAnimFrames: number = 3;
     public deleteFlag: boolean = false; 
     public vangle: number = 0;
-    constructor(scene: GameScene, x: number, y: number, name: string, difficulty: number, angle: number, debuff: number = 0){
+    private mod: number = 1;
+    constructor(scene: GameScene, x: number, y: number, name: string, difficulty: number, angle: number, mod: number = 1){
         super(scene,x,y);
         this.scene = scene;
         this.spr = this.scene.add.sprite(0,0,name);
@@ -25,13 +26,14 @@ export class EnemyBullet extends Phaser.GameObjects.Container{
         this.vangle = angle;
         console.log("BULLET ANGLE: " + this.angle);
         this.setAngle(this.vangle*(180/Math.PI));
+        this.mod = mod
         this.initiateParams();
     }
 
     initiateParams(){
         switch(this.key){
             case "ufobullet": {
-                this.damage = 50 * Math.trunc(1+(0.1*this.diff));
+                this.damage = 50 * Math.trunc(1+(0.05*this.diff)) * this.mod;
                 this.hitAnim = "hit_purple";
                 this.spr.setScale(2,2);
                 this.v[0] *= 1000;
@@ -58,7 +60,7 @@ export class EnemyBullet extends Phaser.GameObjects.Container{
 
     hitCheck(){
         let r = this.playerDist();
-        if(r < (this.radius+this.scene.player.hitsize)){
+        if(r < (this.radius+(this.scene.player.hitsize*(1-this.scene.player.shrink)))){
             this.scene.playSound("turret_hit", 0.5);
             this.scene.player.takeHit(this.damage);
             this.scene.addPlayerEffect(new BasicEffect(this.scene,this.hitAnim,this.x,this.y,this.hitAnimFrames,150,false,0,Math.random()*360,[1,1]));

@@ -14,7 +14,7 @@ export class VHLaser extends Effect{
     protected gdmg: number = 0;
     protected dtype: string = "spell";
     public scene: GameScene;
-    constructor(scene: GameScene, x: number, y: number, name: string = "zoltraak", scale: number[] = [0,100,0], time: number[] = [50,200], alpha: number[] = [1,1,0], mode: string = "x", dmg: number[]){
+    constructor(scene: GameScene, x: number, y: number, name: string = "zoltraak", scale: number[] = [0,100,0], time: number[] = [50,200], alpha: number[] = [1,1,0], mode: string = "x", dmg: number[] = [0,0,0]){
         super(scene,x,y);
         this.scene = scene;
         this.lScale = scale;
@@ -37,7 +37,7 @@ export class VHLaser extends Effect{
         this.add(this.spr);
         this.damage = dmg[0];
         this.gdmg = dmg[1];
-        if(Math.random()<0.2){
+        if(Math.random()<dmg[3]){
             this.dtype = "spellcrit";
             this.damage *= 2;
         }
@@ -58,7 +58,7 @@ export class VHLaser extends Effect{
                             dmgs.push({
                                 amt: this.damage,
                                 type: this.dtype,
-                                tags: ["aoe", "spell"],
+                                tags: ["aoe", "spell", "projectile"],
                             });
                             if(this.dtype == "spellcrit") {
                                 dmgs[0].tags.push("crit");
@@ -67,7 +67,7 @@ export class VHLaser extends Effect{
                                 dmgs.push({
                                     amt: this.gdmg,
                                     type: "gun",
-                                    tags: ["aoe", "gun"],
+                                    tags: ["aoe", "gun", "projectile"],
                                 });
                             }
                             if(this.phase == 1){

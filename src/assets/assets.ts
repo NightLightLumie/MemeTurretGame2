@@ -206,6 +206,7 @@ const spritesheets: SpriteSheet[] = [
 	spritesheet("anims/lava", "lava", 256, 256),
 	spritesheet("anims/fireshot", "fireshot", 320, 280),
 	spritesheet("anims/cementblocks", "cementblocks", 280, 280),
+	spritesheet("anims/bad_fire", "bad_fire", 512, 512),
 ];
 
 /* Audios */
@@ -238,13 +239,16 @@ const audios: Audio[] = [
 	sound('tree/turret_hit', 'turret_hit', 0.5),
 	sound('tree/turret_dead', 'turret_dead', 0.5),
 	sound('tree/scroll', 'scroll', 0.5),
-
 	sound('tree/dropbox', 'dropbox', 0.5),
 
 	sound('player/miss', 'miss', 0.5),
 	sound('player/rb', 'rb', 0.5),
 	sound('player/cmt', 'cmt', 0.5),
 	sound('player/thshoot', 'thshoot', 0.5),
+	sound('player/revive', 'revive', 0.5),
+	sound('player/megacancel', 'megacancel', 0.5),
+	sound('player/cancelfail', 'cancelfail', 0.5),
+	sound('player/basicmagicblast', 'basicmagicblast', 0.5),
 	
 	sound('tree/ufobullet_fire', 'ufobullet_fire', 0.5),
 
@@ -258,6 +262,7 @@ const audios: Audio[] = [
 	sound('weapons/stackexplode', 'stackexplode', 0.5),
 	sound('weapons/meme_explosion', 'meme_explosion', 0.5),
 	sound('weapons/rocket', 'rocket', 0.5),
+	sound('weapons/bigfire', 'bigfire', 0.5),
 ];
 
 /* Fonts */

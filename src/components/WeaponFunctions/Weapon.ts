@@ -110,6 +110,8 @@ export class Weapon extends Phaser.Events.EventEmitter{
         this.augModifier = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
         //console.log(this.wp.name + " COOLDOWN: " + this.maxCD);\
         this.loadAugment();
+        console.log("augments: " + this.augVars);
+
         this.loadGunValues();
         this.loadPassives();
         this.bursts = [];

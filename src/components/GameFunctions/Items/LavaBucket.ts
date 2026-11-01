@@ -9,8 +9,8 @@ import { LavaPool } from "@/components/WeaponFunctions/LavaPool";
 export class LavaBucket extends Item{
     public damage: number = 250;
     protected spawnRadius: number = 600;
-    constructor(scene: GameScene, p: Player, name: string){
-        super(scene, p, name);
+    constructor(scene: GameScene, p: Player, name: string, slot: number){
+        super(scene, p, name, slot);
         this.tileType = "item_rd";
         this.cooldown = 10;
         this.maxCD = 12500;
@@ -19,7 +19,7 @@ export class LavaBucket extends Item{
     levelUp(){
         if(this.level < this.maxLevel){
             this.level++;
-            this.damage += 10;
+            this.damage += 25;
         }
     }
 
@@ -27,12 +27,33 @@ export class LavaBucket extends Item{
         return[this.damage*(1+this.owner.bonusSpellDamage), 0];
     }
 
+    findSpawn(): number[] {
+        let rr = (-1*Math.PI)+(Math.random()*2*Math.PI);
+        let xx = this.owner.x+(this.spawnRadius*Math.cos(rr));
+        let yy = this.owner.y+(this.spawnRadius*Math.sin(rr));
+        if(xx < this.scene.boundary[0]){
+            xx = this.scene.boundary[0];
+        }
+        if(xx > this.scene.boundary[1]){
+            xx = this.scene.boundary[1];
+        }
+
+        if(yy < this.scene.boundary[2]){
+            yy = this.scene.boundary[2];
+        }
+        if(yy > this.scene.boundary[3]){
+            yy = this.scene.boundary[3];
+        }
+
+        return[xx,yy];
+    }
+
     update(t: number, d: number){
         if(this.cooldown > 0){
             this.cooldown -= d;
             if(this.cooldown <= 0){
-                let rr = (-1*Math.PI)+(Math.random()*2*Math.PI);
-                this.scene.addGroundHazard(new LavaPool(this.scene,this.owner.x+(this.spawnRadius*Math.cos(rr)),this.owner.y+(this.spawnRadius*Math.sin(rr)),this.owner.getActiveWeapon(),this));
+                let px = this.findSpawn();
+                this.scene.addGroundHazard(new LavaPool(this.scene,px[0],px[1],this.owner.getActiveWeapon(),this));
                 this.cooldown += this.maxCD;
                 this.owner.bankedCasts++;
             }

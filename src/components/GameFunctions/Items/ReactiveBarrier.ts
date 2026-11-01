@@ -6,9 +6,8 @@ import { SpellProjectile } from "@/components/WeaponFunctions/SpellProjectile";
 
 export class ReactiveBarrier extends Item{
     public multiplier: number = 5;
-    private baseFireballs: number = 8;
-    constructor(scene: GameScene, p: Player, name: string){
-        super(scene, p, name);
+    constructor(scene: GameScene, p: Player, name: string, slot: number){
+        super(scene, p, name, slot);
         this.tileType = "item_gr";
         this.cooldown = 0;
         this.maxCD = 60000;
@@ -23,6 +22,12 @@ export class ReactiveBarrier extends Item{
         if(this.level < this.maxLevel){
             this.level++;
             this.multiplier += 1;
+            this.cooldown = this.cooldown/this.maxCD;
+            this.cooldown -= 1000;
+            this.cooldown *= this.maxCD;
+        } else {
+            console.log("Item already at max level.");
+            return;
         }
     }
 

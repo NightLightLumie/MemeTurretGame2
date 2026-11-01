@@ -8,14 +8,14 @@ import { SpellProjectile } from "@/components/WeaponFunctions/SpellProjectile";
 export class GunFu extends Item{
     private fired: number[];
     private rate: number = 0;
-    constructor(scene: GameScene, p: Player, name: string){
-        super(scene, p, name);
+    constructor(scene: GameScene, p: Player, name: string, slot: number){
+        super(scene, p, name, slot);
         this.fired = [];
-        this.rate = 2.5;
+        this.rate = 2;
         this.owner.on("startReload", this.logReloadData, this);
         this.owner.on("finishReload", this.clearReloadData, this);
-        this.cooldown = -1;
-        this.maxCD = 5000;
+        this.cooldown = 10;
+        this.maxCD = 30000;
     }
 
     logReloadData(){
@@ -30,6 +30,19 @@ export class GunFu extends Item{
             this.owner.bankedCasts++;
         }
     }
+    levelUp() {
+        if(this.level < this.maxLevel){
+            this.level++;
+            this.rate += 0.2;
+            this.cooldown = this.cooldown/this.maxCD;
+            this.maxCD -= 1500;
+            this.cooldown *= this.maxCD;
+        } else {
+            console.log("Item already at max level.");
+            return;
+        }
+    }
+
 
     clearReloadData(){
         let n = this.owner.activeWeapon;

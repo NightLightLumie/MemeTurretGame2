@@ -1,4 +1,5 @@
 import { GameScene } from "@/scenes/GameScene";
+import { ItemDisplay } from "./ItemDisplay";
 
 export class UI extends Phaser.GameObjects.Container {
 	public scene: GameScene;
@@ -6,11 +7,13 @@ export class UI extends Phaser.GameObjects.Container {
 	private panel: Phaser.GameObjects.Container;
 	private background: Phaser.GameObjects.Image;
 	private text: Phaser.GameObjects.Text;
+	private itemDisplay: ItemDisplay;
 
 	constructor(scene: GameScene) {
 		super(scene, 0, 0);
 		scene.add.existing(this);
 		this.scene = scene;
+
 
 		const panelHeight = 200;
 

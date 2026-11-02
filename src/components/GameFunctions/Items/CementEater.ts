@@ -11,7 +11,7 @@ export class CementEater extends Item{
     constructor(scene: GameScene, p: Player, name: string, slot: number){
         super(scene, p, name, slot);
         this.tileType = "item_gr";
-        this.cooldown = 0;
+        this.cooldown = 10;
         this.maxCD = 15000;
         this.cement = 3;
     }

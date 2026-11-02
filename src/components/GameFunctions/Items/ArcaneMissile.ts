@@ -14,7 +14,7 @@ export class ArcaneMissile extends Item{
     constructor(scene: GameScene, p: Player, name: string, slot: number){
         super(scene, p, name, slot);
         this.tileType = "item_rd";
-        this.cooldown = 3000;
+        this.cooldown = 10;
         this.maxCD = 3000;
     }
 

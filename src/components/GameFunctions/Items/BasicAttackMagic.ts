@@ -11,7 +11,7 @@ export class BasicAttackMagic extends Item{
     constructor(scene: GameScene, p: Player, name: string, slot: number){
         super(scene, p, name, slot);
         this.tileType = "item_rd";
-        this.cooldown = 5000;
+        this.cooldown = 10;
         this.maxCD = 5000;
     }
 

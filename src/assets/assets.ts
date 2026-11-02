@@ -37,6 +37,7 @@ const images: Image[] = [
 	image('items/itemtile', 'itemtile'),
 	image('items/item_gr', 'item_gr'),
 	image('items/item_rd', 'item_rd'),
+	image('items/item_highlight', 'item_highlight'),
 	//defensives
 	image('items/canceldeath', 'canceldeath'),
 	image('items/mandrake', 'mandrake'),
@@ -221,6 +222,9 @@ const audios: Audio[] = [
 	sound('enemies/dead', 'dead', 0.5),
 	sound('enemies/execute', 'execute', 0.5),
 	sound('ui/shift', 'shift', 0.5),
+	sound('ui/buyitem', 'buyitem', 0.5),
+	sound('ui/itemhover', 'itemhover', 0.5),
+	sound('ui/shoptime', 'shoptime', 0.5),
 	sound('weapons/machinegun', 'machinegun', 0.5),
 
 	sound('weapons/gun_0', 'gun_0', 0.5),

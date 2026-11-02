@@ -24,6 +24,8 @@ import { TextEffect } from "@/components/Graphics/TextEffect";
 import { Weapon } from "@/components/WeaponFunctions/Weapon";
 import { StickyTracer } from "@/components/Graphics/StickyTracer";
 import { ScalingEffect } from "@/components/Graphics/ScalingEffect";
+import { ItemShop } from "@/components/GameFunctions/ItemShop";
+import { FlashScreen } from "@/components/Graphics/FlashScreen";
 
 export interface DamageInstance{
 	amt: number;
@@ -86,14 +88,19 @@ export class GameScene extends BaseScene {
 	private stageMusic: Phaser.Sound.WebAudioSound;
 	public dbTimer: number[] = [0,0];
 	private dbScreen: Phaser.GameObjects.Rectangle;
+	private shopShader: Phaser.GameObjects.Rectangle;
+	private fScreen: FlashScreen;
 	private eTimer: number[] = [1000,1000];
 	private ended: boolean = false;
 	private zoom: number[] = [0.5,0.5];
+	private shopping: boolean;
 	public enemyCap: number = 500;
 	public score: number = 0;
 	public difficulty: number = 0;
 	public closestTarget: Target | null;
 	public closestDist: number = 999999;
+	public initShopTimer: number;
+	public myShop: ItemShop;
 
 	private nextButton: NextSceneButton;
 
@@ -133,6 +140,17 @@ export class GameScene extends BaseScene {
 		this.dbScreen.setVisible(false);
 		this.dbScreen.setDepth(99);
 
+		this.shopShader = this.add.rectangle(0,0,2120,1280,0x000000,1);
+		this.shopShader.setOrigin(0.5,0.5);
+		this.shopShader.setScale(2);
+		this.add.existing(this.shopShader);
+		this.shopShader.setVisible(false);
+		this.shopShader.setDepth(49);
+
+		this.fScreen = new FlashScreen(this,0,0);
+		this.add.existing(this.fScreen);
+		this.fScreen.setDepth(100);
+
 		this.cameras.main.setBounds(-5000,-5000,10000,10000);
 		this.cameras.main.setZoom(this.zoom[0],this.zoom[1]);
 		this.cameras.main.setPosition(0,0);
@@ -152,10 +170,16 @@ export class GameScene extends BaseScene {
 		this.player = new Player(this, this.CX, this.CY);
 		this.handler = new WeaponOperator(this.player);
 		this.player.setDefaultLoadout();
+
 		this.gUI = new GunUI(this,this.player.x,this.player.y, [-1358, -860]);
 		this.gUI.setScale(1.5);
 		this.add.existing(this.gUI);
 		this.gUI.setDepth(20);
+
+		this.myShop = new ItemShop(this,0,0);
+		this.add.existing(this.myShop);
+		this.myShop.setDepth(50);
+		this.myShop.hide();
 
 
 		this.player.setDepth(10);
@@ -253,6 +277,8 @@ export class GameScene extends BaseScene {
 		this.enemyCap = 500;
 		this.score = 0;
 		this.difficulty = 0;
+		this.initShopTimer = 100;
+		this.shopping = false;
 		this.dbTimer = [250,250];
 	}
 
@@ -336,6 +362,7 @@ export class GameScene extends BaseScene {
 		const pointer = this.input.activePointer;
 		const worldX = this.cameras.main.getWorldPoint(pointer.x, pointer.y).x;
  		const worldY = this.cameras.main.getWorldPoint(pointer.x, pointer.y).y;
+		this.fScreen.update(time, delta);
 		if(this.dead){
 			if(this.dbTimer[0] > 0){
 				this.dbTimer[0] -= delta;
@@ -359,8 +386,25 @@ export class GameScene extends BaseScene {
 					this.endScreen.setAlpha(1-(this.eTimer[0]/this.eTimer[1]));
 				}
 			}
+		} else {
+			if(this.shopping){
+				if(this.myShop.dropping){
+					this.myShop.updateDrop(time, delta);
+				} else {
+					this.myShop.update(time, delta);
+					if(!this.myShop.isOpen){
+						this.unShop();
+					}
+				}
+			}
 		}
 		if(!this.paused){
+			if(this.initShopTimer > 0){
+				this.initShopTimer -= delta;
+				if(this.initShopTimer <= 0){
+					this.openItemShop();
+				}
+			}
 			this.ui.update(time,delta);
 			//this.tyText.setPosition(worldX,worldY+80);
 			//this.tyText.setText("Pointer: " + worldX + ", " + worldY);
@@ -375,6 +419,27 @@ export class GameScene extends BaseScene {
 			this.gUI.update(time,delta);
 			this.sounds = [];
 		}
+	}
+
+	openItemShop(){
+		this.paused = true;
+		this.fScreen.flash(500,0xFFFFFF,1,this.player.x, this.player.y);
+		this.sound.play("shoptime", {volume: 0.5});
+		this.myShop.open();
+		this.shopping = true;
+		this.shopShader.setPosition(this.player.x, this.player.y);
+		this.shopShader.setAlpha(0.75);
+		this.shopShader.setVisible(true);
+	}
+
+	unShop(){
+		this.shopping = false;
+		this.paused = false;
+	}
+
+	closeShopBackdrop(){
+		this.fScreen.flash(500,0xFFFFFF,1,this.player.x,this.player.y);
+		this.shopShader.setVisible(false);
 	}
 
 	spawnEnemies(num:number = 2, cmd:string = "x", etype:string = "thug", difficulty:number = 0): boolean{
@@ -844,6 +909,10 @@ export class GameScene extends BaseScene {
 			p.destroy();
 			console.log("destroyed emitter")
 		}, this);
+	}
+
+	cFlash(){
+
 	}
 
 }

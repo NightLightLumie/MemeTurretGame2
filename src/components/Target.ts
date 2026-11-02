@@ -162,7 +162,7 @@ export class Target extends Phaser.GameObjects.Container{
                 //console.log("boom");
                 this.scene.sound.play(value.sound,{volume: 1});
                 this.scene.addHitEffect(new BasicEffect(this.scene,"hit_spark",this.x,this.y,3,100,false,0,Math.random()*360));
-                this.scene.addHitEffect(new DamageText(this.scene,this.x,this.y,(""+(value.damage*(1+this.scene.player.bonusGunDamage)).toFixed(1)),"stack"));
+                this.scene.addHitEffect(new DamageText(this.scene,this.x,this.y,(""+this.smartRound(value.damage*(1+this.scene.player.bonusGunDamage))),"stack"));
                 if(tmpr >= 0){
                     value.curhits = tmpr;
                     value.bop = true;
@@ -413,12 +413,17 @@ export class Target extends Phaser.GameObjects.Container{
         if(!this.deleteFlag){
             this.scene.sound.play("dead",{volume:0.25});
         }
+        this.deleteFlag = true;
+    }
+
+    processOnKill(){
         if(this.scene.player.leech[1] > 0){
             if((this.scene.player.leech[2]*this.maxHP) > this.scene.player.leech[0]){
                 this.scene.player.leech[0] = (this.scene.player.leech[2]*this.maxHP);
             }
         }
-        this.deleteFlag = true;
+        this.scene.score += this.value;
+        this.scene.player.addScore(this.value);
     }
 
     unSeek(){

@@ -59,6 +59,7 @@ export class Thug extends Target{
             this.gx.fillPath();
         }
         this.setDifficulty(diff);
+        this.value = Math.trunc(20*(1+(this.difficulty/10)));
         //this.pID = this.scene.getProjID();
     }
 
@@ -214,10 +215,10 @@ export class Thug extends Target{
         if(!this.deleteFlag){
             this.gib();
             this.scene.playSound("dead",0.5);
-            this.scene.score += this.value;
             if(Math.random() < this.scene.getDropChance("thug")){
                 this.scene.dropBox();
             }
+            this.processOnKill();
         }
         this.deleteFlag = true;
     }

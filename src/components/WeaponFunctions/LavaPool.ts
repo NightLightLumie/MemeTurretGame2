@@ -14,6 +14,7 @@ export class LavaPool extends Missile{
     private ttimer = 0;
     private ftimer = 200;
     private curFrame: number = 0;
+    private lScale: number = 4;
     constructor(scene: GameScene, x: number, y: number, owner: Weapon, ref: Item){
         super(scene,x,y,"lava",Math.random()*360,0);
         this.setAngle(Math.random()*360);
@@ -27,7 +28,7 @@ export class LavaPool extends Missile{
         } else {
             this.ftimer = 200;
         }
-        this.spin = 90;
+        this.spin = 30;
         if(Math.random() < 0.5){
             this.spin *= -1;
         }
@@ -48,12 +49,12 @@ export class LavaPool extends Missile{
                     this.ttimer += d;
                     if(this.ttimer >= 1000){
                         this.ttimer = 0;
-                        this.radius = 200;
-                        this.setScale(2);
+                        this.radius = this.lScale*100;
+                        this.setScale(this.lScale);
                         this.phase = 1;
                     } else {
-                        this.radius = 200*(this.ttimer/1000);
-                        this.setScale(2*this.ttimer/1000);
+                        this.radius = this.lScale*100*(this.ttimer/1000);
+                        this.setScale(this.lScale*this.ttimer/1000);
                     }
                 }
                 break;
@@ -76,8 +77,8 @@ export class LavaPool extends Missile{
                         this.phase = 3;
                         this.deleteFlag = true;
                     } else {
-                        this.radius = 200*((1000-this.ttimer)/1000);
-                        this.setScale(2*(1000-this.ttimer)/1000);
+                        this.radius = this.lScale*100*((1000-this.ttimer)/1000);
+                        this.setScale(this.lScale*(1000-this.ttimer)/1000);
                         this.setAlpha(0.5+ (0.5*(1000-this.ttimer)/1000));
                     }
                 }

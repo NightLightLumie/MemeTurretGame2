@@ -15,6 +15,10 @@ export class BuffDisplay extends Phaser.GameObjects.Container{
     private tg: Phaser.GameObjects.Text;
     private ts: Phaser.GameObjects.Text;
 
+    private xpbar: Phaser.GameObjects.Rectangle;
+    private xpback: Phaser.GameObjects.Rectangle
+    private xpframe: Phaser.GameObjects.Rectangle;
+
     private gfxg: Phaser.GameObjects.Graphics;
     private gfxs: Phaser.GameObjects.Graphics;
     private gfxn: Phaser.GameObjects.Graphics;
@@ -22,6 +26,17 @@ export class BuffDisplay extends Phaser.GameObjects.Container{
         super(scene,x,y);
         this.scene = scene;
         this.owner = p;
+        this.xpframe = this.scene.add.rectangle(-650,900,1300,80,0x1a1a1a,1);
+        this.xpframe.setOrigin(0,0.5);
+        this.add(this.xpframe);
+        this.xpback = this.scene.add.rectangle(-645,900,1290,70,0x4a4f4a,1);
+        this.xpback.setOrigin(0,0.5);
+        this.add(this.xpback);
+        this.xpbar = this.scene.add.rectangle(-645,900,1290,70,0x38fff8,1);
+        this.xpbar.setOrigin(0,0.5);
+        this.xpbar.setScale(0,1);
+        this.add(this.xpbar);
+
         this.spc = this.scene.add.sprite(0,0,"cementblocks");
         this.sprb = this.scene.add.sprite(0,0,"reactivering");
         this.add(this.spc);
@@ -62,7 +77,12 @@ export class BuffDisplay extends Phaser.GameObjects.Container{
         this.r2 = (-1*Math.PI) + (Math.random()*2*Math.PI);
     }
 
+    updateXP(){
+        this.xpbar.setScale(this.owner.curExp/this.owner.nextLevel,1);
+    }
+
     update(t: number, d: number){
+        this.updateXP();
         this.updateCement(t,d);
         this.updateEcho();
         if(this.owner.reactive){

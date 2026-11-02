@@ -3,29 +3,17 @@ import { WeaponDisplay } from "./WeaponDisplay";
 import { Bullet } from "./WeaponFunctions/Bullet";
 import { Weapon } from "./WeaponFunctions/Weapon";
 import { Item } from "./GameFunctions/Items/Item";
-import { Fireball } from "./GameFunctions/Items/Fireball";
 import { ScalingEffect } from "./Graphics/ScalingEffect";
-import { StarPrism } from "./GameFunctions/Items/StarPrism";
-import { ArrowRaid } from "./GameFunctions/Items/ArrowRaid";
-import { RuneCircle } from "./GameFunctions/Items/RuneCircle";
-import { ArcaneMissile } from "./GameFunctions/Items/ArcaneMissile";
-import { BasicAttackMagic } from "./GameFunctions/Items/BasicAttackMagic";
 import { Mandala } from "./Graphics/Mandala";
-import { KoboldMiniNova } from "./GameFunctions/Items/KoboldMiniNova";
-import { LavaBucket } from "./GameFunctions/Items/LavaBucket";
 import { ShieldDisplay } from "./Graphics/ShieldDisplay";
-import { GunFu } from "./GameFunctions/Items/GunFu";
-import { UltrasonicBarrier } from "./GameFunctions/Items/UltrasonicBarrier";
 import { DanmakuCharm } from "./GameFunctions/Items/DanmakuCharm";
-import { ReactiveBarrier } from "./GameFunctions/Items/ReactiveBarrier";
 import { CementEater } from "./GameFunctions/Items/CementEater";
 import { BuffDisplay } from "./Graphics/BuffDisplay";
-import { StatItem } from "./GameFunctions/Items/StatItem";
 import { Target } from "./Target";
 import { StickyTracer } from "./Graphics/StickyTracer";
 import { Echolocator } from "./GameFunctions/Items/Echolocator";
-import { SimpleCDItem } from "./GameFunctions/Items/SimpleCDItem";
 import { ItemDisplay } from "./Graphics/ItemDisplay";
+import { DamageText } from "./Graphics/DamageText";
 
 const ACCELERATION = 350;
 const MAX_SPEED = 500;
@@ -125,7 +113,8 @@ export class Player extends Phaser.GameObjects.Container {
 	public myMandala: Mandala | null;
 	public bankedCasts: number = 0;
 	public canResonate: boolean[] = [false,false];
-	public lives: number = 3;
+	public lives: number = 1;
+	public baseLives: number = 1;
 	public eRegenPoint: number = 0;
 	public leech: number[] = [0,0,0];
 	public inhibitor: number = 0;
@@ -134,6 +123,11 @@ export class Player extends Phaser.GameObjects.Container {
 	public loadout: [Weapon,Weapon,Weapon];
 	public activeWeapon: number = 0;
 	public spMod: number = 1;
+
+	//other
+	public level: number = 0;
+	public nextLevel: number = 0;
+	public curExp: number = 0;
 
 	//public hp: number[] = [1000,1000];
 
@@ -255,13 +249,16 @@ export class Player extends Phaser.GameObjects.Container {
 		this.curGunAngle = 0;
 
 		this.danmaku = false;
+		/*
 		this.items.push(new GunFu(this.scene,this,"Gun-Fu", 0));
 		this.items.push(new StatItem(this.scene,this,"Cast Gun", 1));
 		this.items.push(new RuneCircle(this.scene,this,"Rune Circle", 2));
 		this.items.push(new SimpleCDItem(this.scene,this,"Cancel Death", 3));
 		this.items.push(new StatItem(this.scene,this,"Sticky Bomb", 4));
 		this.items.push(new Echolocator(this.scene,this,"Echolocator", 5));
+		*/
 		this.itDisp.redrawItems();
+		this.calcNextLevel();
 	}
 
 	setDefaultLoadout(){
@@ -310,7 +307,7 @@ export class Player extends Phaser.GameObjects.Container {
 			this.curIFrames = this.maxIFrames;
 		}
 		//adjust damage prior to stuff like reactive barrier
-		if(this.dmgRes > 0){
+		if(this.dmgRes != 0){
 			n *= (1-this.dmgRes);
 		}
 		if(this.dmgCap < 1){
@@ -418,6 +415,7 @@ export class Player extends Phaser.GameObjects.Container {
 			if((this.health/this.maxHP) > itm.value){
 				if(itm.setCooldown()){
 					n = this.health-1;
+					this.curIFrames += 3000;
 					this.bankedCasts++;
 				}
 			}
@@ -462,6 +460,30 @@ export class Player extends Phaser.GameObjects.Container {
 
 	}
 
+	getOwnedItems(): string[]{
+		let rt: string[] = [];
+		this.items.forEach((it) => {
+			rt.push(it.key);
+		})
+		return rt;
+	}
+
+
+	addScore(n: number){
+		this.curExp += n;
+		if(this.curExp >= this.nextLevel){
+			this.curExp -= this.nextLevel;
+			this.calcNextLevel();
+			this.buffDisp.updateXP();
+			this.scene.openItemShop();
+		}
+	}
+
+	calcNextLevel(){
+		this.nextLevel = Math.trunc(this.level*800)+(200*(Math.pow(1.05,this.level)));
+		this.level++;
+	}
+
 	cancelDeath(){
 		let cd = this.findItem("Cancel Death");
 		if(cd.key != "default"){
@@ -473,19 +495,41 @@ export class Player extends Phaser.GameObjects.Container {
 		}
 	}
 
+	redrawItems(){
+		this.itDisp.redrawItems();
+	}
+
+	smartRound(n: number): number{
+        let rr = n*100;
+        rr = Math.round(rr);
+        if((rr % 100) == 0){
+            return Math.trunc(rr*0.01);
+        } else if ((rr % 10) == 0) {
+            rr = Math.trunc(rr*0.1);
+            return (rr*0.1);
+        } else {
+            return rr/100;
+        }
+    }
+
 	updateGlobalTickEvents(){
 		if((this.lives <= 1) && (this.eRegenPoint > 0)){
 			if(this.health < (this.maxHP*this.eRegenPoint)){
-				this.health += (this.globalTickTimer[1]/1000)*0.01*this.maxHP;
+				let lxs = (this.globalTickTimer[1]/1000)*0.01*this.maxHP;
+				this.health += lxs;
+				this.scene.addHitEffect(new DamageText(this.scene,(this.x-20)+(2*Math.random()*20),(this.y-20)+(2*Math.random()*20),"+"+this.smartRound(lxs), "heal"));
 			}
 		}
 		if(this.redHP > 0){
 			if(this.redHP < (0.01*(this.globalTickTimer[1]/1000)*this.maxHP)){
 				this.health += this.redHP;
+				this.scene.addHitEffect(new DamageText(this.scene,(this.x-20)+(2*Math.random()*20),(this.y-20)+(2*Math.random()*20),"+"+this.smartRound(this.redHP), "heal"));
 				this.redHP = 0;
 			} else {
-				this.health += (0.01*(this.globalTickTimer[1]/1000)*this.maxHP);
-				this.redHP -= (0.01*(this.globalTickTimer[1]/1000)*this.maxHP);
+				let lnp = (0.01*(this.globalTickTimer[1]/1000)*this.maxHP);
+				this.health += lnp;
+				this.redHP -= lnp;
+				this.scene.addHitEffect(new DamageText(this.scene,(this.x-20)+(2*Math.random()*20),(this.y-20)+(2*Math.random()*20),"+"+this.smartRound(lnp), "heal"));
 			}
 			if(this.health > this.maxHP){
 				this.health = this.maxHP;
@@ -632,17 +676,24 @@ export class Player extends Phaser.GameObjects.Container {
 		if(this.leech[0] > 0){
 			let lh = this.findItem("Mandrake");
 			if(lh.key != "default"){
-				if(lh.setCooldown()){
-					if(this.leech[0] > this.leech[1]){
-						this.health += this.leech[1];
-					} else {
-						this.health += this.leech[0];
-					}
-					this.leech[0] = 0;
-					if(this.health > this.maxHP){
-						this.health = this.maxHP;
+				if(this.health < this.maxHP){
+					if(lh.setCooldown()){
+						let lm = 0;
+						if(this.leech[0] > this.leech[1]){
+							lm = Math.trunc(this.leech[1]);
+							this.health += lm;
+						} else {
+							lm = Math.trunc(this.leech[0]);
+							this.health += lm;
+						}
+						this.scene.addHitEffect(new DamageText(this.scene,(this.x-20)+(2*Math.random()*20),(this.y-20)+(2*Math.random()*20),"+"+lm, "heal"));
+						this.leech[0] = 0;
+						if(this.health > this.maxHP){
+							this.health = this.maxHP;
+						}
 					}
 				}
+
 			}
 		}
 		if(this.items.length > 0){

@@ -106,6 +106,10 @@ export class ItemTile extends Phaser.GameObjects.Container{
                         }
                     }
                 }
+            } else if (this.ref instanceof StatItem){
+                if(this.ref.key == "Phoenix's Tail"){
+                    this.txt.setText("x " + (this.scene.player.lives - this.scene.player.baseLives));
+                }
             }
 
         } else {

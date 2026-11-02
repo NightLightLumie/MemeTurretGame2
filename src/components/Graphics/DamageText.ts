@@ -109,6 +109,12 @@ export class DamageText extends Effect{
                 fadeTime = 1000;
                 flash = true;
                 break;
+            } case "heal":{
+                size = 40;
+                color1 = "lime";
+                color2 = "lime";
+                flash = false;
+                break;
             } default: {
                 break;
             }

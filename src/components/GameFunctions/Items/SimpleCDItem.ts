@@ -13,12 +13,12 @@ export class SimpleCDItem extends Item{
     addEffect(){
         switch(this.key){
             case "Cancel Death": {
-                this.cooldown = 0;
+                this.cooldown = 10;
                 this.scene.dbTimer = [750,750];
-                this.maxCD = 5000;
+                this.maxCD = 60000;
                 break;
             } case "Focus Sash": {
-                this.cooldown = 0;
+                this.cooldown = 10;
                 this.maxCD = 180000;
                 this.value = 0.25;
                 this.owner.sashed = true;
@@ -26,7 +26,7 @@ export class SimpleCDItem extends Item{
             } case "Mandrake": {
                 this.owner.leech[1] = 10;
                 this.owner.leech[2] = 0.01;
-                this.cooldown = 0;
+                this.cooldown = 10;
                 this.maxCD = 1000;
                 break;
             } default: {

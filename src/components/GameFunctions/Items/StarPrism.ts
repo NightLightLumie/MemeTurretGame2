@@ -12,7 +12,7 @@ export class StarPrism extends Item{
     constructor(scene: GameScene, p: Player, name: string, slot: number){
         super(scene, p, name, slot);
         this.tileType = "item_rd";
-        this.cooldown = 0;
+        this.cooldown = 10;
         this.maxCD = 500;
     }
 

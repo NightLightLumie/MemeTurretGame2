@@ -25,7 +25,7 @@ export class MagicMissile extends HomingTracer{
             this.scene.playSound("meme_explosion",0.5);
             t.takeTypedDamage({amt: this.damage, type: "spell", tags: ["spell", "projectile"]}, [20,20]);
             t.takeTypedDamage({amt: this.gdmg, type: "gun", tags: ["gun", "projectile", "onhit"]}, [20,20]);
-            this.scene.addHitEffect(new BasicEffect(this.scene,"exp",this.x,this.y,25,15,false,2,Math.random()*360,[0.1,0.1]));
+            this.scene.addHitEffect(new BasicEffect(this.scene,"spellhitorange",this.x,this.y,3,100,false,0,Math.random()*360,[1.5,1.5]));
         }
     }
 }

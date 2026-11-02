@@ -21,8 +21,9 @@ export class GlobalVariables {
     public maxAugLevel: number = 10;
     public boxCount: number = 0;
 
+    public defaultItem: ItemParams = {id: -999, name: "default", spr: ["itemtile", "itemtile"], curLevel:0, maxLevel:10, desc:"DEFAULT", upgradeDesc: "DEFAULT"};
+
     public itemList: ItemParams[] = [
-        {id: -999, name: "default", spr: ["itemtile", "itemtile"], curLevel:0, maxLevel:10, desc:"DEFAULT", upgradeDesc: "DEFAULT"},
         {id: 0, name: "Cancel Death", spr: ["item_gr", "canceldeath"], curLevel:0, maxLevel:10, desc:"Press ''x'' immediately after being hit to negate fatal damage (250 ms window). If activated, become invulnerable for 3s. 60s cd. Activating too early grants 0.25s of invulnerability and places this ability on full cooldown.", upgradeDesc: "+25 ms window. -1.5s cd."},
         {id: 1, name: "Mandrake", spr: ["item_gr", "mandrake"], curLevel:0, maxLevel:10, desc:"Defeating an enemy heals you for 1% of its max hp rounded down, up to a cap of 10 per enemy. 1s cd.", upgradeDesc: "-0.05s cd. +2 healing cap."},
         {id: 2, name: "Spinach", spr: ["item_gr", "spinach"], curLevel:-1, maxLevel:-1, desc:"Increases your HP by 5% of the base value. Can be stacked indefinitely and does not occupy an item slot.", upgradeDesc: ""},
@@ -35,7 +36,7 @@ export class GlobalVariables {
         {id: 9, name: "Light Dragon's Blessing", spr: ["item_gr", "lightdragon"], curLevel:0, maxLevel:10, desc:"Take +100% extra damage, but damage can't exceed 25% of your hp per hit.", upgradeDesc: "Extra damage taken reduced by 5%. HP damage cap decreased by 1%."},
         {id: 10, name: "Binding Shots", spr: ["item_gr", "bindingshots"], curLevel:0, maxLevel:10, desc:"Injured enemies deal 15% less damage.", upgradeDesc: "+1.5% additional damage reduction."},
         {id: 11, name: "Gun-Fu", spr: ["item_gr", "gunfu"], curLevel:0, maxLevel:10, desc:"Gain a shield after reloading. The more ammo reloaded, the larger the shield, starting at 2 shield points per ammo. 30s cd.", upgradeDesc: "+0.2 shield per ammo. -1.5s cd."},
-        {id: 12, name: "Focus Sash", spr: ["item_gr", "focussash"], curLevel:0, maxLevel:10, desc:"The next lethal hit is negated if you are above 25% hp. 180s cd.", upgradeDesc: "-2.5% hp required to be active. -3s cd."},
+        {id: 12, name: "Focus Sash", spr: ["item_gr", "focussash"], curLevel:0, maxLevel:10, desc:"The next lethal hit is negated if you are above 25% hp. Become invulnerable for 3s. 180s cd.", upgradeDesc: "-2.5% hp required to be active. -3s cd."},
         {id: 13, name: "Eat Cement", spr: ["item_gr", "eatcement"], curLevel:0, maxLevel:10, desc:"Every 10 spell casts stores a stack, 15s cd. On hit, consume a stack to brace the attack and receive -50% damage.", upgradeDesc: "+3% damage mitigation. -0.5s cd."},
         {id: 14, name: "Vaccine", spr: ["item_gr", "vaccine"], curLevel:0, maxLevel:10, desc:"Grants invulnerability frames upon taking a hit, 0.1s duration.", upgradeDesc: "+15 ms duration."},
         {id: 15, name: "Disproportionation", spr: ["item_gr", "disproportionation"], curLevel:0, maxLevel:10, desc:"20% of damage taken to HP is converted to red health. Red health regenerates slowly but is lost if further damage is taken.", upgradeDesc: "+3% damage converted to red health."},
@@ -188,7 +189,17 @@ export class GlobalVariables {
                 return structuredClone(this.itemList[n]);
             }
         }
-        return structuredClone(this.itemList[0]);
+        return structuredClone(this.defaultItem);
+    }
+
+    getInfiniteItems(): string[]{
+        let nx: string[] = [];
+        this.itemList.forEach((im) => {
+            if(im.maxLevel == -1){
+                nx.push(im.name);
+            }
+        })
+        return nx;
     }
 
     getParams(n: number): WeaponParams{

@@ -69,6 +69,9 @@ export class Missile extends Phaser.GameObjects.Container{
     checkBounds(){
         if(this.playerDist() > (this.scene.getCameraDiag()+ 3*this.radius)){
             this.deleteFlag = true;
+            if(this.trail != null){
+                this.trail.stop();
+            }
         }
     }
 

@@ -53,7 +53,6 @@ export class Ufo extends Target{
         this.radius = 155;
         this.curAngle = this.playerAngle();
         this.tether = this.playerDist();
-        this.value = 100;
         this.gx = this.scene.add.graphics();
         this.gx.fillStyle(0x008080,0.85);
         this.add(this.gx);
@@ -67,6 +66,7 @@ export class Ufo extends Target{
 
         this.setStackDisplay();
         this.setDifficulty(diff);
+        this.value = Math.trunc(100*(1+(this.difficulty/10)));
         //this.pID = this.scene.getProjID();
     }
 
@@ -192,6 +192,7 @@ export class Ufo extends Target{
             if(Math.random() < this.scene.getDropChance("ufo")){
                 this.scene.dropBox();
             }
+            this.processOnKill();
         }
         this.deleteFlag = true;
     }

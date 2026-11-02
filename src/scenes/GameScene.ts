@@ -680,9 +680,9 @@ export class GameScene extends BaseScene {
 	getDropChance(name: string): number{
 		switch(name){
 			case "thug": {
-				return 0.01;
+				return 0.005;
 			} case "ufo": {
-				return 0.05;
+				return 0.025;
 			} default: {
 				return 0.01;
 			}

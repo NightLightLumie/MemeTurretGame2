@@ -51,6 +51,14 @@ const Data = {
 		start: 0,
 		end: 11948032 / 44100,
 
+	},
+	m_loot: {
+		offset: 0,
+		bpm: 206,
+		loop: true,
+		start: 0,
+		end: 8820736 / 44100,
+
 	}
 };
 

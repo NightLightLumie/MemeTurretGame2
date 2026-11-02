@@ -41,6 +41,7 @@ export class UpgradeScene extends BaseScene {
 	public sec: number = -999999999 - 1;
 
 	public nxt: NextSceneButton;
+	public wait: number[];
 
 	public augUI: AugmentUI;
 	public equippedButtons: WeaponButton[];
@@ -69,6 +70,8 @@ export class UpgradeScene extends BaseScene {
 		this.background.setDepth(0);
 
 		this.nxt = new NextSceneButton(this, 1810, 1000);
+		this.nxt.veil();
+		this.wait = [500,500];
 
 		this.overlay = this.add.image(0, 0, "topbar");
 		this.overlay.setOrigin(0,0);
@@ -145,6 +148,13 @@ export class UpgradeScene extends BaseScene {
 		this.dragGun.x = pointer.x;
 		this.dragGun.y = pointer.y;
 		this.flashlines.setAlpha(0.125+0.125*(1+Math.sin(time/500)));
+
+		if(this.wait[0] > 0){
+			this.wait[0] -= delta;
+			if(this.wait[0] <= 0){
+				this.nxt.unveil();
+			}
+		}
 
 		if(this.dragging){
 			this.shadeClosest();

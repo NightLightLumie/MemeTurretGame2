@@ -217,6 +217,7 @@ const audios: Audio[] = [
 	music('gameover', 'm_gameover'),
 	music('lv1', 'm_lv1'),
 	music('lv2', 'm_lv2'),
+	music('loot', 'm_loot'),
 	sound('tree/rustle', 't_rustle', 0.5),
 	sound('enemies/oof', 'oof', 0.5),
 	sound('enemies/dead', 'dead', 0.5),

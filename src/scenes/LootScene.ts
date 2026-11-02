@@ -3,6 +3,9 @@ import { BaseScene } from "./BaseScene";
 import { Lootbox } from "@/components/WeaponFunctions/Lootbox";
 import { AugmentDisplayBar } from "@/components/WeaponFunctions/AugmentDisplayBar";
 import { WeaponEntry } from "@/components/WeaponFunctions/Armory";
+import { Music } from "@/components/Music";
+import { Effect } from "@/components/Graphics/Effect";
+import { SimpleParticle } from "@/components/Graphics/SimpleParticle";
 
 export class LootScene extends BaseScene{
 
@@ -16,13 +19,17 @@ export class LootScene extends BaseScene{
     private bkg: Phaser.GameObjects.Image;
     private state: string = "waiting";
     private waitTime: number[] = [1000,1000];
+    private genTime: number[];
     private displayBars: AugmentDisplayBar[];
     private xps: number = 960;
     private yps: number = 840;
     private spacer: number = 68;
     private skip: boolean = false;
     private blinkRect: Phaser.GameObjects.Rectangle;
+    private stageMusic: Phaser.Sound.WebAudioSound;
     private flashTimer: number[] = [0,0];
+    private effectLayer: Phaser.GameObjects.Container;
+    private effectList: Effect[];
 
 	constructor() {
 		super({ key: "LootScene" });
@@ -32,7 +39,12 @@ export class LootScene extends BaseScene{
         super.resetVariables();
         this.lootTable = [];
         this.displayBars = []
+        this.effectList = [];
+        this.effectLayer = new Phaser.GameObjects.Container(this,0,0);
+        this.add.existing(this.effectLayer);
+        this.effectLayer.setDepth(-10);
         this.waitTime = [1000,1000];
+        this.genTime = [200,200];
         this.state = "waiting";
         this.xps = 960;
         this.yps = 810;
@@ -47,6 +59,9 @@ export class LootScene extends BaseScene{
         this.blinkRect.setDepth(999999999);
         this.blinkRect.setVisible(false);
         this.blinkRect.setAlpha(1);
+        this.stageMusic = new Music(this,"m_loot",{volume:0.4});
+		this.stageMusic.play();
+        
     }
 
 	init(data: { gameData: GlobalVariables; })
@@ -210,7 +225,6 @@ export class LootScene extends BaseScene{
                 this.blinkRect.setVisible(false);
                 this.blinkRect.setAlpha(1);
             }
-
         }
 
         this.tOff += delta;
@@ -222,6 +236,9 @@ export class LootScene extends BaseScene{
             this.curBox.update(time,delta);
         }
         this.updateState(time,delta);
+        this.updateEffects(time,delta);
+        this.updateParticleGenerator(time,delta);
+
     }
 
     updateState(t: number, d: number){
@@ -256,6 +273,32 @@ export class LootScene extends BaseScene{
         }
     }
 
+    updateEffects(t: number, d: number){
+        for(let h = (this.effectList.length-1); h >= 0; h--){
+			this.effectList[h].update(t, d);
+			if(this.effectList[h].deleteFlag) {
+				this.effectList[h].destroy();
+				this.effectList.splice(h,1);
+			}
+		}
+    }
+
+    addEffect(e: Effect){
+        this.effectLayer.add(e);
+        this.effectList.push(e);
+    }
+
+    updateParticleGenerator(t: number, d: number){
+        if(this.genTime[0] > 0){
+            this.genTime[0] -= d;
+            if(this.genTime[0] <= 0){
+                this.genTime[0] = this.genTime[1];
+                this.addEffect(new SimpleParticle(this,-20+(Math.random()*1960), -400, 50+(Math.random()*100),[1,1.5],[0.75,0],0xFFFFFF,1500+(Math.random()*3000),
+                120+(Math.random()*360),[-250+(Math.random()*500),400+(Math.random()*400)],[1,1]));
+            }
+        }
+    }
+
     blink(t: number, color: number){
         this.flashTimer = [t,t];
         this.blinkRect.setFillStyle(color);
@@ -264,6 +307,8 @@ export class LootScene extends BaseScene{
     }
 
     progress(){
+        this.stageMusic.stop();
+		this.sound.stopAll();
 		this.addEvent(0, () => {
 			//this.musicTitle.stop();
 			this.scene.start("UpgradeScene", {gameData: this.masterData});

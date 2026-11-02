@@ -20,6 +20,8 @@ export class GlobalVariables {
     public maxAugOverLevel: number = 13;
     public maxAugLevel: number = 10;
     public boxCount: number = 0;
+    public money: number = 0;
+    public widgets: number = 0;
 
     public defaultItem: ItemParams = {id: -999, name: "default", spr: ["itemtile", "itemtile"], curLevel:0, maxLevel:10, desc:"DEFAULT", upgradeDesc: "DEFAULT"};
 

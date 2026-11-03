@@ -193,6 +193,44 @@ export class UpgradeScene extends BaseScene {
 
 	}
 
+	sellWeapon(){
+		if(this.lockout > 0){
+			return;
+		}
+		let ns = this.getCurrentButton();
+		if(this.buttonList[ns].gID < -999999999){
+			console.log("Tried to sell default weapon.")
+			return;
+		}
+		this.cancelDrag();
+		this.removeButton(ns);
+		this.lockout = this.maxlockout;
+	}
+	
+	removeButton(n: number){
+		if(n > this.buttonList.length){
+			console.log("Tried to remove nonexistent weapon button/index.");
+			return;
+		}
+
+		if(n < (this.buttonList.length-1)){
+			//if not the final element, move the rest of the list up and keep curpos the same
+			for(let pp = n+1; pp < this.buttonList.length; pp++){
+				this.buttonList[n].position--;
+				this.buttonList[n].teleportUp(256);
+			}
+		} else if (n == (this.buttonList.length - 1)){
+			//if it IS the final element, move curpos up and the icons down
+			for(let px = 0; px < n; px++){
+				this.buttonList[n].teleportDown(256);
+			}
+			this.curPos--;
+		}
+		this.buttonList[n].destroy();
+		this.buttonList.splice(n,1);
+		this.augUI.swapGun(this.buttonList[this.getCurrentButton()].gID);
+	}
+
 	elevateButton(w: WeaponButton){
 		w.setDepth(20);
 	}
@@ -245,8 +283,6 @@ export class UpgradeScene extends BaseScene {
 		}
 		this.augUI.swapGun(this.buttonList[this.getCurrentButton()].gID);
 		this.lockout = this.maxlockout;
-
-
 	}
 
 	scrollUp(){

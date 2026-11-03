@@ -46,6 +46,7 @@ export class AugmentSelectButton extends Button{
     onOver(pointer: Phaser.Input.Pointer, localX: number, localY: number, event: Phaser.Types.Input.EventData): void {
         this.sp.setFrame(1);
         this.bkg.setAlpha(1);
+        this.scene.sound.play("itemhover", {volume:0.75});
         this.owner.updateAugText(this.aug);
     }
 

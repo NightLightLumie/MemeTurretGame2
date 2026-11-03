@@ -137,14 +137,16 @@ export class SpellProjectile extends Missile{
                 this.v[0] *= 1200+k;
                 this.v[1] *= 1200+k;
                 let ct = Math.random();
-                if(ct < 0.25){
+                if(ct < 0.4){
                     ct = 2;
                     this.damageType = "spellcrit";
                     this.tags.push("crit");
+                } else {
+                    ct = 1;
                 }
                 this.damage = this.ref.fetchItemData()[0]*ct;
                 this.radius = 48;
-                this.pierce = 0;
+                this.pierce = 1;
                 this.effectName = "spellhitorange";
                 this.boom = false; 
                 break;

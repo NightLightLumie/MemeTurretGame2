@@ -1,5 +1,3 @@
-import { json } from "node:stream/consumers";
-
 export interface TextStyle {
 	fontFamily?: string;
 	x?: number;

@@ -202,6 +202,7 @@ const spritesheets: SpriteSheet[] = [
 
 	spritesheet("ui/aug_select_frame", "aug_select_frame", 200, 200),
 	spritesheet("ui/nxtscene", "nxtscene", 300, 200),
+	spritesheet("ui/sellbutton", "sellbutton", 160, 120),
 	spritesheet("items/boxlight", "boxlight", 720, 600),
 	spritesheet("anims/boneattack", "boneattack", 128, 128),
 	spritesheet("anims/lava", "lava", 256, 256),
@@ -259,6 +260,8 @@ const audios: Audio[] = [
 	sound('player/magicmissile', 'magicmissile', 0.5),
 	sound('player/expmag', 'expmag', 0.5),
 	sound('player/runethud', 'runethud', 0.5),
+	sound('player/arcanehit', 'arcanehit', 0.5),
+	sound('player/upaug', 'upaug', 0.5),
 
 	sound('tree/ufobullet_fire', 'ufobullet_fire', 0.5),
 

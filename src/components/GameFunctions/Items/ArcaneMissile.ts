@@ -10,7 +10,7 @@ import { MagicMissile } from "@/components/WeaponFunctions/MagicMissile";
 export class ArcaneMissile extends Item{
     private mode: number = 0;
     public damage: number = 350;
-    private shots: number = 0;
+    private shots: number = 1;
     constructor(scene: GameScene, p: Player, name: string, slot: number){
         super(scene, p, name, slot);
         this.tileType = "item_rd";
@@ -22,9 +22,9 @@ export class ArcaneMissile extends Item{
     levelUp(){
         if(this.level < this.maxLevel){
             this.level++;
-            this.damage += 30;
+            this.damage += 40;
             this.cooldown = this.cooldown/this.maxCD;
-            this.maxCD -= 200;
+            this.maxCD -= 250;
             this.cooldown *= this.maxCD;
         } else {
             console.log("Item already at max level.");
@@ -39,10 +39,22 @@ export class ArcaneMissile extends Item{
     shoot(){
         if(this.scene.closestTarget != null){
             //console.log("Shoot missile");
-            this.scene.addPlayerProjectile(new MagicMissile(this.scene,this.owner.x,this.owner.y,"arcaneshot",(-1*Math.PI)+(Math.random()*2*Math.PI),1,this.scene.closestTarget,this));
+            let ptw = Math.atan2(this.scene.closestTarget.y-this.owner.y, this.scene.closestTarget.x-this.owner.x);
+            let ofs = 2*Math.PI/3;
+            let val = 1;
+            if(Math.random()<0.5){
+                val *= -1;
+            }
+            for(let n = 0; n < this.shots; n++){
+                this.scene.addPlayerProjectile(new MagicMissile(this.scene,this.owner.x,this.owner.y,"arcaneshot",(-0.5*Math.PI)+ptw+(Math.random()*Math.PI)+((this.shots-1)*ofs*val),1.5,this.scene.closestTarget,this));
+            }
             this.cooldown = this.maxCD;
             this.scene.sound.play("magicmissile", {volume: 0.5});
             this.owner.bankedCasts++;
+            this.shots++;
+            if(this.shots > 3){
+                this.shots = 1;
+            }
         } else {
             //console.log("Null target");
         }

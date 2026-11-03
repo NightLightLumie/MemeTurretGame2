@@ -641,9 +641,9 @@ export class Player extends Phaser.GameObjects.Container {
 
 		// Animation (Change to this.sprite.setScale if needed)
 		const squish = 1.0 + 0.02 * Math.sin((6 * time) / 1000);
-		const hsquish = (1-this.shrink) + ((0.02*(1-this.shrink)) * Math.sin((18 * time) / 1000));
+		const hsquish = (1-this.shrink) + (0.02 * Math.sin((18 * time) / 1000));
 		this.sprite.setScale(squish, 1.0);
-		this.hbox.setScale(1,hsquish,);
+		this.hbox.setScale(1-this.shrink,hsquish,);
 
 	}
 

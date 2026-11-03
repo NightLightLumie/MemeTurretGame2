@@ -1,8 +1,9 @@
 import { GameScene } from "@/scenes/GameScene";
 import { Effect } from "./Effect";
+import { BaseScene } from "@/scenes/BaseScene";
 
 export class DamageText extends Effect{
-    public scene: GameScene;
+    public scene: BaseScene;
     public timer: number = 0;
     public maxTimer: number = 0;
     public myText: Phaser.GameObjects.Text;
@@ -23,7 +24,7 @@ export class DamageText extends Effect{
     private negative: number = -1;
     private amp: number = 1;
 
-    constructor(scene:GameScene, x: number, y: number, txt: string, mode: string, dh: number = 1) {
+    constructor(scene:BaseScene, x: number, y: number, txt: string, mode: string, dh: number = 1) {
         super(scene,x,y);
         this.scene = scene;
         let flash = false;
@@ -115,6 +116,12 @@ export class DamageText extends Effect{
                 color2 = "lime";
                 flash = false;
                 break;
+            } case "money": {
+                size = 80;
+                color1 = "yellow";
+                color2 = "yellow";
+                flash = false;
+                amplitude = 0;
             } default: {
                 break;
             }

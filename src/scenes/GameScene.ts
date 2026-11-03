@@ -16,7 +16,7 @@ import { LevelParser } from "@/components/GameFunctions/LevelParser";
 import { Levels } from "@/components/GameFunctions/Levels";
 import { Music } from "@/components/Music";
 import { MusicKey } from "@/components/MusicData";
-import { NextSceneButton } from "@/components/GameFunctions/NextSceneButton";
+import { NextSceneButton } from "@/components/Buttons/NextSceneButton";
 import { EnemyBullet } from "@/components/EnemyBullet";
 import { Ufo } from "@/components/Enemies/Ufo";
 import { Missile } from "@/components/WeaponFunctions/Missile";
@@ -892,6 +892,7 @@ export class GameScene extends BaseScene {
 	}
 
 	progress(){
+		this.masterData.money += this.score;
 		this.stageMusic.stop();
 		this.sound.stopAll();
 		this.addEvent(1050, () => {

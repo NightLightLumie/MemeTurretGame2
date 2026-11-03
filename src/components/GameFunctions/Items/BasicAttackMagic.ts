@@ -22,7 +22,7 @@ export class BasicAttackMagic extends Item{
             this.damage += 20;
             this.crit += 0.03;
             this.cooldown = this.cooldown/this.maxCD;
-            this.maxCD -= 300;
+            this.maxCD -= 400;
             this.cooldown *= this.maxCD;
         } else {
             console.log("Item already at max level.");

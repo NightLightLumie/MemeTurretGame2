@@ -24,16 +24,18 @@ export interface LootEntry{
 export class Armory {
     public wlist: WeaponSlot[]; // do not push
     public gunList: Map<number,WeaponEntry>;
+    public defaultGuns: Map<number,WeaponEntry>;
     public reference: GlobalVariables;
 
     
     constructor(ref: GlobalVariables) {
         this.reference = ref;
-        this.gunList = new Map([
+        this.defaultGuns = new Map([
             [-999999999 - 3, {gID: -999999999 - 3, wID: 0, augs: [], passives: this.reference.getGunPassives(0)}],
             [-999999999 - 2, {gID: -999999999 - 2, wID: 1, augs: [], passives: this.reference.getGunPassives(1)}],
             [-999999999 - 1, {gID: -999999999 - 1, wID: 2, augs: [], passives: this.reference.getGunPassives(2)}],//keep these three defaults the same
-
+        ])
+        this.gunList = new Map([
             [-999999999, {gID: -999999999, wID: 3, augs: [], passives: this.reference.getGunPassives(3)}],
             [-999999999 + 1, {gID: -999999999 + 1, wID: 4, augs: [], passives: this.reference.getGunPassives(4)}],
 
@@ -141,6 +143,9 @@ export class Armory {
     updateAug(id: number, index: number, ref: Augment){
         if(this.gunList.has(id)) {
             this.gunList.get(id)!.augs[index] = this.copyAug(ref);
+        } else if (this.defaultGuns.has(id)){
+            console.log("Warning: Augmenting default gun.")
+            this.defaultGuns.get(id)!.augs[index] = this.copyAug(ref);
         } else {
             console.log("INVALID GUN FETCH ID: " + id);
             return;
@@ -150,6 +155,8 @@ export class Armory {
     replaceAugs(id: number, index: number, ref: Augment[]){
         if(this.gunList.has(id)) {
             this.gunList.get(id)!.augs = this.copyAugList(ref);
+        } else if (this.defaultGuns.has(id)){
+            this.defaultGuns.get(id)!.augs = this.copyAugList(ref);
         } else {
             console.log("INVALID GUN FETCH ID: " + id);
             return;
@@ -162,6 +169,13 @@ export class Armory {
                 return this.copy(this.gunList.get(id)!);
             } else {
                 console.log("NULL ENTRY IN GUN LIST: " + id);
+                return {gID: -999999999, wID: 0, augs: [], passives: []};
+            }
+        } else if (this.defaultGuns.has(id)){
+            if(this.defaultGuns.get(id) != null){
+                return this.copy(this.defaultGuns.get(id)!);
+            } else {
+                console.log("NULL ENTRY IN DEFAULT GUN LIST: " + id);
                 return {gID: -999999999, wID: 0, augs: [], passives: []};
             }
         } else {

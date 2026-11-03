@@ -24,7 +24,7 @@ export class EnemyBullet extends Phaser.GameObjects.Container{
         this.diff = difficulty;
         this.v = [Math.cos(angle),Math.sin(angle)];
         this.vangle = angle;
-        console.log("BULLET ANGLE: " + this.angle);
+        //console.log("BULLET ANGLE: " + this.angle);
         this.setAngle(this.vangle*(180/Math.PI));
         this.mod = mod
         this.initiateParams();

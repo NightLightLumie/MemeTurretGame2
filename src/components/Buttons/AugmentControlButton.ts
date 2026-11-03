@@ -26,7 +26,6 @@ export class AugmentControlButton extends Button{
     }
 
     onDown(pointer: Phaser.Input.Pointer, localX: number, localY: number, event: Phaser.Types.Input.EventData): void {
-        this.scene.sound.play("scroll");
         this.trigger();
     }
 
@@ -35,6 +34,7 @@ export class AugmentControlButton extends Button{
             case "upgrade": {
                 if(this.internalCooldown[0] <= 0)
                 {
+                    this.scene.sound.play("upaug", {volume: 0.5});
                     this.owner.upgrade();
                 } else {
                     this.rest();
@@ -44,6 +44,7 @@ export class AugmentControlButton extends Button{
             } case "add": {
                 break;
             } case "close": {
+                this.scene.sound.play("scroll");
                 this.owner.closeUpgradeMode();
                 break;
             } default: {

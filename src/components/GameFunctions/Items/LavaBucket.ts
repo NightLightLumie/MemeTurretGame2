@@ -19,7 +19,8 @@ export class LavaBucket extends Item{
     levelUp(){
         if(this.level < this.maxLevel){
             this.level++;
-            this.damage += 25;
+            this.maxCD -= 1000;
+            this.damage += 75;
         }
     }
 

@@ -187,8 +187,7 @@ export class WeaponButton extends Button {
     teleportDown(n: number){
         this.dragging = false;
         if(!this.moving){
-            this.moving = true;
-            this.y -= n;
+            this.y += n;
             if(this.position == this.scene.curPos){
                 this.scene.select(this);
             }
@@ -198,8 +197,7 @@ export class WeaponButton extends Button {
     teleportUp(n: number){
         this.dragging = false;
         if(!this.moving){
-            this.moving = true;
-            this.y += n;
+            this.y -= n;
             if(this.position == this.scene.curPos){
                 this.scene.select(this);
             }

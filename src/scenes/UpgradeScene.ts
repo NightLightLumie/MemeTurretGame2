@@ -1,11 +1,11 @@
 import { BaseScene } from "@/scenes/BaseScene";
-import { Player } from "@/components/Player";
-import { UI } from "@/components/Graphics/UI";
-import { Armory } from "@/components/WeaponFunctions/Armory";
 import { GlobalVariables } from "@/components/GlobalVariables";
 import { WeaponButton } from "@/components/WeaponFunctions/WeaponButton";
 import { AugmentUI } from "@/components/WeaponFunctions/AugmentUI";
-import { NextSceneButton } from "@/components/GameFunctions/NextSceneButton";
+import { NextSceneButton } from "@/components/Buttons/NextSceneButton";
+import { SellButton } from "@/components/Buttons/SellButton";
+import { Effect } from "@/components/Graphics/Effect";
+import { DamageText } from "@/components/Graphics/DamageText";
 
 export class UpgradeScene extends BaseScene {
 	private background: Phaser.GameObjects.Image;
@@ -28,7 +28,11 @@ export class UpgradeScene extends BaseScene {
 	public pImage: Phaser.GameObjects.Image;
 	public sdImage: Phaser.GameObjects.Image;
 	public secImage: Phaser.GameObjects.Image;
+	public sellButton: SellButton;
 	public curPos: number = 0;
+
+	public gfx: Effect[];
+	public gfxLayer: Phaser.GameObjects.Container;
 
 	public dragGun: Phaser.GameObjects.Image;
 	public gunning: boolean = false;
@@ -68,6 +72,11 @@ export class UpgradeScene extends BaseScene {
 		this.background.setOrigin(0,0);
 		this.background.setScale(1);
 		this.background.setDepth(0);
+
+		this.gfx = [];
+		this.gfxLayer = new Phaser.GameObjects.Container(this,0,0);
+		this.add.existing(this.gfxLayer);
+		this.gfxLayer.setDepth(50);
 
 		this.nxt = new NextSceneButton(this, 1810, 1000);
 		this.nxt.veil();
@@ -148,7 +157,7 @@ export class UpgradeScene extends BaseScene {
 		this.dragGun.x = pointer.x;
 		this.dragGun.y = pointer.y;
 		this.flashlines.setAlpha(0.125+0.125*(1+Math.sin(time/500)));
-
+		this.updateEffects(time, delta);
 		if(this.wait[0] > 0){
 			this.wait[0] -= delta;
 			if(this.wait[0] <= 0){
@@ -167,6 +176,9 @@ export class UpgradeScene extends BaseScene {
 		if(this.lockout > 0) {
 			this.lockout -= delta;
 			if(this.lockout <= 0){
+				if(this.buttonList[this.getCurrentButton()].gID >= -999999999){
+					this.sellButton.unveil();
+				}
 				this.lockout = 0;
 			}
 		}
@@ -175,15 +187,24 @@ export class UpgradeScene extends BaseScene {
 	}
 
 	initButtons(){
+		this.sellButton = new SellButton(this,1280,758);
+		this.sellButton.setDepth(30);
 		this.buttonList = [];
-
 		let n = 0;
+		//load defaults first
+		for(let [k, v] of this.masterData.inv.defaultGuns) {
+			this.addButton(new WeaponButton(this,256,688+(256*n),v.wID,k,n));
+			n++;
+		}
 		for(let [k, v] of this.masterData.inv.gunList) {
 			this.addButton(new WeaponButton(this,256,688+(256*n),v.wID,k,n));
 			n++;
 		}
 		//256, 432
 		this.curPos = 0;
+		if(this.buttonList[0].gID < -999999999){
+			this.sellButton.hide();
+		}
 		/*
 		if(this.buttonList.length > 3){
 			this.buttonList[this.buttonList.length-1].y = (432-256);
@@ -202,33 +223,52 @@ export class UpgradeScene extends BaseScene {
 			console.log("Tried to sell default weapon.")
 			return;
 		}
+		let ps = this.masterData.inv.fetchGun(this.buttonList[ns].gID);
+		let val = 2000;
+		ps.augs.forEach((ag) => {
+			val += (500)+(ag.level*50);
+		})
+		let av = new DamageText(this,1280,758,"+" + val + "€","money");
+		this.gfx.push(av);
+		this.gfxLayer.add(av);
+		this.masterData.money += val;
 		this.cancelDrag();
 		this.removeButton(ns);
 		this.lockout = this.maxlockout;
+		ns = this.getCurrentButton();
+		this.augUI.swapGun(this.buttonList[ns].gID);
+		if(this.buttonList[ns].gID < -999999999){
+			this.sellButton.hide();
+		}
 	}
+
+	removeEquippedButton(){}
 	
 	removeButton(n: number){
 		if(n > this.buttonList.length){
 			console.log("Tried to remove nonexistent weapon button/index.");
 			return;
 		}
+		console.log("Selling position: " + this.curPos);
 
 		if(n < (this.buttonList.length-1)){
 			//if not the final element, move the rest of the list up and keep curpos the same
 			for(let pp = n+1; pp < this.buttonList.length; pp++){
-				this.buttonList[n].position--;
-				this.buttonList[n].teleportUp(256);
+				console.log("Moving button from position " + this.buttonList[pp].position + " to " + (this.buttonList[pp].position-1));
+				this.buttonList[pp].position--;
+				this.buttonList[pp].teleportUp(256);
 			}
 		} else if (n == (this.buttonList.length - 1)){
 			//if it IS the final element, move curpos up and the icons down
-			for(let px = 0; px < n; px++){
-				this.buttonList[n].teleportDown(256);
-			}
 			this.curPos--;
+			for(let px = 0; px < n; px++){
+				this.buttonList[px].teleportDown(256);
 		}
+
+		}
+		this.fixEquipped(this.buttonList[n]);
 		this.buttonList[n].destroy();
 		this.buttonList.splice(n,1);
-		this.augUI.swapGun(this.buttonList[this.getCurrentButton()].gID);
 	}
 
 	elevateButton(w: WeaponButton){
@@ -281,7 +321,13 @@ export class UpgradeScene extends BaseScene {
 			this.curPos = this.buttonList.length - 1;
 			return;
 		}
-		this.augUI.swapGun(this.buttonList[this.getCurrentButton()].gID);
+		let px = this.getCurrentButton();
+		if(this.buttonList[px].gID < -999999999){
+			this.sellButton.hide();
+		} else {
+			this.sellButton.veil();
+		}
+		this.augUI.swapGun(this.buttonList[px].gID);
 		this.lockout = this.maxlockout;
 	}
 
@@ -301,7 +347,13 @@ export class UpgradeScene extends BaseScene {
 			this.curPos = 0;
 			return;
 		}
-		this.augUI.swapGun(this.buttonList[this.getCurrentButton()].gID);
+		let px = this.getCurrentButton();
+		if(this.buttonList[px].gID < -999999999){
+			this.sellButton.hide();
+		} else {
+			this.sellButton.veil();
+		}
+		this.augUI.swapGun(this.buttonList[px].gID);
 		this.lockout = this.maxlockout;
 	}
 
@@ -443,6 +495,38 @@ export class UpgradeScene extends BaseScene {
 
 	}
 
+	fixEquipped(bt: WeaponButton){
+		bt.unequip();
+		this.sound.play("equip",{volume:0.75});
+		if(bt.gID == this.equippedButtons[0].gID){ //use default sidearm if sidearm
+			this.side = this.buttonList[0].gID;
+			this.sdImage.setTexture("gun_"+this.buttonList[0].wp.type);
+			this.equippedButtons[0] = this.buttonList[0];
+			this.buttonList[0].equip();
+		} else if(bt.gID == this.equippedButtons[1].gID){
+			let ns = 1;
+			if(this.equippedButtons[2].gID == this.buttonList[ns].gID){
+				ns = 2;
+			}
+			this.prim = this.buttonList[ns].gID;
+			this.pImage.setTexture("gun_"+this.buttonList[ns].wp.type);
+			this.equippedButtons[1] = this.buttonList[ns];
+			this.buttonList[ns].equip();
+		} else if (bt.gID == this.equippedButtons[2].gID){
+			let ns = 2;
+			if(this.equippedButtons[1].gID == this.buttonList[ns].gID){
+				ns = 1;
+			}
+			this.sec = this.buttonList[ns].gID;
+			this.secImage.setTexture("gun_"+this.buttonList[ns].wp.type);
+			this.equippedButtons[2] = this.buttonList[ns];
+			this.buttonList[ns].equip();
+		} else {
+			console.log("Button not equipped.");
+		}
+
+	}
+
 	cancelDrag(){
 		this.dragging = false;
 		this.dragGun.setTexture("blank");
@@ -463,6 +547,16 @@ export class UpgradeScene extends BaseScene {
 	gunToPosition(){
 		
 	}
+
+	updateEffects(t: number, d: number){
+		for(let h = (this.gfx.length-1); h >= 0; h--){
+			this.gfx[h].update(t, d);
+			if(this.gfx[h].deleteFlag) {
+				this.gfx[h].destroy();
+				this.gfx.splice(h,1);
+			}
+		}
+    }
 	
 	initTouchControls() {
 		this.input.addPointer(2);
@@ -512,6 +606,9 @@ export class UpgradeScene extends BaseScene {
 	}
 
 	finalizeWeaponSelection(){
+		console.log("Sidearm: " + this.equippedButtons[0].gID);
+		console.log("Primary: " + this.equippedButtons[1].gID);
+		console.log("Secondary: " + this.equippedButtons[2].gID);
 		this.masterData.equipLoadout(this.equippedButtons);	
 	}
 

@@ -20,7 +20,7 @@ export class RuneCircle extends Item{
     levelUp(){
         if(this.level < this.maxLevel){
             this.level++;
-            this.percent += 0.1;
+            this.percent += 0.2;
             this.cooldown = this.cooldown/this.maxCD;
             this.maxCD -= 200;
             this.cooldown *= this.maxCD;

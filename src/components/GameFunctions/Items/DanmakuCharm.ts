@@ -9,7 +9,7 @@ import { Target } from "@/components/Target";
 
 export class DanmakuCharm extends Item{
     private mode: number = 0;
-    public damage: number = 120;
+    public damage: number = 140;
     private shots: number = 16;
     constructor(scene: GameScene, p: Player, name: string, slot: number){
         super(scene, p, name, slot);
@@ -24,7 +24,7 @@ export class DanmakuCharm extends Item{
             this.level++;
             this.shots++;
             this.cooldown = this.cooldown/this.maxCD;
-            this.maxCD -= 600;
+            this.maxCD -= 650;
             this.cooldown *= this.maxCD;
         } else {
             console.log("Item already at max level.");

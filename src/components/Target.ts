@@ -247,7 +247,7 @@ export class Target extends Phaser.GameObjects.Container{
                         }
                         this.scene.addHitEffect(new BasicEffect(this.scene,"bad_fire",this.x,this.y-128,6,75,false,0,0,[a,1]));
                         this.takeTypedDamage({amt: this.maxHP*this.scene.player.smite, type: "smite", tags: ["smite", "truedamage"]}, [40,40]);
-                        this.scene.sound.play("bigfire", {volume:0.5});
+                        this.scene.sound.play("bigfire", {volume:0.75});
                         this.smited = true;
                     }
                 }
@@ -284,6 +284,8 @@ export class Target extends Phaser.GameObjects.Container{
                 this.scene.sound.play("execute", {volume:0.5});
                 this.scene.addHitEffect(new ScalingEffect(this.scene, this.x, this.y, "vibrator", 250, Math.random()*360,0,[0.01,2],[1,0]));
                 this.hp = 0;
+                this.scene.score += 10;
+
             }
         }
         if(this.totalBatchedDamage > (this.hp-(this.scene.player.execute*this.maxHP*this.damageScale))){

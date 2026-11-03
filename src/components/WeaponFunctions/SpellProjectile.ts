@@ -87,7 +87,7 @@ export class SpellProjectile extends Missile{
                 this.v[1] *= 2800+k;
                 this.damage = this.ref.fetchItemData()[0];
                 this.radius = 20;
-                this.pierce = 3;
+                this.pierce = 2;
                 this.effectName = "spellhitshadow";
                 this.boom = false; 
                 break;
@@ -97,8 +97,8 @@ export class SpellProjectile extends Missile{
                 this.v[1] *= 1800+k;
                 this.damage = this.ref.fetchItemData()[0]*0.8;
                 this.radius = 43;
-                this.pierce = 3;
-                this.effectName = "spellhitshadow";
+                this.pierce = -10;
+                this.effectName = "spellhitblue";
                 this.boom = false; 
                 break;
             } case "bigblue": {
@@ -109,7 +109,7 @@ export class SpellProjectile extends Missile{
                 this.hitScale = [2,2];
                 this.radius = 72;
                 this.pierce = 0;
-                this.effectName = "spellhitshadow";
+                this.effectName = "spellhitblue";
                 this.boom = false; 
                 break;
             } case "purplecard": {
@@ -118,7 +118,7 @@ export class SpellProjectile extends Missile{
                 this.v[1] *= 1500+k;
                 this.damage = this.ref.fetchItemData()[0];
                 this.radius = 38;
-                this.pierce = 1;
+                this.pierce = 3;
                 this.effectName = "spellhitshadow";
                 this.boom = false; 
                 break;
@@ -128,8 +128,8 @@ export class SpellProjectile extends Missile{
                 this.v[1] *= 1100+k;
                 this.damage = this.ref.fetchItemData()[0];
                 this.radius = 27;
-                this.pierce = 0;
-                this.effectName = "spellhitshadow";
+                this.pierce = 1;
+                this.effectName = "spellhitorange";
                 this.boom = false; 
                 break;
             } case "yellowknife": {
@@ -145,7 +145,7 @@ export class SpellProjectile extends Missile{
                 this.damage = this.ref.fetchItemData()[0]*ct;
                 this.radius = 48;
                 this.pierce = 0;
-                this.effectName = "spellhitshadow";
+                this.effectName = "spellhitorange";
                 this.boom = false; 
                 break;
             } default: {

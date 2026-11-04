@@ -477,6 +477,10 @@ export class GlobalVariables {
         return e;
     }
 
+    saveGame(){
+        
+    }
+
     swapLoadout(){
         
     }

@@ -25,19 +25,36 @@ export class Armory {
     public wlist: WeaponSlot[]; // do not push
     public gunList: Map<number,WeaponEntry>;
     public defaultGuns: Map<number,WeaponEntry>;
+
+    public templateGuns: Map<number,WeaponEntry>;
+    public soldGuns: Map<number, WeaponEntry>;
     public reference: GlobalVariables;
 
     
     constructor(ref: GlobalVariables) {
         this.reference = ref;
-        this.defaultGuns = new Map([
+        this.soldGuns = new Map();
+        this.templateGuns = new Map([
             [-999999999 - 3, {gID: -999999999 - 3, wID: 0, augs: [], passives: this.reference.getGunPassives(0)}],
             [-999999999 - 2, {gID: -999999999 - 2, wID: 1, augs: [], passives: this.reference.getGunPassives(1)}],
             [-999999999 - 1, {gID: -999999999 - 1, wID: 2, augs: [], passives: this.reference.getGunPassives(2)}],//keep these three defaults the same
-        ])
+        ]);
+
+        this.defaultGuns = new Map();
+        let nx = JSON.stringify(Array.from(this.templateGuns.values()));
+        let nb = JSON.stringify(Array.from(this.templateGuns.keys()));
+        let xbr = JSON.parse(nx);
+        let xby = JSON.parse(nb); 
+
+        for(let ix = 0; ix < xbr.length; ix++){
+            this.defaultGuns.set(xby[ix], xbr[ix]);
+        }
         this.gunList = new Map([
             [-999999999, {gID: -999999999, wID: 3, augs: [], passives: this.reference.getGunPassives(3)}],
-            [-999999999 + 1, {gID: -999999999 + 1, wID: 4, augs: [], passives: this.reference.getGunPassives(4)}],
+            [-999999999 + 1, {gID: -999999999 + 1, wID: 4, augs: [{name: "Impact", index: 1, level: 12, maxlv: 13, lvcap: 13, desc: "Increased base damage."},
+            {name: "Barrage", index: 2, level: 8, maxlv: 10, lvcap: 10, desc: "Increased rate of fire."},    
+            {name: "Penetrator", index: 9, level: 6, maxlv: 8, lvcap: 10, desc: "Increases penetration capability."},
+            {name: "default", index: 0, level: 0, maxlv: 10, lvcap: 10, desc: ""}], passives: this.reference.getGunPassives(4)}],
 
             /*
             [-999999995, {gID: -999999995, wID: 9, augs: [{name: "default", index: 0, level: 0, maxlv: 13, lvcap: 13, desc: ""},
@@ -52,8 +69,6 @@ export class Armory {
             [-999999993, {gID: -999999994, wID: 7, augs: [this.generateAugment(0,0,13,13), this.generateAugment(0,0,13,13), this.generateSpecialAugment(7,1,13,13), this.generateAugment(0,0,13,13), ], passives: this.reference.getGunPassives(7)}],
             */
         ]);
-
-
     }
     /*
         {name: "default", index: 0, level: 0, maxlv: 10, lvcap: 10, desc: ""},
@@ -182,15 +197,20 @@ export class Armory {
             console.log("INVALID GUN FETCH ID: " + id);
             return {gID: -999999999, wID: 0, augs: [], passives: []};
         }
-        /*
-        for(let n = 0; n < this.myGuns.length; n++){
-            if(this.myGuns[n].gID == id){
-                return this.copy(this.myGuns[n]);
+       
+    }
+
+    sellGun(id: number){
+        if(this.gunList.has(id)){
+            if(this.gunList.get(id) != null){
+                this.soldGuns.set(id,this.gunList.get(id)!)
+                this.gunList.delete(id);
+            } else {
+                console.log("ATTEMPTED TO SELL WITH NULL ENTRY IN GUN LIST: " + id);
             }
+        } else {
+            console.log("ATTEMPTED TO SELL WITH INVALID GUN FETCH ID: " + id);
         }
-        console.log("INVALID GUN FETCH ID: " + id);
-        return {gID: -999999999, wID: 0, augs: []};
-        */
        
     }
 
@@ -251,4 +271,5 @@ export class Armory {
         }
         return rt;
     }
+    
 }

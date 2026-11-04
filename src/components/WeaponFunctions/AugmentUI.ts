@@ -125,12 +125,14 @@ export class AugmentUI extends Phaser.GameObjects.Container{
                 this.swapScreen();
                 this.hideOtherBars(index);
                 this.augscreen.engageUpgradeMode(index);
+                this.scene.hideSellButton();
                 break;
             } case "add": {
                 this.scene.lockButtons();
                 this.swapScreen();
                 this.hideAllBars();
                 this.augscreen.engageAddMode(index);
+                this.scene.hideSellButton();
                 break;
             } default: {
                 break;
@@ -147,10 +149,12 @@ export class AugmentUI extends Phaser.GameObjects.Container{
                 this.refreshBars();
                 this.scene.unlockButtons();
                 this.gunJargon.xredraw(this.tempGun);
+                this.scene.unhideSellButton();
                 break;
             } case "add": {
                 this.refreshBars();
                 this.gunJargon.xredraw(this.tempGun);
+                this.scene.unhideSellButton();
                 break;
             } default: {
                 break;

@@ -136,7 +136,7 @@ export class UpgradeScene extends BaseScene {
 		this.p3 = new Phaser.Math.Vector2(1661,128);
 
 		this.augUI = new AugmentUI(this,0,0,this.buttonList[0].gID);
-		this.augUI.setDepth(20);
+		this.augUI.setDepth(99);
 
 		this.fade(false, 200, 0x000000);
 	}
@@ -234,6 +234,7 @@ export class UpgradeScene extends BaseScene {
 		this.masterData.money += val;
 		this.cancelDrag();
 		this.removeButton(ns);
+
 		this.lockout = this.maxlockout;
 		ns = this.getCurrentButton();
 		this.augUI.swapGun(this.buttonList[ns].gID);
@@ -267,6 +268,7 @@ export class UpgradeScene extends BaseScene {
 
 		}
 		this.fixEquipped(this.buttonList[n]);
+		this.masterData.inv.sellGun(this.buttonList[n].gID);
 		this.buttonList[n].destroy();
 		this.buttonList.splice(n,1);
 	}
@@ -542,6 +544,19 @@ export class UpgradeScene extends BaseScene {
 
 	fetchGun(i: number){
 		return this.masterData.inv.fetchGun(i);
+	}
+
+	hideSellButton(){
+		this.sellButton.hide();
+	}
+
+	unhideSellButton(){
+		let ps = this.getCurrentButton();
+		if(this.buttonList[ps].gID < -999999999){
+			this.sellButton.hide();
+		} else {
+			this.sellButton.unveil();
+		}
 	}
 
 	gunToPosition(){

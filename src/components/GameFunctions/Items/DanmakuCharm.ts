@@ -72,7 +72,7 @@ export class DanmakuCharm extends Item{
             }
         }
         this.cooldown += this.maxCD;
-        this.scene.sound.play("thshoot", {volume: 0.25});
+        this.scene.sound.play("thshoot", {volume: 0.5});
 
         /*
 

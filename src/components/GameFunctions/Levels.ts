@@ -73,8 +73,24 @@ LEVEL CODING GUIDE:
         {cmd: ["spawn", "ufo", "r"], args: [3,10,2500], cond: []},
         {cmd: ["waitEnemies"], args: [], cond: []},
         {cmd: ["wait"], args: [6000], cond: []},
-        {cmd: ["incDifficulty"], args: [20], cond: []},
-        {cmd: ["loop"], args: [0], cond: []},]
+        {cmd: ["incDifficulty"], args: [1], cond: []},
+        {cmd: ["spawn", "thug", "xx"], args: [3,2,500], cond: []},
+        {cmd: ["spawn", "ufo", "r"], args: [2,1,500], cond: []},
+        {cmd: ["waitEnemies"], args: [], cond: []},
+        {cmd: ["spawn", "thug", "xx"], args: [4,3,500], cond: []},
+        {cmd: ["spawn", "ufo", "r"], args: [2,1,500], cond: []},
+        {cmd: ["wait"], args: [5000], cond: []},
+        {cmd: ["spawn", "thug", "xx"], args: [4,5,500], cond: []},
+        {cmd: ["spawn", "ufo", "r"], args: [2,4,500], cond: []},
+        {cmd: ["waitEnemies"], args: [], cond: []},
+        {cmd: ["wait"], args: [2000], cond: []},
+        {cmd: ["spawn", "thug", "xx"], args: [4,3,500], cond: []},
+        {cmd: ["spawn", "ufo", "r"], args: [2,1,500], cond: []},
+        {cmd: ["wait"], args: [5000], cond: []},
+        {cmd: ["spawn", "thug", "xx"], args: [4,5,500], cond: []},
+        {cmd: ["spawn", "ufo", "r"], args: [2,4,500], cond: []},
+        {cmd: ["waitEnemies"], args: [], cond: []},
+        {cmd: ["loop"], args: [18], cond: []},]
     ];
 
     public scene: GameScene;

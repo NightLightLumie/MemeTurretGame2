@@ -52,8 +52,7 @@ export class Armory {
         this.gunList = new Map([
             [-999999999, {gID: -999999999, wID: 3, augs: [], passives: this.reference.getGunPassives(3)}],
             [-999999999 + 1, {gID: -999999999 + 1, wID: 4, augs: [{name: "Impact", index: 1, level: 12, maxlv: 13, lvcap: 13, desc: "Increased base damage."},
-            {name: "Barrage", index: 2, level: 8, maxlv: 10, lvcap: 10, desc: "Increased rate of fire."},    
-            {name: "Penetrator", index: 9, level: 6, maxlv: 8, lvcap: 10, desc: "Increases penetration capability."},
+            {name: "Barrage", index: 2, level: 7, maxlv: 7, lvcap: 8, desc: "Increased rate of fire."},    
             {name: "default", index: 0, level: 0, maxlv: 10, lvcap: 10, desc: ""}], passives: this.reference.getGunPassives(4)}],
 
             /*

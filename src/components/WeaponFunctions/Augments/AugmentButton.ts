@@ -1,6 +1,6 @@
 import { UpgradeScene } from "@/scenes/UpgradeScene";
-import { Button } from "./WeaponFunctions/Button";
-import { AugmentBar } from "./WeaponFunctions/AugmentBar";
+import { Button } from "../Button";
+import { AugmentBar } from "./AugmentBar";
 
 export class AugmentButton extends Button {
     public scene: UpgradeScene;
@@ -61,12 +61,17 @@ export class AugmentButton extends Button {
 
     passivate(){
         this.passive = true;
-        this.back.setInteractive(false);
+        this.back.removeInteractive();
     }
 
     unpassive(){
         this.passive = false;
-        this.back.setInteractive(true);
+        this.back.setInteractive();
+    }
+
+    deactivate(){
+        this.passive = true;
+        this.back.removeInteractive();
     }
 
     openScreen(){

@@ -76,6 +76,7 @@ const images: Image[] = [
 	image('ui/hud', 'hud'),
 	image('ui/panelred', 'panelred'),
 	image('ui/aug_lock', 'aug_lock'),
+	image('ui/aug_button_lock', 'aug_button_lock'),
 	image('ui/aug_select_back', 'aug_select_back'),
 
 	//item shop
@@ -199,6 +200,7 @@ const spritesheets: SpriteSheet[] = [
 
 	spritesheet("ui/upgradebtn", "upgradebtn", 400, 300),
 	spritesheet("ui/closeaugbtn", "closeaugbtn", 400, 300),	
+	spritesheet("ui/widgetbutton", "widgetbutton", 256, 256),	
 
 	spritesheet("ui/aug_select_frame", "aug_select_frame", 200, 200),
 	spritesheet("ui/nxtscene", "nxtscene", 300, 200),

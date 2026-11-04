@@ -1,8 +1,8 @@
 import { BaseScene } from "@/scenes/BaseScene";
 import { UpgradeScene } from "@/scenes/UpgradeScene";
 import { AugmentBar } from "./AugmentBar";
-import { WeaponEntry } from "./Armory";
-import { GunDataDisplay } from "./GunDataDisplay";
+import { WeaponEntry } from "../Armory";
+import { GunDataDisplay } from "../GunDataDisplay";
 import { AugmentScreen } from "./AugmentScreen";
 
 export class AugmentUI extends Phaser.GameObjects.Container{
@@ -14,7 +14,12 @@ export class AugmentUI extends Phaser.GameObjects.Container{
     private fill: Phaser.GameObjects.Container;
     public scene:UpgradeScene;
 
-    private augBars: AugmentBar[];
+    public augBars: AugmentBar[];
+    private tempBars: AugmentBar[];
+
+    public static defX: number = 960;
+    public static defY: number = 840;
+    public static defOfs: number = 68;
 
     private curGun: number;
     public tempGun: WeaponEntry;
@@ -108,7 +113,20 @@ export class AugmentUI extends Phaser.GameObjects.Container{
         }
     }
 
+    roll(n: number, chance: number): [number, boolean]{
+        let consumed = 0;
+        for(let ct = 0; ct < n; ct++){
+            consumed++; 
+            if(Math.random() < chance){
+                return [consumed, true];
+            }
+        }
+        return [n, false];
+    }
 
+    displayBreak(n: number){
+
+    }
 
     swapGun(id: number){
         this.curGun = id;
@@ -118,21 +136,25 @@ export class AugmentUI extends Phaser.GameObjects.Container{
         this.initBars();
     }
 
-    openAugScreen(mode: string, index: number){
+    openAugScreen(mode: string, index: number = 0){
         switch (mode){
             case "upgrade": {
                 this.scene.lockButtons();
                 this.swapScreen();
                 this.hideOtherBars(index);
                 this.augscreen.engageUpgradeMode(index);
-                this.scene.hideSellButton();
                 break;
             } case "add": {
                 this.scene.lockButtons();
                 this.swapScreen();
                 this.hideAllBars();
                 this.augscreen.engageAddMode(index);
-                this.scene.hideSellButton();
+                break;
+            } case "widget": {
+                this.scene.lockButtons();
+                this.swapScreen();
+                this.lockAndShiftBars();
+                this.augscreen.engageMacguffinMode();
                 break;
             } default: {
                 break;
@@ -190,10 +212,20 @@ export class AugmentUI extends Phaser.GameObjects.Container{
         }
     }
 
-    hideAllBars(){
+    hideAllBars(hide: boolean = true){
         for(let ii = 0; ii < this.augBars.length; ii++){
             this.augBars[ii].passivate();
-            this.augBars[ii].setVisible(false);
+            if(hide){
+                this.augBars[ii].setVisible(false);
+            }
+        }
+    }
+
+    lockAndShiftBars(){
+            for(let ii = 0; ii < this.augBars.length; ii++){
+                this.augBars[ii].passivate();
+                this.augBars[ii].x += AugmentScreen.offX;
+                this.augBars[ii].y += AugmentScreen.offY;
         }
     }
 

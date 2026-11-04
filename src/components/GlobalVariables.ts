@@ -21,7 +21,7 @@ export class GlobalVariables {
     public maxAugLevel: number = 10;
     public boxCount: number = 0;
     public money: number = 0;
-    public widgets: number = 0;
+    public widgets: number = 99;
 
     public defaultItem: ItemParams = {id: -999, name: "default", spr: ["itemtile", "itemtile"], curLevel:0, maxLevel:10, desc:"DEFAULT", upgradeDesc: "DEFAULT"};
 
@@ -109,7 +109,7 @@ export class GlobalVariables {
         {name: "Critical Eye", index: 11, level: 0, maxlv: 10, lvcap: 10, desc: "Additional base critical hit chance. +2.5% per upgrade."}, //Crit chance, +2.5% each
         
         {name: "Merciless", index: 12, level: 0, maxlv: 10, lvcap: 10, desc: "Increased total critical hit damage. +6% per upgrade."}, //Crit damage, +10% each
-        {name: "Trickshot", index: 13, level: 0, maxlv: 10, lvcap: 10, desc: "Additional direct hit chance. +10% per upgrade"}, //Direct shot (+25% dmg) chance, +1% each
+        {name: "Trickshot", index: 13, level: 0, maxlv: 10, lvcap: 10, desc: "Additional direct hit (+25% dmg) chance. +10% per upgrade"}, //Direct shot (+25% dmg) chance, +1% each
         {name: "Focus", index: 14, level: 0, maxlv: 10, lvcap: 10, desc: "Increased special shot recharge rate. +10% per upgrade."}, //Special ammo recharge rate and RoF, +10% each
         {name: "Tactician", index: 15, level: 0, maxlv: 10, lvcap: 10, desc: "Increased special shot damage. + 15% per upgrade."}, //Special ammo damage, +10% each
         

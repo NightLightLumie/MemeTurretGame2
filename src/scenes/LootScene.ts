@@ -1,7 +1,7 @@
 import { GlobalVariables } from "@/components/GlobalVariables";
 import { BaseScene } from "./BaseScene";
 import { Lootbox } from "@/components/WeaponFunctions/Lootbox";
-import { AugmentDisplayBar } from "@/components/WeaponFunctions/AugmentDisplayBar";
+import { AugmentDisplayBar } from "@/components/WeaponFunctions/Augments/AugmentDisplayBar";
 import { WeaponEntry } from "@/components/WeaponFunctions/Armory";
 import { Music } from "@/components/Music";
 import { Effect } from "@/components/Graphics/Effect";

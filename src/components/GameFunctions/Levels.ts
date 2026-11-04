@@ -73,7 +73,7 @@ LEVEL CODING GUIDE:
         {cmd: ["spawn", "ufo", "r"], args: [3,10,2500], cond: []},
         {cmd: ["waitEnemies"], args: [], cond: []},
         {cmd: ["wait"], args: [6000], cond: []},
-        {cmd: ["incDifficulty"], args: [1], cond: []},
+        {cmd: ["incDifficulty"], args: [2], cond: []},
         {cmd: ["spawn", "thug", "xx"], args: [3,2,500], cond: []},
         {cmd: ["spawn", "ufo", "r"], args: [2,1,500], cond: []},
         {cmd: ["waitEnemies"], args: [], cond: []},

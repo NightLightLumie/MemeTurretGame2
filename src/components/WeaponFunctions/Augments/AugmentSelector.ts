@@ -1,5 +1,5 @@
 import { UpgradeScene } from "@/scenes/UpgradeScene";
-import { Button } from "./Button";
+import { Button } from "../Button";
 
 export class AugmentSelector extends Button{
     public scene: UpgradeScene;

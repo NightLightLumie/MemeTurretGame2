@@ -1,6 +1,6 @@
 import { UpgradeScene } from "@/scenes/UpgradeScene";
-import { AugmentButton } from "../AugmentButton";
-import { Augment } from "./Weapon";
+import { AugmentButton } from "./AugmentButton";
+import { Augment } from "../Weapon";
 import { AugmentUI } from "./AugmentUI";
 
 export class AugmentBar extends Phaser.GameObjects.Container{
@@ -8,11 +8,14 @@ export class AugmentBar extends Phaser.GameObjects.Container{
     public augbutton: AugmentButton;
     public ref: Augment;
     public bars: Phaser.GameObjects.Sprite[];
+    public static begin: number = -268;
+    public static offset: number = 52;
     private st: number = -268;
     private ofs: number = 52;
     private index: number = 0;
     private owner: AugmentUI;
     private originalPos: number[];
+    private overAugMode: boolean;
     constructor(scene:UpgradeScene, own: AugmentUI, x:number,y:number, aug: Augment, index: number = 0){
         super(scene,x,y);
         this.owner = own;
@@ -24,7 +27,12 @@ export class AugmentBar extends Phaser.GameObjects.Container{
         this.augbutton.load(this.ref.index)
         this.add(this.augbutton);
         this.bars = [];
+        this.overAugMode = false;
         this.fillBar();
+    }
+
+    getLength(): number{
+        return this.bars.length;
     }
 
     activate(){
@@ -75,7 +83,47 @@ export class AugmentBar extends Phaser.GameObjects.Container{
         }
     }
 
+    flashBar(p: number){
+        this.bars[p].setFrame(0);
+        this.bars[p].setAlpha(0.35);
+    }
+
+    unflashBar(p: number){
+        if(p < this.ref.level) {
+            this.bars[p].setFrame(1)
+        } else if (p < this.ref.maxlv) {
+            this.bars[p].setFrame(0);
+        } else {
+            this.bars[p].setFrame(2);
+        }
+        this.bars[p].setAlpha(1);
+    }
+
+    shade(){
+        this.setAlpha(0.5);
+    }
+
+    unshade(){
+        this.setAlpha(1);
+    }
+
+    engageOverAugMode(){
+
+    }
+
+    lockOverAugMode(){
+    }
+
+    onOver(){
+
+    }
+
+    onDown(){
+        
+    }
+
     redraw(){
+        this.bars.forEach((bb) => bb.destroy());
         this.bars = [];
         for(let i = 0; i < this.ref.lvcap; i++){
             if(i >= this.bars.length) { //if we didn't already print a bar, do so now
@@ -86,7 +134,6 @@ export class AugmentBar extends Phaser.GameObjects.Container{
                 }
             }
 
-            
             if(i < this.ref.level) {
                 this.bars[i].setFrame(1)
             } else if (i < this.ref.maxlv) {
@@ -95,7 +142,8 @@ export class AugmentBar extends Phaser.GameObjects.Container{
                 this.bars[i].setFrame(2);
             }
 
-            
+            this.add(this.bars[i]);
+   
         }
     }
 

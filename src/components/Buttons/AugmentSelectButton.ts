@@ -2,7 +2,7 @@ import { UpgradeScene } from "@/scenes/UpgradeScene";
 import { Button } from "../WeaponFunctions/Button";
 import { image } from "@/assets/util";
 import { BaseScene } from "@/scenes/BaseScene";
-import { AugmentScreen } from "../WeaponFunctions/AugmentScreen";
+import { AugmentScreen } from "../WeaponFunctions/Augments/AugmentScreen";
 import { Augment } from "../WeaponFunctions/Weapon";
 
 export class AugmentSelectButton extends Button{

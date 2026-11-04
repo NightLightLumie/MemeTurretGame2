@@ -1,11 +1,12 @@
 import { BaseScene } from "@/scenes/BaseScene";
 import { GlobalVariables } from "@/components/GlobalVariables";
 import { WeaponButton } from "@/components/WeaponFunctions/WeaponButton";
-import { AugmentUI } from "@/components/WeaponFunctions/AugmentUI";
+import { AugmentUI } from "@/components/WeaponFunctions/Augments/AugmentUI";
 import { NextSceneButton } from "@/components/Buttons/NextSceneButton";
 import { SellButton } from "@/components/Buttons/SellButton";
 import { Effect } from "@/components/Graphics/Effect";
 import { DamageText } from "@/components/Graphics/DamageText";
+import { WidgetButton } from "@/components/Buttons/WidgetButton";
 
 export class UpgradeScene extends BaseScene {
 	private background: Phaser.GameObjects.Image;
@@ -29,6 +30,7 @@ export class UpgradeScene extends BaseScene {
 	public sdImage: Phaser.GameObjects.Image;
 	public secImage: Phaser.GameObjects.Image;
 	public sellButton: SellButton;
+	public widgetButton: WidgetButton;
 	public curPos: number = 0;
 
 	public gfx: Effect[];
@@ -179,6 +181,7 @@ export class UpgradeScene extends BaseScene {
 				if(this.buttonList[this.getCurrentButton()].gID >= -999999999){
 					this.sellButton.unveil();
 				}
+				this.widgetButton.unveil();
 				this.lockout = 0;
 			}
 		}
@@ -189,6 +192,8 @@ export class UpgradeScene extends BaseScene {
 	initButtons(){
 		this.sellButton = new SellButton(this,1280,758);
 		this.sellButton.setDepth(30);
+		this.widgetButton = new WidgetButton(this,140,140);
+		this.widgetButton.setDepth(30);
 		this.buttonList = [];
 		let n = 0;
 		//load defaults first
@@ -299,6 +304,7 @@ export class UpgradeScene extends BaseScene {
 		this.buttonList.forEach((r)=> {
 			r.lock();
 		});
+		this.hideSellButton();
 	}
 
 	unlockButtons(){
@@ -329,6 +335,7 @@ export class UpgradeScene extends BaseScene {
 		} else {
 			this.sellButton.veil();
 		}
+		this.widgetButton.veil();
 		this.augUI.swapGun(this.buttonList[px].gID);
 		this.lockout = this.maxlockout;
 	}
@@ -355,6 +362,7 @@ export class UpgradeScene extends BaseScene {
 		} else {
 			this.sellButton.veil();
 		}
+		this.widgetButton.veil();
 		this.augUI.swapGun(this.buttonList[px].gID);
 		this.lockout = this.maxlockout;
 	}
@@ -557,6 +565,12 @@ export class UpgradeScene extends BaseScene {
 		} else {
 			this.sellButton.unveil();
 		}
+	}
+
+	hideWidgetButton(){}
+
+	openMacguffinMode(){
+		this.augUI.openAugScreen("widget");
 	}
 
 	gunToPosition(){

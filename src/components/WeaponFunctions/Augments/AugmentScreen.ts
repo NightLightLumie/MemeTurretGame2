@@ -179,6 +179,7 @@ export class AugmentScreen extends Phaser.GameObjects.Container{
         this.widgetDisp.setVisible(true);
         this.ovrAugTxt.setVisible(true);
         this.drawOverAugButtons();
+        this.bkg.setTexture("corebkg");
         this.drawTempBars();
     }
 
@@ -226,9 +227,19 @@ export class AugmentScreen extends Phaser.GameObjects.Container{
         this.chanceTxt.setY(AugmentUI.defY+AugmentScreen.offY);
     }
 
+    resetAugWidgetButtons(){
+        this.overAugBtns.forEach((ob) => ob.destroy());
+        this.overAugBtns = [];
+        this.tempBars.forEach((tb) => tb.destroy());
+        this.tempBars = [];
+        this.hideChance();
+        this.drawOverAugButtons();
+        this.drawTempBars();
+    }
+
     drawOverAugButtons(){
         for(let n = 0; n < this.owner.augBars.length; n++){
-            if(this.owner.augBars[n].length >= 13){
+            if(this.owner.augBars[n].ref.maxlv >= 13){
                 this.owner.augBars[n].shade();
             } else {
                 let bkg = new OverAugButton(this.scene,AugmentUI.defX+AugmentScreen.offX, AugmentUI.defY+AugmentScreen.offY+n*AugmentUI.defOfs,n,this.owner.augBars[n].getLength(), this);
@@ -372,5 +383,19 @@ export class AugmentScreen extends Phaser.GameObjects.Container{
             this.buttons.push(new AugmentSelector(this.scene,210+(t*300),140+(iy*300),s));
             this.add(this.buttons[s-1]);
         }
+    }
+
+    addAugmentSlot(p: number){
+        console.log("Adding new augment slot");
+        this.owner.addNewAug(p);
+        this.owner.redrawBarsWithOffset(AugmentScreen.offX, AugmentScreen.offY);
+        this.resetAugWidgetButtons();
+    }
+
+    increaseAugmentCap(p: number){
+        console.log("Increasing augment cap");
+        this.owner.augCapPlus(p);
+        this.owner.redrawBarsWithOffset(AugmentScreen.offX, AugmentScreen.offY);
+        this.resetAugWidgetButtons();
     }
 }

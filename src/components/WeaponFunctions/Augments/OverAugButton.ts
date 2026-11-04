@@ -44,6 +44,7 @@ export class OverAugButton extends Button{
         if(this.lockout){
             return;
         }
+        this.process();
         /*
         this.sp.setFrame(0);
         this.scene.sound.play("scroll");
@@ -57,9 +58,6 @@ export class OverAugButton extends Button{
     }
 
     onOver(pointer: Phaser.Input.Pointer, localX: number, localY: number, event: Phaser.Types.Input.EventData): void {
-        if(this.lockout){
-            return;
-        }
         if(this.maxLen > 0){
             if(this.maxLen < this.ref.owner.augBars[this.pos].ref.lvcap){
                 this.ref.owner.augBars[this.pos].flashBar(this.maxLen);
@@ -71,9 +69,6 @@ export class OverAugButton extends Button{
     }
 
     onOut(pointer: Phaser.Input.Pointer, event: Phaser.Types.Input.EventData): void {
-        if(this.lockout){
-            return;
-        }
         if(this.maxLen > 0){
             if(this.maxLen < this.ref.owner.augBars[this.pos].ref.lvcap){
                 this.ref.owner.augBars[this.pos].unflashBar(this.maxLen);
@@ -113,6 +108,14 @@ export class OverAugButton extends Button{
         this.sp.setInteractive();
         this.setInteractive();
         this.lockout = false;
+    }
+
+    process(){
+        if(this.maxLen < 0){
+            this.ref.addAugmentSlot(this.pos);
+        } else {
+            this.ref.increaseAugmentCap(this.pos);
+        }
     }
 
 }

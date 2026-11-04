@@ -95,6 +95,20 @@ export class AugmentUI extends Phaser.GameObjects.Container{
         }
     }
 
+    redrawBarsWithOffset(x: number, y: number){
+        this.augBars.forEach((ab) => ab.destroy());
+        this.augBars = [];
+        console.log("CUR GUN: " + this.tempGun.augs);
+        for(let n = 0; n < this.tempGun.augs.length; n++){
+            let ab = new AugmentBar(this.scene,this,960,840+(n*68),this.tempGun.augs[n],n);
+            ab.x += x;
+            ab.y += y;
+            this.augBars.push(ab);
+            this.dispBars.add(this.augBars[n]);
+            console.log("Adding bar for: " + this.tempGun.augs[n]);
+        }
+    }
+
     loadGun(){
         this.tempGun = this.scene.fetchGun(this.curGun);
 		//the ONLY thing that should change dynamically about the gun in the upgrade scene should be the augments
@@ -227,6 +241,30 @@ export class AugmentUI extends Phaser.GameObjects.Container{
                 this.augBars[ii].x += AugmentScreen.offX;
                 this.augBars[ii].y += AugmentScreen.offY;
         }
+    }
+
+    augCapPlus(p: number){
+        if(this.tempGun.augs[p].maxlv < this.tempGun.augs[p].lvcap){
+            this.tempGun.augs[p].maxlv ++;
+        } else {
+            if(this.tempGun.augs[p].lvcap < 10){
+                this.tempGun.augs[p].lvcap = 10;
+                this.tempGun.augs[p].maxlv++;
+            } else if (this.tempGun.augs[p].lvcap < 13){
+                this.tempGun.augs[p].lvcap = 13;
+                this.tempGun.augs[p].maxlv++;
+            } else {
+                console.log("Tried to increase level cap past max");
+            }
+        }
+        this.finalizeAugments();
+    }
+
+    addNewAug(p: number){
+        if(this.tempGun.augs.length < 4){
+            this.tempGun.augs.push({name: "default", index: 0, level: 0, maxlv: 1, lvcap: 10, desc: ""});
+        }
+        this.finalizeAugments();
     }
 
     finalizeAugments(){

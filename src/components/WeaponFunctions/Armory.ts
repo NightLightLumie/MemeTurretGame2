@@ -237,14 +237,7 @@ export class Armory {
     }
 
     copyAug(a: Augment): Augment{
-        return {
-           name: a.name,
-           index: a.index,
-           level: a.level,
-           maxlv: a.maxlv,
-           lvcap: a.lvcap,
-           desc: a.desc, 
-        }
+        return structuredClone(a);
     }
 
     copyAugList(a: Augment[]): Augment[]{

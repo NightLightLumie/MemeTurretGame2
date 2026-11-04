@@ -8,6 +8,7 @@ const images: Image[] = [
 	image('backgrounds/placeholderbkg', 'tempbkg'),
 	image('backgrounds/upgradebkg', 'upgradebkg'),
 	image('backgrounds/augbkg', 'augbkg'),
+	image('backgrounds/corebkg', 'corebkg'),
 	image('backgrounds/lootbkg', 'lootbkg'),
 	image('backgrounds/upgradeoverlay', 'upgradeoverlay'),
 	image('backgrounds/bottombar', 'bottombar'),

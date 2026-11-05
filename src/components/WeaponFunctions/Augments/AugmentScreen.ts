@@ -282,7 +282,7 @@ export class AugmentScreen extends Phaser.GameObjects.Container{
         this.scene.sound.play("suck", {volume: 0.75});
         this.animpause = [1500,1500];
         this.waiting = true;
-        this.scene.addEffect(new ExpandEffect(this.scene, this.widgetDisp.x, this.widgetDisp.y, "nova", 1000, Math.random()*360, 120, [2,0], [1,0]));
+        this.scene.addEffect(new ExpandEffect(this.scene, this.widgetDisp.x, this.widgetDisp.y, "nova", 1000, Math.random()*360, 120, [2,2], [1,0], [1,0]));
     }
 
     executeRoll(c: number, b: boolean){

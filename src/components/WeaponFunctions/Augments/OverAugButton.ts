@@ -175,14 +175,14 @@ export class OverAugButton extends Button{
     process(){
         if(this.maxLen < 0){
             let bx = this.basePos[0]+AugmentBar.begin-32+6+(AugmentBar.offset*(1))-(AugmentBar.offset/2);
-            this.ref.scene.addEffect(new ExpandEffect(this.scene,bx,this.basePos[1],"augboxwhite",500,0,0,[1,20],[0.35,0]));
-            this.ref.scene.addEffect(new ExpandEffect(this.scene,bx,this.basePos[1],"augboxwhite",500,0,0,[1,10],[0.75,0]));
+            this.ref.scene.addEffect(new ExpandEffect(this.scene,bx,this.basePos[1],"augboxwhite",500,0,0,[1,1],[1,20],[0.35,0]));
+            this.ref.scene.addEffect(new ExpandEffect(this.scene,bx,this.basePos[1],"augboxwhite",500,0,0,[1,1],[1,10],[0.75,0]));
             this.ref.addAugmentSlot(this.pos);
 
         } else {
             let bx = this.basePos[0]+AugmentBar.begin-32+6+(AugmentBar.offset*(this.maxLen+1))-(AugmentBar.offset/2);
-            this.ref.scene.addEffect(new ExpandEffect(this.scene,bx,this.basePos[1],"augboxwhite",500,0,0,[1,20],[0.35,0]));
-            this.ref.scene.addEffect(new ExpandEffect(this.scene,bx,this.basePos[1],"augboxwhite",500,0,0,[1,10],[0.75,0]));
+            this.ref.scene.addEffect(new ExpandEffect(this.scene,bx,this.basePos[1],"augboxwhite",500,0,0,[1,1],[1,20],[0.35,0]));
+            this.ref.scene.addEffect(new ExpandEffect(this.scene,bx,this.basePos[1],"augboxwhite",500,0,0,[1,1],[1,10],[0.75,0]));
             this.ref.increaseAugmentCap(this.pos);
         }
     }

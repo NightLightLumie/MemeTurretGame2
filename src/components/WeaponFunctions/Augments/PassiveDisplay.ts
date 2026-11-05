@@ -15,7 +15,8 @@ export class PassiveDisplay extends Button{
     public stopped: boolean;
     public dpos: number;
     private primed: boolean;
-    private storedchance: number;
+    private storedamt: number;
+    private success: boolean;
     constructor(scene: UpgradeScene, x: number, y: number, ps: PassiveAbility, myref: AugmentScreen, dpos: number = 0){
         super(scene, x, y);
         this.scene = scene;
@@ -41,7 +42,7 @@ export class PassiveDisplay extends Button{
         this.myTxt.setOrigin(0.5,0.5);
 
         this.primed = false;
-        this.storedchance = 0;
+        this.storedamt = 0;
         this.lockout = false;
         this.softlock = false;
         this.adjustBack();
@@ -59,17 +60,29 @@ export class PassiveDisplay extends Button{
         this.sp.setScale((24+this.myTxt.width)/256,2);
     }
 
+    process(){
+        this.pdata.activated = true;
+        this.ref.unlockPassive(this.pdata);
+        this.myTxt.setText("-" + this.pdata.name + "-");
+        this.sp.setAlpha(0.35);
+        this.adjustBack();
+        this.sp.clearTint();
+        this.veil();
+        this.stopped = true;
+    }
+
     onDown(pointer: Phaser.Input.Pointer, localX: number, localY: number, event: Phaser.Types.Input.EventData): void {
-        if(this.lockout || this.stopped){
+        if(this.lockout || this.stopped || this.softlock){
             return;
         } else {
-            this.pdata.activated = true;
-            this.ref.unlockPassive(this.pdata);
-            this.myTxt.setText("-" + this.pdata.name + "-");
-            this.sp.setAlpha(0.35);
-            this.adjustBack();
-            this.veil();
-            this.stopped = true;
+            this.lock();
+            this.primed = true;
+            let px = this.ref.owner.roll(this.scene.masterData.widgets,this.ref.getPsvChance());
+            this.storedamt = px[0];
+            this.success = px[1];
+            this.sp.setTint(0xFF57CD);
+            //console.log("Amount consumed: " + this.storedamt);
+            this.ref.signalRoll(this.storedamt);
         }
     }
 

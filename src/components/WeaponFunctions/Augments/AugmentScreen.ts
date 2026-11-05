@@ -8,6 +8,11 @@ import { OverAugButton } from "./OverAugButton";
 import { TempBar } from "./TempBar";
 import { WidgetDisplay } from "./WidgetDisplay";
 import { AugmentBar } from "./AugmentBar";
+import { PassiveDisplay } from "./PassiveDisplay";
+import { PassiveAbility } from "../Armory";
+import { BasicEffect } from "@/components/Graphics/BasicEffect";
+import { ExpandEffect } from "@/components/Graphics/ExpandEffect";
+import { DamageText } from "@/components/Graphics/DamageText";
 
 
 
@@ -22,6 +27,7 @@ export class AugmentScreen extends Phaser.GameObjects.Container{
     public ovrAugLayer: Phaser.GameObjects.Container;
     public tempBarLayer: Phaser.GameObjects.Container;
     public tempBars: TempBar[];
+    public psvBars: PassiveDisplay[];
     public augbtnlist: AugmentSelectButton[];
     private widgetDisp: WidgetDisplay;
 
@@ -31,7 +37,10 @@ export class AugmentScreen extends Phaser.GameObjects.Container{
     public augButtons: Phaser.GameObjects.Container;
     public ovrAugTxt: Phaser.GameObjects.Text;
     public chanceTxt: Phaser.GameObjects.Text;
+    public ovrPassTxt: Phaser.GameObjects.Text;
 
+    public animpause: number[];
+    public waiting: boolean;
 
     public overAugBtns: OverAugButton[];
     public curMode: string = "upgrade";
@@ -47,6 +56,9 @@ export class AugmentScreen extends Phaser.GameObjects.Container{
         this.scene = scene;
         this.owner = own;
         this.augbtnlist = [];
+
+        this.animpause = [0,1000];
+        this.waiting = false;
 
         this.bkg = this.scene.add.image(0, 0, "augbkg");
         this.add(this.bkg);
@@ -83,6 +95,7 @@ export class AugmentScreen extends Phaser.GameObjects.Container{
     initWidgetDisplayGfx(){
         this.overAugBtns = [];
         this.tempBars = [];
+        this.psvBars = [];
         this.ovrAugLayer = this.scene.add.container(0,0);
         this.add(this.ovrAugLayer);
         this.ovrAugLayer.setDepth(35);
@@ -100,7 +113,15 @@ export class AugmentScreen extends Phaser.GameObjects.Container{
 			y: AugmentUI.defY+AugmentScreen.offY - 80,
 			size: 30,
 			color: "white",
-			text: "Increase augmentation cap or add an augment slot.",
+			text: "Increase augment cap or add an augment slot:",
+		});
+
+        this.ovrPassTxt = this.scene.addText({
+			x: AugmentUI.defX+AugmentScreen.offX-32,
+			y: AugmentUI.defY+AugmentScreen.offY - 600,
+			size: 30,
+			color: "white",
+			text: "Unlock a passive ability:",
 		});
 
         this.chanceTxt = this.scene.addText({
@@ -112,10 +133,14 @@ export class AugmentScreen extends Phaser.GameObjects.Container{
 		});
         this.ovrAugTxt.setOrigin(0.5,0.5);
         this.chanceTxt.setOrigin(1,0.5);
+        this.ovrPassTxt.setOrigin(0.5,0.5);
         this.add(this.ovrAugTxt);
         this.ovrAugTxt.setDepth(45);
         this.add(this.chanceTxt);
         this.chanceTxt.setDepth(42);
+        this.add(this.ovrPassTxt);
+        this.ovrPassTxt.setDepth(45);
+        this.ovrPassTxt.setVisible(false);
         this.ovrAugTxt.setVisible(false);
         this.chanceTxt.setVisible(false);
     }
@@ -131,6 +156,17 @@ export class AugmentScreen extends Phaser.GameObjects.Container{
     update(t: number, d: number){
         this.closebtn.update(t, d);
         this.upbtn.update(t, d);
+        if(this.animpause[0] > 0){
+            this.animpause[0] -= d;
+            if(this.animpause[0] <= 0){
+                this.animpause[0] = 0;
+                this.waiting = false;
+            }
+        }
+        if(this.curMode == "macguffin"){
+            this.overAugBtns.forEach ((ob) => ob.update(t,d));
+            this.psvBars.forEach((ps) => ps.update(t,d));
+        }
     }
 
     replaceEmptyAugment(ag: Augment){
@@ -177,15 +213,112 @@ export class AugmentScreen extends Phaser.GameObjects.Container{
         this.upbtn.veil();
         this.closebtn.veil();
         this.widgetDisp.setVisible(true);
+        this.widgetDisp.updateCount();
         this.ovrAugTxt.setVisible(true);
+        this.ovrPassTxt.setVisible(true);
         this.drawOverAugButtons();
         this.bkg.setTexture("corebkg");
         this.drawTempBars();
+        this.drawPassiveButtons();
+        this.checkOverAugs();
+        this.checkPassives();
+
+    }
+
+    checkOverAugs(){
+        let maxed = true;
+        let adj = false;
+        if(this.owner.tempGun.augs.length < 4){
+            maxed = false;
+        }
+        this.owner.tempGun.augs.forEach((ag) => {
+            if(ag.maxlv < 13){
+                maxed = false;
+            }
+            if(ag.maxlv > ag.lvcap){
+                adj = true;
+                ag.maxlv = ag.lvcap;
+            }
+        })
+        if(adj){
+            this.owner.finalizeAugments();
+        }
+        if(maxed || (this.scene.masterData.widgets <= 0)){
+            this.ovrAugTxt.setAlpha(0.5);
+            this.owner.augBars.forEach((ag) => ag.shade());
+            this.tempBars.forEach((tb) => {
+                tb.shade();
+            })
+            this.overAugBtns.forEach((oa) => {
+                oa.superveil();
+            })
+        }
+    }
+
+    checkPassives(){
+        let maxed = true;
+        this.owner.tempGun.passives.forEach((ps) => {
+            if(!ps.activated){
+                maxed = false;
+            }
+        })
+        if(maxed || (this.scene.masterData.widgets <= 0)){
+            this.ovrPassTxt.setAlpha(0.5);
+            this.psvBars.forEach((ps) => {
+                ps.superveil();
+            })
+        }
+    }
+
+    signalRoll(c: number){
+        if(c <= 5){
+            this.scene.sound.play("succ_low", {volume: 0.5});
+            this.scene.addEffect(new BasicEffect(this.scene,"spellhitblue",this.widgetDisp.x,this.widgetDisp.y,3,100,false,0,Math.random()*360,[3,3]));
+            this.animpause = [250,250];
+            this.waiting = true;
+            this.scene.masterData.widgets -= 1;
+            return true;
+        }
+        this.scene.sound.play("suck", {volume: 0.75});
+        this.animpause = [1500,1500];
+        this.waiting = true;
+        this.scene.addEffect(new ExpandEffect(this.scene, this.widgetDisp.x, this.widgetDisp.y, "nova", 1000, Math.random()*360, 120, [2,0], [1,0]));
+    }
+
+    executeRoll(c: number, b: boolean){
+        if(c <= 5){
+
+        }
+        else if(c < 15){
+            this.scene.sound.play("cmt", {volume: 0.5});
+            this.scene.addEffect(new BasicEffect(this.scene,"hit_spark",this.widgetDisp.x,this.widgetDisp.y,3,50,false,0,Math.random()*360,[3,3]));
+            //this.animpause = [500,500];
+        } else if (c < 50) {
+            this.scene.sound.play("smash", {volume: 0.5});
+            this.scene.sound.play("oof", {volume: 0.5});
+            let c = 1;
+            if(Math.random()<0.5){
+                c *= -1;
+            }
+            this.scene.addEffect(new BasicEffect(this.scene,"explosion_tiny",this.widgetDisp.x,this.widgetDisp.y-100,6,75,false,0,0,[c*1.25,1.25]));
+            //this.animpause = [500,500];
+        } else {
+            this.scene.sound.play("turret_dead", {volume: 0.5});
+            this.scene.sound.play("meme_explosion", {volume: 0.5});
+            this.scene.addEffect(new BasicEffect(this.scene,"meme_exp",this.widgetDisp.x,this.widgetDisp.y,18,40,false,0,Math.random()*360,[6,6]));
+            //this.animpause = [1000,1000];
+        }
+        
+    }
+
+
+    getPsvChance(): number{
+        return 0.1;
     }
 
     getAugChance(p: number): number{
         if(p > (this.owner.augBars.length-1)){
-            return 0.15;
+            return 0.03;
         } else {
             if(this.owner.augBars[p].ref.maxlv < 5){
                 return 1;
@@ -197,9 +330,9 @@ export class AugmentScreen extends Phaser.GameObjects.Container{
                 return 0.25;
             } else if (this.owner.augBars[p].ref.maxlv < 11) {
                 return 0.1;
-            } else if (this.owner.augBars[p].ref.maxlv <= 12) {
+            } else if (this.owner.augBars[p].ref.maxlv < 12) {
                 return 0.05;
-            } else if (this.owner.augBars[p].ref.maxlv <= 13) {
+            } else if (this.owner.augBars[p].ref.maxlv < 13) {
                 return 0.03;
             } else {
                 return 0;
@@ -220,11 +353,37 @@ export class AugmentScreen extends Phaser.GameObjects.Container{
         this.chanceTxt.setVisible(true);
     }
 
+    showPsvChance(pw: PassiveDisplay){
+        let pp = this.getPsvChance();
+        this.chanceTxt.setText("Chance: "+ (pp*100 + "%"));
+        if(pp < 0.75) {
+            this.chanceTxt.setColor("yellow");
+        }
+        if(pp < 0.25) {
+            this.chanceTxt.setColor("red");
+        }
+        this.chanceTxt.setX(AugmentUI.defX+AugmentScreen.offX-56-(pw.myTxt.width/2),)
+        this.chanceTxt.setY((72*pw.dpos)+AugmentUI.defY+AugmentScreen.offY-600);
+        this.chanceTxt.setVisible(true);
+    }
+
     hideChance(){
         this.chanceTxt.setVisible(false);
         this.chanceTxt.setText("Chance: ");
         this.chanceTxt.setColor("white");
+        this.chanceTxt.setX(AugmentUI.defX+AugmentScreen.offX+AugmentBar.begin-72-42);
         this.chanceTxt.setY(AugmentUI.defY+AugmentScreen.offY);
+    }
+
+    drawPassiveButtons(){
+        let nn = 1;
+        this.owner.tempGun.passives.forEach((ps) => {
+            let pb = new PassiveDisplay(this.scene,AugmentUI.defX+AugmentScreen.offX-32,(72*nn)+AugmentUI.defY+AugmentScreen.offY-600,
+                this.scene.masterData.inv.copyPassive(ps),this, nn);
+            this.tempBarLayer.add(pb);
+            this.psvBars.push(pb);
+            nn++;
+        })
     }
 
     resetAugWidgetButtons(){
@@ -235,6 +394,21 @@ export class AugmentScreen extends Phaser.GameObjects.Container{
         this.hideChance();
         this.drawOverAugButtons();
         this.drawTempBars();
+        let css = this.scene.input.hitTestPointer(this.scene.input.activePointer);
+        console.log(css);
+        this.overAugBtns.forEach((os) => {
+            if(this.waiting){
+                os.softLock();
+            }
+            os.hoverCheck();
+        })
+        this.psvBars.forEach((pb) => {
+            if(this.waiting){
+                pb.softLock();
+            }
+        })
+        this.checkOverAugs();
+        this.checkPassives();
     }
 
     drawOverAugButtons(){
@@ -338,6 +512,34 @@ export class AugmentScreen extends Phaser.GameObjects.Container{
         this.augindex = -1;
     }
 
+    closeMacguffinMode(){
+        this.closebtn.veil();
+        this.upbtn.veil();
+        this.owner.finalizeAugments();
+        this.owner.finalizePassives();
+        this.augindex = -1;
+        this.widgetDisp.setVisible(false);
+        this.ovrAugTxt.setVisible(false);
+        this.ovrAugTxt.setAlpha(1);
+        this.ovrPassTxt.setVisible(false);
+        this.ovrPassTxt.setAlpha(1);
+        this.hideChance();
+        this.bkg.setTexture("augbkg");
+        this.tempBars.forEach((tb) => {
+            tb.destroy();
+        })
+        this.tempBars = [];
+        this.psvBars.forEach((pb) => {
+            pb.destroy();
+        })
+        this.psvBars = [];
+        this.overAugBtns.forEach((ov) => {
+            ov.destroy();
+        })
+        this.overAugBtns = [];
+        this.owner.closeAugScreen("upgrade", this.augindex);
+    }
+
     closeAddMode(){
         this.augbtnlist.forEach((bt)=> {
             bt.destroy();
@@ -386,10 +588,15 @@ export class AugmentScreen extends Phaser.GameObjects.Container{
     }
 
     addAugmentSlot(p: number){
+        let tx = this.getAugChance(p);
         console.log("Adding new augment slot");
         this.owner.addNewAug(p);
         this.owner.redrawBarsWithOffset(AugmentScreen.offX, AugmentScreen.offY);
         this.resetAugWidgetButtons();
+    }
+
+    unlockPassive(ps: PassiveAbility){
+        this.owner.unlockPassive(ps);
     }
 
     increaseAugmentCap(p: number){
@@ -397,5 +604,16 @@ export class AugmentScreen extends Phaser.GameObjects.Container{
         this.owner.augCapPlus(p);
         this.owner.redrawBarsWithOffset(AugmentScreen.offX, AugmentScreen.offY);
         this.resetAugWidgetButtons();
+    }
+
+    subtractWidgets(n: number){
+        this.scene.masterData.widgets -= n;
+        this.widgetDisp.updateCount();
+        this.scene.addEffect(new DamageText(this.scene,this.widgetDisp.x,this.widgetDisp.y+264,"-"+n,"widgetloss"));
+    }
+
+    failRoll(){
+        this.resetAugWidgetButtons();
+
     }
 }

@@ -1,7 +1,7 @@
 import { BaseScene } from "@/scenes/BaseScene";
 import { UpgradeScene } from "@/scenes/UpgradeScene";
 import { AugmentBar } from "./AugmentBar";
-import { WeaponEntry } from "../Armory";
+import { PassiveAbility, WeaponEntry } from "../Armory";
 import { GunDataDisplay } from "../GunDataDisplay";
 import { AugmentScreen } from "./AugmentScreen";
 
@@ -87,25 +87,26 @@ export class AugmentUI extends Phaser.GameObjects.Container{
 
 
     initBars(){
-        console.log("CUR GUN: " + this.tempGun.augs);
+        //console.log("CUR GUN: " + this.tempGun.augs);
         for(let n = 0; n < this.tempGun.augs.length; n++){
             this.augBars.push(new AugmentBar(this.scene,this,960,840+(n*68),this.tempGun.augs[n],n));
             this.dispBars.add(this.augBars[n]);
-            console.log("Adding bar for: " + this.tempGun.augs[n]);
+            //console.log("Adding bar for: " + this.tempGun.augs[n]);
         }
     }
 
     redrawBarsWithOffset(x: number, y: number){
         this.augBars.forEach((ab) => ab.destroy());
         this.augBars = [];
-        console.log("CUR GUN: " + this.tempGun.augs);
+        //console.log("CUR GUN: " + this.tempGun.augs);
         for(let n = 0; n < this.tempGun.augs.length; n++){
             let ab = new AugmentBar(this.scene,this,960,840+(n*68),this.tempGun.augs[n],n);
             ab.x += x;
             ab.y += y;
             this.augBars.push(ab);
+            ab.passivate();
             this.dispBars.add(this.augBars[n]);
-            console.log("Adding bar for: " + this.tempGun.augs[n]);
+            //console.log("Adding bar for: " + this.tempGun.augs[n]);
         }
     }
 
@@ -135,6 +136,11 @@ export class AugmentUI extends Phaser.GameObjects.Container{
                 return [consumed, true];
             }
         }
+        /*
+        if(n > 99){
+            n = 99;
+            return[n, true];
+        }*/
         return [n, false];
     }
 
@@ -236,10 +242,10 @@ export class AugmentUI extends Phaser.GameObjects.Container{
     }
 
     lockAndShiftBars(){
-            for(let ii = 0; ii < this.augBars.length; ii++){
-                this.augBars[ii].passivate();
-                this.augBars[ii].x += AugmentScreen.offX;
-                this.augBars[ii].y += AugmentScreen.offY;
+        for(let ii = 0; ii < this.augBars.length; ii++){
+            this.augBars[ii].passivate();
+            this.augBars[ii].x += AugmentScreen.offX;
+            this.augBars[ii].y += AugmentScreen.offY;
         }
     }
 
@@ -267,8 +273,21 @@ export class AugmentUI extends Phaser.GameObjects.Container{
         this.finalizeAugments();
     }
 
+    unlockPassive(psv: PassiveAbility){
+        this.tempGun.passives.forEach((ps) => {
+            if(ps.name == psv.name){
+                ps.activated = true;
+            }
+        })
+        this.finalizePassives();
+    }
+
     finalizeAugments(){
-        this.scene.masterData.replaceAugs(this.tempGun.gID, this.augscreen.augindex, this.tempGun.augs);
+        this.scene.masterData.replaceAugs(this.tempGun.gID, this.tempGun.augs);
+    }
+
+    finalizePassives(){
+        this.scene.masterData.replacePassives(this.tempGun.gID, this.tempGun.passives);
     }
 
     refreshBars(){

@@ -21,7 +21,7 @@ export class GlobalVariables {
     public maxAugLevel: number = 10;
     public boxCount: number = 0;
     public money: number = 0;
-    public widgets: number = 99;
+    public widgets: number = 999;
 
     public defaultItem: ItemParams = {id: -999, name: "default", spr: ["itemtile", "itemtile"], curLevel:0, maxLevel:10, desc:"DEFAULT", upgradeDesc: "DEFAULT"};
 
@@ -450,8 +450,12 @@ export class GlobalVariables {
         }
     }
 
-    replaceAugs(id: number, index: number, ref: Augment[]){
-        this.inv.replaceAugs(id,index,ref);
+    replaceAugs(id: number, ref: Augment[]){
+        this.inv.replaceAugs(id,ref);
+    }
+
+    replacePassives(id: number, ref: PassiveAbility[]){
+        this.inv.replacePassives(id,ref);
     }
 
     copyAug(id: number): Augment{

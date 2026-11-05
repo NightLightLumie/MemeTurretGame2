@@ -122,6 +122,13 @@ export class DamageText extends Effect{
                 color2 = "yellow";
                 flash = false;
                 amplitude = 0;
+            } case "widgetloss": {
+                size = 80;
+                this.negative *= -2.5;
+                color1 = "red";
+                color2 = "goldenrod";
+                flash = true;
+                amplitude = 0.5;
             } default: {
                 break;
             }

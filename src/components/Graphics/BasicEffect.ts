@@ -1,8 +1,10 @@
 import { GameScene } from "@/scenes/GameScene";
+
+import { BaseScene } from "@/scenes/BaseScene";
 import { Effect } from "./Effect";
 
 export class BasicEffect extends Effect {
-    public scene: GameScene;
+    public scene: BaseScene;
     public sp: Phaser.GameObjects.Sprite;
     private isLooped: boolean;
     private frameLength: number;
@@ -17,7 +19,7 @@ export class BasicEffect extends Effect {
     public tText: Phaser.GameObjects.Text;
 
 	// private hover: boolean;
-	constructor(scene: GameScene, value: string, x: number, y: number, tFrames: number, fLen: number = 100, loop: boolean = false, sFrame: number = 0, angle: number = 0, scale: number[] = [1,1]) {
+	constructor(scene: BaseScene, value: string, x: number, y: number, tFrames: number, fLen: number = 100, loop: boolean = false, sFrame: number = 0, angle: number = 0, scale: number[] = [1,1]) {
         super(scene,x,y);
         this.scene = scene;
         //scene.add.existing(this);

@@ -19,7 +19,15 @@ export class WidgetDisplay extends Phaser.GameObjects.Container{
 			color: "white",
 			text: "Widgets: " + this.scene.masterData.widgets,
 		});
-        this.txt.setOrigin(0.5,0);
+        this.txt.setOrigin(0.5,0.5);
         this.add(this.txt);
+    }
+
+    updateCount(){
+        this.txt.setText("Widgets: " + this.scene.masterData.widgets);
+        if(this.scene.masterData.widgets <= 0){
+            this.txt.setColor("red");
+            this.setAlpha(0.35);
+        }
     }
 }

@@ -78,7 +78,7 @@ export class UpgradeScene extends BaseScene {
 		this.gfx = [];
 		this.gfxLayer = new Phaser.GameObjects.Container(this,0,0);
 		this.add.existing(this.gfxLayer);
-		this.gfxLayer.setDepth(50);
+		this.gfxLayer.setDepth(150);
 
 		this.nxt = new NextSceneButton(this, 1810, 1000);
 		this.nxt.veil();
@@ -575,6 +575,11 @@ export class UpgradeScene extends BaseScene {
 
 	gunToPosition(){
 		
+	}
+
+	addEffect(e: Effect){
+		this.gfx.push(e);
+		this.gfxLayer.add(e);
 	}
 
 	updateEffects(t: number, d: number){

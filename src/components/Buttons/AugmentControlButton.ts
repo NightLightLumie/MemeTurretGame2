@@ -22,11 +22,19 @@ export class AugmentControlButton extends Button{
         this.sp.setOrigin(0.5, 0.5);
         this.bindInteractive(this.sp);
         this.setInteractive();
-        this.setScale(1,1);
+        this.setScale(0.75,0.75);
     }
 
     onDown(pointer: Phaser.Input.Pointer, localX: number, localY: number, event: Phaser.Types.Input.EventData): void {
         this.trigger();
+    }
+
+    onOver(pointer: Phaser.Input.Pointer, localX: number, localY: number, event: Phaser.Types.Input.EventData): void {
+        this.setScale(1,1);
+    }
+
+    onOut(pointer: Phaser.Input.Pointer, event: Phaser.Types.Input.EventData): void {
+        this.setScale(0.75,0.75);
     }
 
     trigger(){
@@ -45,6 +53,7 @@ export class AugmentControlButton extends Button{
                 break;
             } case "close": {
                 this.scene.sound.play("scroll");
+                this.setScale(0.75,0.75);
                 this.owner.closeUpgradeMode();
                 break;
             } default: {
@@ -57,12 +66,14 @@ export class AugmentControlButton extends Button{
         this.setAlpha(0.5);
         this.sp.disableInteractive();
         this.disableInteractive();
+        this.setScale(0.75,0.75);
     }
 
     veil(){
         this.setAlpha(0);
         this.sp.disableInteractive();
         this.disableInteractive();
+        this.setScale(0.75,0.75);
     }
 
     unveil(){

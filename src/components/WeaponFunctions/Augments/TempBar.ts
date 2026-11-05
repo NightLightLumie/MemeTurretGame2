@@ -18,4 +18,8 @@ export class TempBar extends Phaser.GameObjects.Container{
             this.add(px);
         }
     }
+
+    shade(){
+        this.setAlpha(0.5);
+    }
 }

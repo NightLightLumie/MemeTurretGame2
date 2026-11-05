@@ -51,9 +51,9 @@ export class Armory {
         }
         this.gunList = new Map([
             [-999999999, {gID: -999999999, wID: 3, augs: [], passives: this.reference.getGunPassives(3)}],
-            [-999999999 + 1, {gID: -999999999 + 1, wID: 4, augs: [{name: "Impact", index: 1, level: 12, maxlv: 13, lvcap: 13, desc: "Increased base damage."},
+            [-999999999 + 1, {gID: -999999999 + 1, wID: 7, augs: [{name: "Impact", index: 1, level: 12, maxlv: 13, lvcap: 13, desc: "Increased base damage."},
             {name: "Barrage", index: 2, level: 7, maxlv: 7, lvcap: 8, desc: "Increased rate of fire."},    
-            {name: "default", index: 0, level: 0, maxlv: 10, lvcap: 10, desc: ""}], passives: this.reference.getGunPassives(4)}],
+            {name: "default", index: 0, level: 0, maxlv: 10, lvcap: 10, desc: ""}], passives: this.reference.getGunPassives(7)}],
 
             /*
             [-999999995, {gID: -999999995, wID: 9, augs: [{name: "default", index: 0, level: 0, maxlv: 13, lvcap: 13, desc: ""},
@@ -166,11 +166,22 @@ export class Armory {
         }
     }
 
-    replaceAugs(id: number, index: number, ref: Augment[]){
+    replaceAugs(id: number, ref: Augment[]){
         if(this.gunList.has(id)) {
             this.gunList.get(id)!.augs = this.copyAugList(ref);
         } else if (this.defaultGuns.has(id)){
             this.defaultGuns.get(id)!.augs = this.copyAugList(ref);
+        } else {
+            console.log("INVALID GUN FETCH ID: " + id);
+            return;
+        }
+    }
+
+    replacePassives(id: number, ref: PassiveAbility[]){
+        if(this.gunList.has(id)) {
+            this.gunList.get(id)!.passives = this.copyPassiveList(ref);
+        } else if (this.defaultGuns.has(id)){
+            this.defaultGuns.get(id)!.passives = this.copyPassiveList(ref);
         } else {
             console.log("INVALID GUN FETCH ID: " + id);
             return;
@@ -249,11 +260,7 @@ export class Armory {
     }
 
     copyPassive(p: PassiveAbility): PassiveAbility{
-        return {
-            name: p.name,
-            desc: p.desc,
-            activated: p.activated,
-        }
+        return structuredClone(p);
     }
 
     copyPassiveList(p: PassiveAbility[]): PassiveAbility[]{

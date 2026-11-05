@@ -79,6 +79,8 @@ const images: Image[] = [
 	image('ui/aug_lock', 'aug_lock'),
 	image('ui/aug_button_lock', 'aug_button_lock'),
 	image('ui/aug_select_back', 'aug_select_back'),
+	image('ui/passiveback', 'passiveback'),
+	image('ui/augboxwhite', 'augboxwhite'),
 
 	//item shop
 	image('ui/itemframeback', 'itemframeback'),
@@ -212,6 +214,8 @@ const spritesheets: SpriteSheet[] = [
 	spritesheet("anims/fireshot", "fireshot", 320, 280),
 	spritesheet("anims/cementblocks", "cementblocks", 280, 280),
 	spritesheet("anims/bad_fire", "bad_fire", 512, 512),
+	spritesheet("anims/explosion_tiny", "explosion_tiny", 512, 512),
+	spritesheet("anims/meme_exp", "meme_exp", 200, 282),
 ];
 
 /* Audios */
@@ -249,7 +253,9 @@ const audios: Audio[] = [
 	sound('tree/turret_dead', 'turret_dead', 0.5),
 	sound('tree/scroll', 'scroll', 0.5),
 	sound('tree/dropbox', 'dropbox', 0.5),
-
+	sound('tree/succ_low', 'succ_low', 0.5),
+	sound('tree/suck', 'suck', 0.5),
+	sound('tree/smash', 'smash', 0.5),
 	sound('player/miss', 'miss', 0.5),
 	sound('player/rb', 'rb', 0.5),
 	sound('player/cmt', 'cmt', 0.5),

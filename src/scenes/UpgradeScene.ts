@@ -638,9 +638,9 @@ export class UpgradeScene extends BaseScene {
 	}
 
 	finalizeWeaponSelection(){
-		console.log("Sidearm: " + this.equippedButtons[0].gID);
-		console.log("Primary: " + this.equippedButtons[1].gID);
-		console.log("Secondary: " + this.equippedButtons[2].gID);
+		//console.log("Sidearm: " + this.equippedButtons[0].gID);
+		//console.log("Primary: " + this.equippedButtons[1].gID);
+		//console.log("Secondary: " + this.equippedButtons[2].gID);
 		this.masterData.equipLoadout(this.equippedButtons);	
 	}
 

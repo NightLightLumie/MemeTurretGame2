@@ -908,7 +908,7 @@ export class GameScene extends BaseScene {
 	referForDelete(p: Phaser.GameObjects.Particles.ParticleEmitter){
 		p.on("complete", ()=> {
 			p.destroy();
-			console.log("destroyed emitter")
+			//console.log("destroyed emitter")
 		}, this);
 	}
 

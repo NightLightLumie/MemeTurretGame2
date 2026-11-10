@@ -109,9 +109,8 @@ export class Weapon extends Phaser.Events.EventEmitter{
         this.augs = augments;
         this.augVars = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
         this.augModifier = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
-        //console.log(this.wp.name + " COOLDOWN: " + this.maxCD);\
         this.loadAugment();
-        console.log("augments: " + this.augVars);
+        //console.log("augments: " + this.augVars);
 
         this.loadGunValues();
         this.loadPassives();
@@ -145,7 +144,7 @@ export class Weapon extends Phaser.Events.EventEmitter{
             return;
         } else {
             this.wp.passives.forEach((p) => {
-                console.log("initiating passive: " + p.name + ", " + p.activated);
+                //console.log("initiating passive: " + p.name + ", " + p.activated);
                 if(p.activated) {
                     this.initiatePassive(p.name);
                 }

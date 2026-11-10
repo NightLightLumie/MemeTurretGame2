@@ -265,9 +265,9 @@ export class Player extends Phaser.GameObjects.Container {
 		let a = this.scene.masterData.loadGun(this.scene.masterData.side);
 		let b = this.scene.masterData.loadGun(this.scene.masterData.primary);
 		let c = this.scene.masterData.loadGun(this.scene.masterData.secondary);
-		console.log("Sidearm: " + a.type);
-		console.log("Primary: " + b.type);
-		console.log("Secondary: " + c.type);
+		//console.log("Sidearm: " + a.type);
+		//console.log("Primary: " + b.type);
+		//console.log("Secondary: " + c.type);
 		this.loadout = [
 			new Weapon(this.scene, a, this.scene.masterData.side.augs),
 			new Weapon(this.scene, b, this.scene.masterData.primary.augs),

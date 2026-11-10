@@ -184,7 +184,7 @@ export class HomingTracer extends Missile {
         if(!this.deleteFlag){
             this.deleteFlag = true;
             this.px.stop();
-            this.scene.playSound("arcanehit",0.5);
+            this.scene.playSound("meme_explosion",0.5);
             t.takeTypedDamage({amt: 350, type: "spell", tags: ["spell", "projectile"]});
             this.scene.addHitEffect(new BasicEffect(this.scene,"exp",this.x,this.y,25,15,false,2,Math.random()*360,[0.1,0.1]));
         }

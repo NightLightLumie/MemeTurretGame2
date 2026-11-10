@@ -44,7 +44,17 @@ export class OverAugButton extends Button{
         this.back.setVisible(true);
         this.back.setAlpha(0.01);
         this.add(this.back);
-        this.bindInteractive(this.back)
+        this.txt = this.scene.addText({
+			x: AugmentBar.begin-72-32-18,
+			y: 0,
+			size: 28,
+			color: "white",
+			text: "Chance: ",
+		});
+        this.txt.setOrigin(1,0.5);
+        this.add(this.txt);
+        this.txt.setVisible(false);
+        this.bindInteractive(this.back);
         this.back.setInteractive();
         this.basePos = [this.x,this.y];
 
@@ -87,9 +97,27 @@ export class OverAugButton extends Button{
             }
             this.sp.setVisible(true);
         }
-        this.ref.showChance(this.pos);
+        this.showChance();
         this.back.setAlpha(0.5);
 
+    }
+
+    showChance(){
+        let pp = this.ref.getAugChance(this.pos);
+        this.txt.setText("Chance: "+ (pp*100 + "%"));
+        if(pp < 0.75) {
+            this.txt.setColor("yellow");
+        }
+        if(pp < 0.25) {
+            this.txt.setColor("red");
+        }
+        this.txt.setVisible(true);
+    }
+
+    hideChance(){
+        this.txt.setColor("white");
+        this.txt.setText("Chance: ");
+        this.txt.setVisible(false);
     }
 
     forceOut(){
@@ -100,7 +128,7 @@ export class OverAugButton extends Button{
             this.sp.setVisible(false);
         }
 
-        this.ref.hideChance();
+        this.hideChance();
         this.back.setAlpha(0.01);
     }
 
@@ -114,7 +142,7 @@ export class OverAugButton extends Button{
             }
             this.sp.setVisible(true);
         }
-        this.ref.showChance(this.pos);
+        this.showChance();
         this.back.setAlpha(0.5);
     }
 
@@ -128,8 +156,7 @@ export class OverAugButton extends Button{
             }
             this.sp.setVisible(false);
         }
-
-        this.ref.hideChance();
+        this.hideChance();
         this.back.setAlpha(0.01);
     }
 
@@ -230,6 +257,12 @@ export class OverAugButton extends Button{
             } else {
                 this.x = this.basePos[0] + -6 + (Math.random()*12);
                 this.y = this.basePos[1] + -6 + (Math.random()*12);
+                if(Math.sin(t/20) > 0){
+                    this.txt.setColor("red");
+                } else {
+                    this.txt.setColor("cyan");
+                }
+
             }
         }
     }

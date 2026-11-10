@@ -567,8 +567,6 @@ export class UpgradeScene extends BaseScene {
 		}
 	}
 
-	hideWidgetButton(){}
-
 	openMacguffinMode(){
 		this.augUI.openAugScreen("widget");
 	}

@@ -262,9 +262,9 @@ export class Player extends Phaser.GameObjects.Container {
 	}
 
 	setDefaultLoadout(){
-		let a = this.scene.masterData.copyGunParams(this.scene.masterData.side);
-		let b = this.scene.masterData.copyGunParams(this.scene.masterData.primary);
-		let c = this.scene.masterData.copyGunParams(this.scene.masterData.secondary);
+		let a = this.scene.masterData.loadGun(this.scene.masterData.side);
+		let b = this.scene.masterData.loadGun(this.scene.masterData.primary);
+		let c = this.scene.masterData.loadGun(this.scene.masterData.secondary);
 		console.log("Sidearm: " + a.type);
 		console.log("Primary: " + b.type);
 		console.log("Secondary: " + c.type);
@@ -284,6 +284,20 @@ export class Player extends Phaser.GameObjects.Container {
 
 	fetchLoadout(){
 		//this.loadout[0] = new Weapon (this.scene, this.scene.masterData.)
+	}
+
+	relayHit(id: number){
+		this.loadout.forEach((lw) => {
+			if(lw.wp.type == id){
+				if(lw.killtracker[1] > 0){
+					console.log("relaying hit");
+					lw.killtracker[0]++;
+					if(lw.killtracker[0] > lw.killtracker[1]){
+						lw.killtracker[0] = lw.killtracker[1];
+					}
+				}
+			}
+		})
 	}
 
 	upgradeHP(n: number){

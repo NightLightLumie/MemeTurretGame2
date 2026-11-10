@@ -125,10 +125,11 @@ export class DamageText extends Effect{
             } case "widgetloss": {
                 size = 80;
                 this.negative *= -2.5;
+                fadeTime = 1000;
                 color1 = "red";
                 color2 = "goldenrod";
                 flash = true;
-                amplitude = 0.5;
+                amplitude = 0.25;
             } default: {
                 break;
             }

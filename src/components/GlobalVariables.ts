@@ -15,7 +15,7 @@ export interface ItemParams{
 
 export class GlobalVariables {
 
-    public curGunID: number = -999999999+1;
+    public curGunID: number = -999999999;
     public inv: Armory;
     public maxAugOverLevel: number = 13;
     public maxAugLevel: number = 10;
@@ -134,7 +134,7 @@ export class GlobalVariables {
          passives: [{name: "Hi-Point", desc: "Base damage increased by 30%. Base pierce increased by 1.", activated: false}]}],
         [1, {type:1,name:"WS-Windmill",class:"smg", dmg: 95, spd: 20000, rof: 8, spcd: 10000, shots: 1, pen: 1.5, pcd: -999, clip: 32, load: 1.25, width: 1, rad: 1,
          acc: 6.5, arpen: [0,0], crit: [0.001,1.75], ele: 1, onhit: 0, weight: 0.025, rarity: 1, dot: [], augs: [0,1,1,1, 1,0,1,1, 0,1,1,1, 1,1,0,0, 1,1,0], customaug: {name: "default", index: 18, level: 0, maxlv: 10, lvcap: 10, desc: ""}, 
-         passives: [{name: "Full Tilt", desc: "Magazine size increased by 25% and rate-of-fire increased by 10%. Hits further increase the rate-of-fire by 2% each, up to 20. Bonus resets on switch.", activated: false}]}],
+         passives: [{name: "Full Tilt", desc: "Magazine size increased by 25% and rate-of-fire increased by 10%. Hits further increase the rate-of-fire by 4% each, up to 40%. Bonus resets on switch or reload.", activated: false}]}],
         [2, {type:2,name:"ANTIK",class:"shotgun", dmg: 115, spd: 20000, rof: 2.5, spcd: 10000, shots: 6, pen: 1.5, pcd: -999, clip: 8, load: 2.5, width: 1, rad: 1,
          acc: 15, arpen: [0,0], crit: [0.001,1.5], ele: 1, onhit: 0, weight: 0.125, rarity: 1, dot: [], augs: [0,1,1,1, 1,0,1,1, 0,1,1,1, 1,1,0,0, 1,1,0], customaug: {name: "default", index: 18, level: 0, maxlv: 10, lvcap: 10, desc: ""}, 
          passives: [{name: "Timeless", desc: "+3 pellets and +1 flat rate of fire",activated:false}]}],
@@ -244,6 +244,24 @@ export class GlobalVariables {
             console.log("NO WEAPON PARAM OF: " + we.wID);
             return structuredClone(this.defaultParam);
         }
+    }
+
+    loadGun(we: WeaponEntry):  WeaponParams{
+        let cw: WeaponParams;
+        if(this.gunList.has(we.wID)){
+            let k = this.gunList.get(we.wID);
+            if(k != null) {
+                cw = structuredClone(k);
+            } else {
+                console.log("NO WEAPON PARAM OF: " + we.wID);
+                return structuredClone(this.defaultParam);
+            }
+        } else {
+            console.log("NO WEAPON PARAM OF: " + we.wID);
+            return structuredClone(this.defaultParam);
+        }
+        cw.passives = structuredClone(we.passives);
+        return cw;
     }
 
     getCustomAugment(ix: number): Augment{

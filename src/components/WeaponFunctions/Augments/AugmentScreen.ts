@@ -104,7 +104,7 @@ export class AugmentScreen extends Phaser.GameObjects.Container{
         this.add(this.tempBarLayer);
         this.tempBarLayer.setDepth(40);
 
-        this.widgetDisp = new WidgetDisplay(this.scene,386,412);
+        this.widgetDisp = new WidgetDisplay(this.scene,386,362);
         this.add(this.widgetDisp);
         this.widgetDisp.setVisible(false);
 
@@ -153,6 +153,10 @@ export class AugmentScreen extends Phaser.GameObjects.Container{
         
     }
 
+    resetCloseBtnPos(){
+        this.closebtn.setPosition(1050, 880);
+    }
+
     update(t: number, d: number){
         this.closebtn.update(t, d);
         this.upbtn.update(t, d);
@@ -188,6 +192,7 @@ export class AugmentScreen extends Phaser.GameObjects.Container{
 
     engageUpgradeMode(ix: number){
         this.curMode = "upgrade";
+        this.closebtn.setMode("close");
         this.augindex = ix;
         this.closebtn.unveil();
         this.checkAugCap();
@@ -210,8 +215,10 @@ export class AugmentScreen extends Phaser.GameObjects.Container{
 
     engageMacguffinMode(){
         this.curMode = "macguffin";
+        this.closebtn.setMode("macguffin");
+        this.closebtn.setPosition(386,900);
         this.upbtn.veil();
-        this.closebtn.veil();
+        this.closebtn.unveil();
         this.widgetDisp.setVisible(true);
         this.widgetDisp.updateCount();
         this.ovrAugTxt.setVisible(true);
@@ -340,41 +347,6 @@ export class AugmentScreen extends Phaser.GameObjects.Container{
         }
     }
 
-    showChance(pos: number){
-        let pp = this.getAugChance(pos);
-        this.chanceTxt.setText("Chance: "+ (pp*100 + "%"));
-        if(pp < 0.75) {
-            this.chanceTxt.setColor("yellow");
-        }
-        if(pp < 0.25) {
-            this.chanceTxt.setColor("red");
-        }
-        this.chanceTxt.setY(AugmentUI.defY+AugmentScreen.offY+pos*AugmentUI.defOfs);
-        this.chanceTxt.setVisible(true);
-    }
-
-    showPsvChance(pw: PassiveDisplay){
-        let pp = this.getPsvChance();
-        this.chanceTxt.setText("Chance: "+ (pp*100 + "%"));
-        if(pp < 0.75) {
-            this.chanceTxt.setColor("yellow");
-        }
-        if(pp < 0.25) {
-            this.chanceTxt.setColor("red");
-        }
-        this.chanceTxt.setX(AugmentUI.defX+AugmentScreen.offX-56-(pw.myTxt.width/2),)
-        this.chanceTxt.setY((72*pw.dpos)+AugmentUI.defY+AugmentScreen.offY-600);
-        this.chanceTxt.setVisible(true);
-    }
-
-    hideChance(){
-        this.chanceTxt.setVisible(false);
-        this.chanceTxt.setText("Chance: ");
-        this.chanceTxt.setColor("white");
-        this.chanceTxt.setX(AugmentUI.defX+AugmentScreen.offX+AugmentBar.begin-72-42);
-        this.chanceTxt.setY(AugmentUI.defY+AugmentScreen.offY);
-    }
-
     drawPassiveButtons(){
         let nn = 1;
         this.owner.tempGun.passives.forEach((ps) => {
@@ -387,13 +359,15 @@ export class AugmentScreen extends Phaser.GameObjects.Container{
     }
 
     resetAugWidgetButtons(){
+        this.psvBars.forEach((pb) => pb.destroy());
+        this.psvBars = [];
         this.overAugBtns.forEach((ob) => ob.destroy());
         this.overAugBtns = [];
         this.tempBars.forEach((tb) => tb.destroy());
         this.tempBars = [];
-        this.hideChance();
         this.drawOverAugButtons();
         this.drawTempBars();
+        this.drawPassiveButtons();
         let css = this.scene.input.hitTestPointer(this.scene.input.activePointer);
         console.log(css);
         this.overAugBtns.forEach((os) => {
@@ -406,6 +380,7 @@ export class AugmentScreen extends Phaser.GameObjects.Container{
             if(this.waiting){
                 pb.softLock();
             }
+            pb.hoverCheck();
         })
         this.checkOverAugs();
         this.checkPassives();
@@ -426,13 +401,18 @@ export class AugmentScreen extends Phaser.GameObjects.Container{
     drawTempBars(){
         if(this.owner.augBars.length < 4){
             for(let nx = this.owner.augBars.length; nx < 4; nx ++){
-                let back = new OverAugButton(this.scene,AugmentUI.defX+AugmentScreen.offX, AugmentUI.defY+AugmentScreen.offY+nx*AugmentUI.defOfs,nx,10, this);
-                this.overAugBtns.push(back);
-                this.ovrAugLayer.add(back);
+                if(nx <= this.owner.augBars.length){
+                    let back = new OverAugButton(this.scene,AugmentUI.defX+AugmentScreen.offX, AugmentUI.defY+AugmentScreen.offY+nx*AugmentUI.defOfs,nx,10, this);
+                    this.overAugBtns.push(back);
+                    this.ovrAugLayer.add(back);
+                }
 
                 let disp = new TempBar(this.scene,AugmentUI.defX+AugmentScreen.offX, AugmentUI.defY+AugmentScreen.offY+nx*AugmentUI.defOfs,nx);
                 this.tempBars.push(disp);
                 this.tempBarLayer.add(disp);
+                if(nx > this.owner.augBars.length){
+                    disp.shade();
+                }
             }
         }
 
@@ -440,6 +420,7 @@ export class AugmentScreen extends Phaser.GameObjects.Container{
 
     engageAddMode(ix: number){
         this.curMode = "add";
+        this.closebtn.setMode("add");
         this.augindex = ix;
         this.upbtn.veil();
         this.closebtn.veil();
@@ -506,6 +487,7 @@ export class AugmentScreen extends Phaser.GameObjects.Container{
     closeUpgradeMode(){
         this.closebtn.veil();
         this.upbtn.veil();
+        this.resetCloseBtnPos();
         this.owner.finalizeAugments();
         this.owner.closeAugScreen("upgrade", this.augindex);
         this.clearText();
@@ -515,6 +497,7 @@ export class AugmentScreen extends Phaser.GameObjects.Container{
     closeMacguffinMode(){
         this.closebtn.veil();
         this.upbtn.veil();
+        this.resetCloseBtnPos();
         this.owner.finalizeAugments();
         this.owner.finalizePassives();
         this.augindex = -1;
@@ -523,7 +506,6 @@ export class AugmentScreen extends Phaser.GameObjects.Container{
         this.ovrAugTxt.setAlpha(1);
         this.ovrPassTxt.setVisible(false);
         this.ovrPassTxt.setAlpha(1);
-        this.hideChance();
         this.bkg.setTexture("augbkg");
         this.tempBars.forEach((tb) => {
             tb.destroy();
@@ -537,7 +519,7 @@ export class AugmentScreen extends Phaser.GameObjects.Container{
             ov.destroy();
         })
         this.overAugBtns = [];
-        this.owner.closeAugScreen("upgrade", this.augindex);
+        this.owner.closeAugScreen("macguffin", this.augindex);
     }
 
     closeAddMode(){
@@ -615,5 +597,10 @@ export class AugmentScreen extends Phaser.GameObjects.Container{
     failRoll(){
         this.resetAugWidgetButtons();
 
+    }
+
+    failPassiveRoll(){
+    this.resetAugWidgetButtons();
+    
     }
 }

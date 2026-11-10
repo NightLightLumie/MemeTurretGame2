@@ -198,6 +198,15 @@ export class AugmentUI extends Phaser.GameObjects.Container{
                 this.gunJargon.xredraw(this.tempGun);
                 this.scene.unhideSellButton();
                 break;
+            } case "macguffin": {
+                this.hideAugScreen();
+                this.dispBars.setDepth(15);
+                this.gunJargon.setVisible(true);
+                this.refreshBars();
+                this.scene.unlockButtons();
+                this.gunJargon.xredraw(this.tempGun);
+                this.scene.unhideSellButton();
+                this.scene.widgetButton.unveil();
             } default: {
                 break;
             }

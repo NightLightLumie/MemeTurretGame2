@@ -50,23 +50,7 @@ export class Armory {
             this.defaultGuns.set(xby[ix], xbr[ix]);
         }
         this.gunList = new Map([
-            [-999999999, {gID: -999999999, wID: 3, augs: [], passives: this.reference.getGunPassives(3)}],
-            [-999999999 + 1, {gID: -999999999 + 1, wID: 7, augs: [{name: "Impact", index: 1, level: 12, maxlv: 13, lvcap: 13, desc: "Increased base damage."},
-            {name: "Barrage", index: 2, level: 7, maxlv: 7, lvcap: 8, desc: "Increased rate of fire."},    
-            {name: "default", index: 0, level: 0, maxlv: 10, lvcap: 10, desc: ""}], passives: this.reference.getGunPassives(7)}],
-
-            /*
-            [-999999995, {gID: -999999995, wID: 9, augs: [{name: "default", index: 0, level: 0, maxlv: 13, lvcap: 13, desc: ""},
-                {name: "default", index: 0, level: 0, maxlv: 13, lvcap: 13, desc: ""},
-                {name: "default", index: 0, level: 0, maxlv: 13, lvcap: 13, desc: ""},
-                {name: "default", index: 0, level: 0, maxlv: 13, lvcap: 13, desc: ""},
-            ], passives: this.reference.getGunPassives(9)}],
-            [-999999994, {gID: -999999994, wID: 2, augs: [{name: "Impact", index: 1, level: 12, maxlv: 13, lvcap: 13, desc: "Increased base damage."},
-            {name: "Barrage", index: 2, level: 8, maxlv: 10, lvcap: 10, desc: "Increased rate of fire."},    
-            {name: "Penetrator", index: 9, level: 6, maxlv: 8, lvcap: 10, desc: "Increases penetration capability."},
-            {name: "default", index: 0, level: 0, maxlv: 10, lvcap: 10, desc: ""}], passives: this.reference.getGunPassives(2)}],
-            [-999999993, {gID: -999999994, wID: 7, augs: [this.generateAugment(0,0,13,13), this.generateAugment(0,0,13,13), this.generateSpecialAugment(7,1,13,13), this.generateAugment(0,0,13,13), ], passives: this.reference.getGunPassives(7)}],
-            */
+            [-999999999, {gID: -999999999, wID: 4, augs: [], passives: this.reference.getGunPassives(4)}],
         ]);
     }
     /*
@@ -106,8 +90,6 @@ export class Armory {
             return {name: "default", index: 0, level: 0, maxlv: 10, lvcap: 10, desc: ""};
         }
     }
-
-
 
     addNewGun(wp: WeaponParams, auglist: Augment[], id: number){
         let gun = {

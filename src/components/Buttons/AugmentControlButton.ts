@@ -56,10 +56,19 @@ export class AugmentControlButton extends Button{
                 this.setScale(0.75,0.75);
                 this.owner.closeUpgradeMode();
                 break;
+            } case "macguffin": {
+                this.scene.sound.play("scroll");
+                this.setScale(0.75,0.75);
+                this.owner.closeMacguffinMode();
+                break;
             } default: {
                 break;
             }
         }
+    }
+
+    setMode(arg: string){
+        this.mode = arg;
     }
 
     rest(){

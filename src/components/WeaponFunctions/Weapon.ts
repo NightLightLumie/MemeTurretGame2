@@ -86,7 +86,8 @@ export class Weapon extends Phaser.Events.EventEmitter{
     public specialStat: number = 0;
 
     public crit: number[] = [0,0];
-    private killtracker: number[] = [0,0];
+    public killtracker: number[] = [0,0];
+    public conv: number = 0;
     public pvalue: number[] = [0,0,0,0,0,0];
     public width: number = 0;
     public blast: number = 0;
@@ -98,6 +99,7 @@ export class Weapon extends Phaser.Events.EventEmitter{
     public dh: number = 0;
     public shots: number = 1;
     public lastAmmoReloaded = 0;
+    public updaters: string[] = [];
 
 
     constructor(scene: GameScene, wp: WeaponParams, augments: Augment[] = []){
@@ -143,6 +145,7 @@ export class Weapon extends Phaser.Events.EventEmitter{
             return;
         } else {
             this.wp.passives.forEach((p) => {
+                console.log("initiating passive: " + p.name + ", " + p.activated);
                 if(p.activated) {
                     this.initiatePassive(p.name);
                 }
@@ -186,6 +189,15 @@ export class Weapon extends Phaser.Events.EventEmitter{
         }
     }
 
+    hasPassive(name: string){
+        this.wp.passives.forEach((w) => {
+            if(w.name == name){
+                return true;
+            }
+        })
+        return false;
+    }
+
     initiatePassive(name: string){
         switch(name){
             case "Shear": {} case "Quality and Quantity": {} case "Wholesale": {}  case "Long Bolts": {}
@@ -200,10 +212,12 @@ export class Weapon extends Phaser.Events.EventEmitter{
             } case "Full Tilt": {
                 this.maxAmmo = Math.trunc(Math.round(this.maxAmmo *= 1.25));
                 this.curAmmo = this.maxAmmo;
-                this.killtracker = [0,8];
-                this.maxCD = 1000/(this.rof*(1+0.1+(0.05*this.killtracker[2])));
+                this.killtracker = [0,10];
+                this.conv = 0.04;
+                this.maxCD = 1000/(this.rof*(1+0.1+(this.conv*this.killtracker[0])));
+                this.updaters.push(name);
                 break;
-            } case "Snaggletooths036": {
+            } case "Snaggletooth": {
                 this.pvalue[0] += 0.5
                 this.pvalue[1] += 0.35;
                 break;
@@ -233,6 +247,7 @@ export class Weapon extends Phaser.Events.EventEmitter{
     parseBasePassives(name: string){
         switch(name){
             case "Hi-Point": {
+                console.log("Parsing passive for pistol");
                 this.damage*=1.3;
                 this.pierce += 1*(1+(0.1*this.augVars[9]));
                 break;
@@ -299,8 +314,6 @@ export class Weapon extends Phaser.Events.EventEmitter{
         });
     }
 
-
-
     update(t:number, d:number){
         if(this.cooldown > 0) { //fixme better overflow tracking, if it gets too close this will gradually just converge to zero
             this.cooldown -= d;
@@ -312,6 +325,7 @@ export class Weapon extends Phaser.Events.EventEmitter{
         if(this.loading){
             if(this.loadTime > 0){
                 this.loadTime -= d;
+                this.killtracker[0] = 0;
                 if(this.loadTime <= 0){
                     this.scene.sound.play("end_reload", {volume:0.75});
                     this.loadTime = 0;
@@ -323,10 +337,25 @@ export class Weapon extends Phaser.Events.EventEmitter{
             }
         }
 
+        if(this.updaters.length > 0){
+            this.updatePassives();
+        }
+
     }
 
     updatePassives(){
-        
+        this.updaters.forEach((u) => {
+            switch(u){
+                case "Full Tilt": {
+                    this.cooldown = this.cooldown/this.maxCD;
+                    this.maxCD = 1000/(this.rof*(1+0.1+(this.conv*this.killtracker[0])));
+                    this.cooldown *= this.maxCD;
+                    break;
+                } default: {
+                    break;
+                }
+            }
+        })
     }
 
     updateCooldown(){
@@ -357,6 +386,7 @@ export class Weapon extends Phaser.Events.EventEmitter{
             this.loading = true;
             this.lastAmmoReloaded = this.maxAmmo-this.curAmmo;
             this.scene.player.emit("startReload");
+            this.killtracker[0] = 0;
         }
     }
 
@@ -375,6 +405,7 @@ export class Weapon extends Phaser.Events.EventEmitter{
 
     reset(){
         this.bursts = [];
+        this.killtracker[0] = 0;
         if(this.loadTime > 0) {
             this.loadTime = this.maxLoad;
         }

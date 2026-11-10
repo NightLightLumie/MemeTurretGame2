@@ -72,6 +72,7 @@ export class Bullet extends Phaser.GameObjects.Container{
     public bonuscrit: number = 0;
     public forcecrit: boolean = false;
     public holdcrit: boolean = false;
+    private relay: boolean = false;
 
     public repeat: number = 0;
     public globalDamageScale: number = 0;
@@ -489,6 +490,10 @@ export class Bullet extends Phaser.GameObjects.Container{
                 if(rp){
                     //console.log("<" + this.pID + ", rp =" + rp + ",");
                     this.hit = true;
+                    if(!this.relay){
+                        this.scene.player.relayHit(this.weaponID);
+                        this.relay = true;
+                    }
                     this.thits.push({tg: t, vt: new Phaser.Math.Vector2(this.pX+nx,this.pY+ny)});
                     if(this.scene.tracing){
                         console.log("TEST: Line: " + "[(Start: "+this.pX+","+this.pY+")(End: "+this.x+","+this.y+")] " + "ADJX: " + nx + " ADJY: " + ny);

@@ -75,6 +75,8 @@ export class Weapon extends Phaser.Events.EventEmitter{
     public curAmmo: number = 0;
     public maxAmmo: number = 10;
 
+    public spDmg: number = 1;
+
     public onHit: number = 0;
 
     public augVars: number[];
@@ -91,6 +93,7 @@ export class Weapon extends Phaser.Events.EventEmitter{
     public pvalue: number[] = [0,0,0,0,0,0];
     public width: number = 0;
     public blast: number = 0;
+    public burstData: number[] = [1,1];
 
     public rof: number = 0;
 
@@ -100,6 +103,13 @@ export class Weapon extends Phaser.Events.EventEmitter{
     public shots: number = 1;
     public lastAmmoReloaded = 0;
     public updaters: string[] = [];
+
+    public curSp: number = 1000;
+    public spCost: number = -1;
+    public spRegen: number = 10;
+    public spCap: number = 1000;
+    public spCD: number[] = [0,10000];
+    public spAccel: number = 1;
 
 
     constructor(scene: GameScene, wp: WeaponParams, augments: Augment[] = []){
@@ -115,6 +125,7 @@ export class Weapon extends Phaser.Events.EventEmitter{
         this.loadGunValues();
         this.loadPassives();
         this.bursts = [];
+        this.burstData = wp.burst;
 
     }
 
@@ -163,6 +174,13 @@ export class Weapon extends Phaser.Events.EventEmitter{
         this.img = ("gun_"+this.wp.type);
         this.curAmmo = Math.trunc(Math.round(this.wp.clip)*((1+(0.1*this.augVars[3]))));
         this.maxAmmo = Math.trunc(Math.round(this.wp.clip)*((1+(0.1*this.augVars[3]))));
+        this.spDmg = 1+(0.15*this.augVars[15]);
+        this.spCost = this.wp.spcd[0];
+        this.spCap = this.wp.spcd[1];
+        this.curSp = this.spCap;
+        this.spAccel = 1+(0.1*this.augVars[14]);
+        this.spRegen = this.wp.spcd[2]*this.spAccel;
+        this.spCD = [0,this.wp.spcd[3]*(1/this.spAccel)];
         this.maxLoad = (1/(1+(0.1*this.augVars[4])))*this.wp.load*1000;
         this.onHit = (this.wp.onhit*(1+(0.1*this.augVars[7])))+(3*this.augVars[7]);
         this.arpen = [this.wp.arpen[0]+(this.augVars[6]), this.wp.arpen[1]+(this.augVars[6]*0.05)];
@@ -246,7 +264,6 @@ export class Weapon extends Phaser.Events.EventEmitter{
     parseBasePassives(name: string){
         switch(name){
             case "Hi-Point": {
-                console.log("Parsing passive for pistol");
                 this.damage*=1.3;
                 this.pierce += 1*(1+(0.1*this.augVars[9]));
                 break;
@@ -270,6 +287,16 @@ export class Weapon extends Phaser.Events.EventEmitter{
         }
     }
 
+    canShootSpecial(): boolean{
+        if(this.curSp < this.spCost){
+            return false;
+        } else if ((this.spCD[0] > 0)){
+            return false;
+        } else {
+            return true;
+        }
+    }
+
     canShoot(): boolean{
         if((this.loading) || (this.cooldown > 0)) {
             return false;
@@ -277,6 +304,49 @@ export class Weapon extends Phaser.Events.EventEmitter{
             return false;
         } else {
             return true;
+        }
+    }
+
+    canShootBurst(): boolean{
+        if((this.loading) || (this.cooldown > 0)) {
+            return false;
+        } else if (this.getUnallocatedAmmo() < 1) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    createBurst(sp: boolean): BurstTracker{
+        let bb: BurstTracker;
+        bb = {
+            amt: this.burstData[0],
+            curCD: 0,
+            maxCD: 1000/this.burstData[1],
+            special: sp,
+            ignoreAmmo: false,
+            overflow: 0,
+            stored: 0,
+        }
+        return bb;
+    }
+    addBurst(b: BurstTracker){
+        this.bursts.push(b);
+    }
+
+    getUnallocatedAmmo(): number{
+        if(this.bursts.length > 0){
+            let ct = 0;
+            this.bursts.forEach((b) => {
+                ct += b.amt;
+            })
+            let rm = this.curAmmo - ct;
+            if(rm <= 0){ 
+                rm = 0;
+            }
+            return rm;
+        } else {
+            return this.curAmmo;
         }
     }
 
@@ -317,7 +387,20 @@ export class Weapon extends Phaser.Events.EventEmitter{
         if(this.cooldown > 0) { //fixme better overflow tracking, if it gets too close this will gradually just converge to zero
             this.cooldown -= d;
             if(this.cooldown <= 0){
-                this.overflow = this.cooldown;
+                this.overflow += Math.abs(this.cooldown);
+            }
+        }
+
+        if(this.spCD[0] > 0){
+            this.spCD[0] -= d;
+            if(this.spCD[0] <= 0){
+                this.spCD[0] = 0;
+            }
+        }
+        if(this.curSp < this.spCap){
+            this.curSp += (this.spRegen*d/1000);
+            if(this.curSp > this.spCap){
+                this.curSp = this.spCap;
             }
         }
 
@@ -358,8 +441,8 @@ export class Weapon extends Phaser.Events.EventEmitter{
     }
 
     updateCooldown(){
-        if(Math.abs(this.overflow) < (this.maxCD)){
-            this.cooldown = this.overflow+(this.maxCD);
+        if(this.overflow < (this.maxCD)){
+            this.cooldown = this.maxCD-this.overflow;
             //console.log(this.wp.name + "CURRENT COOLDOWN: " + this.cooldown);
             this.overflow = 0;
         } else {
@@ -390,13 +473,13 @@ export class Weapon extends Phaser.Events.EventEmitter{
     }
 
     handleOverflow(){
-        this.overflow = Math.abs(this.overflow);
-        if(this.overflow > (this.maxCD*1000)){
-            this.stored += Math.trunc(this.overflow/(this.maxCD*1000));
-            this.overflow -= (this.stored*this.maxCD*1000);
-            this.cooldown = (this.maxCD*1000) - this.overflow;
+        if(this.overflow > (this.maxCD)){
+            let cn = Math.trunc(this.overflow/this.maxCD)
+            this.stored += cn;
+            this.overflow -= (cn*this.maxCD);
+            this.cooldown = this.maxCD - this.overflow;
             if(this.cooldown < 0){
-                this.cooldown = 0.0001;
+                this.cooldown = 1;
             }
             this.overflow = 0;
         }

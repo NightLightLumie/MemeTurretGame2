@@ -7,7 +7,7 @@ import { ScalingEffect } from "@/components/Graphics/ScalingEffect";
 
 export class RuneCircle extends Item{
     public percent: number = 0.5;
-    private dmgRadius: number = 600;
+    private dmgRadius: number = 750;
     private fRad: number = 144; //super hacky
     constructor(scene: GameScene, p: Player, name: string, slot: number){
         super(scene, p, name, slot);
@@ -46,7 +46,7 @@ export class RuneCircle extends Item{
         if(Math.random()<0.5){
             i *= -1;
         }
-        this.scene.addHitEffect(new ScalingEffect(this.scene,this.owner.x,this.owner.y,"bigrune",500,Math.random()*360,i,[2.5,2.5],[1,0],"follow"));
+        this.scene.addHitEffect(new ScalingEffect(this.scene,this.owner.x,this.owner.y,"bigrune",500,Math.random()*360,i,[2*this.dmgRadius/400,2*this.dmgRadius/400],[1,0],"follow"));
         this.scene.sound.play("runethud", {volume: 0.75});
         this.owner.bankedCasts++;
     }

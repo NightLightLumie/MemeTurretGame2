@@ -4,6 +4,7 @@ export class GunUI extends Phaser.GameObjects.Container{
 
     public scene:GameScene;
     private panel:Phaser.GameObjects.Image;
+    private panel2:Phaser.GameObjects.Image;
     private gun:Phaser.GameObjects.Image;
 
     private barLine: Phaser.GameObjects.Rectangle;
@@ -20,6 +21,11 @@ export class GunUI extends Phaser.GameObjects.Container{
         this.add(this.panel);
         this.panel.setOrigin(0.5,0.5)
         this.panel.setDepth(1);
+
+        this.panel2 = this.scene.add.image(0,220,"panelblu");
+        this.add(this.panel2);
+        this.panel2.setOrigin(0.5,0.5)
+        this.panel2.setDepth(2);
         this.gun = this.scene.add.image(0,7,("gun_"+this.scene.player.getActiveWeapon().type));
         this.add(this.gun);
         this.gun.setDepth(10);

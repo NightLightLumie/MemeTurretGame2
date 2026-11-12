@@ -76,6 +76,7 @@ const images: Image[] = [
 	// UI
 	image('ui/hud', 'hud'),
 	image('ui/panelred', 'panelred'),
+	image('ui/panelblu', 'panelblu'),
 	image('ui/aug_lock', 'aug_lock'),
 	image('ui/aug_button_lock', 'aug_button_lock'),
 	image('ui/aug_select_back', 'aug_select_back'),

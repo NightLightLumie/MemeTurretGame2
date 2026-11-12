@@ -513,16 +513,16 @@ export class Player extends Phaser.GameObjects.Container {
 		this.itDisp.redrawItems();
 	}
 
-	smartRound(n: number): number{
+    smartRound(n: number): string{
         let rr = n*100;
         rr = Math.round(rr);
         if((rr % 100) == 0){
-            return Math.trunc(rr*0.01);
+            return ""+Math.trunc(rr*0.01);
         } else if ((rr % 10) == 0) {
             rr = Math.trunc(rr*0.1);
-            return (rr*0.1);
+            return ""+(rr*0.1);
         } else {
-            return rr/100;
+            return rr.toFixed(2);
         }
     }
 
@@ -611,8 +611,9 @@ export class Player extends Phaser.GameObjects.Container {
 			this.loadout[this.activeWeapon].update(time,delta);
 		}
 		if(this.firing) {
-			this.scene.handler.shoot(this.curGunAngle,this.getActiveWeapon());
+			this.scene.handler.fire(this.curGunAngle,this.getActiveWeapon());
 		}
+		this.scene.handler.checkBursts(time, delta, this.curGunAngle, this.getActiveWeapon());
 
 		this.inputVec.limit(1);
 		// this.inputVec.normalize();
@@ -747,10 +748,12 @@ export class Player extends Phaser.GameObjects.Container {
 
 	scrollForward(){
 		this.loadout[this.activeWeapon].reset();
+		console.log("Bursts: " + this.loadout[this.activeWeapon].bursts);
 		this.activeWeapon++;
 		if(this.activeWeapon > 2){
 			this.activeWeapon = 0;
 		}
+		console.log("Bursts on Swap: " + this.loadout[this.activeWeapon].bursts);
 		if(this.loadout[this.activeWeapon].loadTime > 0){
 			this.scene.sound.play("start_reload", {volume:0.75});	
 		}
@@ -760,10 +763,12 @@ export class Player extends Phaser.GameObjects.Container {
 
 	scrollBackward(){
 		this.loadout[this.activeWeapon].reset();
+		console.log("Bursts: " + this.loadout[this.activeWeapon].bursts);
 		this.activeWeapon--;
 		if(this.activeWeapon < 0){
 			this.activeWeapon = 2;
 		}
+		console.log("Bursts on Swap: " + this.loadout[this.activeWeapon].bursts);
 		if(this.loadout[this.activeWeapon].loadTime > 0){
 			this.scene.sound.play("start_reload", {volume:0.75});	
 		}
@@ -859,6 +864,11 @@ export class Player extends Phaser.GameObjects.Container {
 
 	fire(){
 		this.firing = true;
+	}
+
+	fireSpecial(){
+
+
 	}
 
 	unfire(){

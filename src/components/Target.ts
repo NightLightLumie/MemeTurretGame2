@@ -432,16 +432,16 @@ export class Target extends Phaser.GameObjects.Container{
         this.seeking = false;
     }
 
-    smartRound(n: number): number{
+    smartRound(n: number): string{
         let rr = n*100;
         rr = Math.round(rr);
         if((rr % 100) == 0){
-            return Math.trunc(rr*0.01);
+            return ""+Math.trunc(rr*0.01);
         } else if ((rr % 10) == 0) {
             rr = Math.trunc(rr*0.1);
-            return (rr*0.1);
+            return ""+(rr*0.1);
         } else {
-            return rr/100;
+            return rr.toFixed(2);
         }
     }
 

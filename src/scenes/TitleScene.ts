@@ -284,6 +284,7 @@ export class TitleScene extends BaseScene {
 			if((this.ltimer[0] < 250) && (!this.tnum.visible)){
 				this.tnum.setVisible(true);
 				this.sound.play("meme_explosion", {volume: 0.75});
+				this.shake(250);
 				this.tbkg.setTexture("tt3");
 				let exp = new BasicEffect(this,"meme_exp",this.c1.x+986,this.c1.y+424,18,40,false,0,0,[12,12]);
 				this.effectLayer.add(exp);
@@ -376,7 +377,7 @@ export class TitleScene extends BaseScene {
 				this.fade(true, 1000, 0x000000);
 				this.addEvent(1050, () => {
 					this.musicTitle.stop();
-					this.scene.start("UpgradeScene", {gameData: this.masterData});
+					this.scene.start("CutsceneScene", {gameData: this.masterData});
 				});
 			});
 		}

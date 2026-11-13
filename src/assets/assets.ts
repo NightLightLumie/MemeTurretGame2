@@ -17,6 +17,18 @@ const images: Image[] = [
 	image('backgrounds/redlines', 'redlines'),
 	image('backgrounds/rip', 'rip'),
 
+	//Cutscenes
+	image('cutscenes/expo1', 'expo_1'),
+	image('cutscenes/expo2', 'expo_2'),
+	image('cutscenes/expo3', 'expo_3'),
+	image('cutscenes/expo4', 'expo_4'),
+	image('cutscenes/expo5', 'expo_5'),
+	image('cutscenes/expo6', 'expo_6'),
+	image('cutscenes/expo7', 'expo_7'),
+	image('cutscenes/expo8', 'expo_8'),
+	image('cutscenes/expo9', 'expo_9'),
+	image('cutscenes/expo10', 'expo_10'),
+
 	// Characters
 	image('characters/player', 'player'),
 
@@ -75,6 +87,7 @@ const images: Image[] = [
 	image('items/danmakucharm', 'danmakucharm'),
 	// UI
 	image('ui/hud', 'hud'),
+	image('ui/progressarrow', 'progressarrow'),
 	image('ui/sp_icon', 'sp_icon'),
 	image('ui/panelred', 'panelred'),
 	image('ui/panelblu', 'panelblu'),
@@ -238,6 +251,7 @@ const audios: Audio[] = [
 	music('loot', 'm_loot'),
 	music('overdrive', 'm_od'),
 	music('idletank', 'm_up'),
+	music('mystery', 'm_mystery'),
 	sound('tree/rustle', 't_rustle', 0.5),
 	sound('tree/vineboom', 'vineboom', 0.5),
 	sound('enemies/oof', 'oof', 0.5),

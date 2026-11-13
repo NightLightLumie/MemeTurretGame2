@@ -73,6 +73,13 @@ const Data = {
 		loop: true,
 		start: 0,
 		end: 9194496 / 44100,
+	},
+	m_mystery: {
+		offset: 0,
+		bpm: 144,
+		loop: true,
+		start: 0,
+		end: 6150094 / 44100,
 	}
 };
 

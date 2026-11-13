@@ -1,4 +1,4 @@
-import { Target } from "./Target";
+import { Target } from "../Target";
 
 export class DotHandler{
     private key: string;

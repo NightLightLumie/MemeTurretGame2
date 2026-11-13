@@ -2,6 +2,7 @@ import { Armory, PassiveAbility, WeaponEntry } from "./WeaponFunctions/Armory";
 import { WeaponParams } from "./WeaponFunctions/WeaponOperator";
 import { Augment } from "./WeaponFunctions/Weapon";
 import { WeaponButton } from "./WeaponFunctions/WeaponButton";
+import { SaveData, SaveState } from "./SaveData";
 
 export interface ItemParams{
     id: number;
@@ -15,6 +16,7 @@ export interface ItemParams{
 
 export class GlobalVariables {
 
+    public version: string = "alpha_0.1";
     public curGunID: number = -999999999;
     public inv: Armory;
     public maxAugOverLevel: number = 13;
@@ -505,7 +507,59 @@ export class GlobalVariables {
     }
 
     saveGame(){
-        
+        try{
+            localStorage.removeItem("memeturretsave2");
+        } catch {
+            console.log("Attempted to remove invalid data.");
+        }
+        let save: SaveState;
+        save = {
+            version: this.version,
+            curGunID: this.curGunID,
+            boxCount: this.boxCount,
+            lootBoxes: structuredClone(this.lootBoxes),
+            money: this.money,
+            widgets: this.widgets,
+
+            gunList: structuredClone(this.inv.gunList),
+            soldGuns: structuredClone(this.inv.soldGuns)
+        }
+
+        let savestring = JSON.stringify(save);
+        localStorage.setItem("memeturretsave2", savestring);
+    }
+
+    loadGame(){
+        const mySave = localStorage.getItem("memeturretsave2");
+        if(mySave != null){
+            try {
+                let parsedata = JSON.parse(mySave);
+                if(parsedata satisfies SaveState){
+                    this.parseSave(parsedata);
+                }
+            } catch {
+                console.log("Attempted to load inadequate savedata.");
+            }
+        }
+    }
+
+    parseSave(data: SaveState){
+        if(data.version != this.version){
+            console.log("Tried to load different save version.");
+            return;
+        }
+        this.curGunID = data.curGunID;
+        this.boxCount = data.boxCount;
+        this.lootBoxes = structuredClone(data.lootBoxes);
+        this.widgets = data.widgets;
+        this.money = data.money;
+        this.inv.gunList = structuredClone(data.gunList);
+        this.inv.soldGuns = structuredClone(data.soldGuns);
+
+    }
+
+    newGame(){
+
     }
 
     swapLoadout(){

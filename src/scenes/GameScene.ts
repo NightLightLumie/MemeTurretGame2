@@ -10,7 +10,7 @@ import { WeaponOperator } from "@/components/WeaponFunctions/WeaponOperator";
 import { GunUI } from "@/components/WeaponFunctions/GunUI";
 import { GlobalVariables } from "@/components/GlobalVariables";
 import { Tracer } from "@/components/WeaponFunctions/Tracer";
-import { DotTracker } from "@/components/DotTracker";
+import { DotTracker } from "@/components/WeaponFunctions/DotTracker";
 import { TileChecker } from "@/components/TileChecker";
 import { LevelParser } from "@/components/GameFunctions/LevelParser";
 import { Levels } from "@/components/GameFunctions/Levels";

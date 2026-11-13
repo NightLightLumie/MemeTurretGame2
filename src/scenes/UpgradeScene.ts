@@ -651,6 +651,7 @@ export class UpgradeScene extends BaseScene {
 	progress() {
 		this.stageMusic.stop();
 		this.sound.stopAll();
+		this.masterData.saveGame();
 		this.finalizeWeaponSelection();	
 		this.scene.start("GameScene", {gameData: this.masterData});
 	}

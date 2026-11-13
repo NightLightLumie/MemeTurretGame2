@@ -311,6 +311,7 @@ export class LootScene extends BaseScene{
 		this.sound.stopAll();
 		this.addEvent(0, () => {
 			//this.musicTitle.stop();
+			this.masterData.saveGame();
 			this.scene.start("UpgradeScene", {gameData: this.masterData});
 		});
 	}

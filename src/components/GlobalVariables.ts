@@ -553,7 +553,9 @@ export class GlobalVariables {
         this.lootBoxes = structuredClone(data.lootBoxes);
         this.widgets = data.widgets;
         this.money = data.money;
+        console.log("Setting gun list from save: " + data.gunList);
         this.inv.gunList = structuredClone(data.gunList);
+        console.log("Setting sold guns from save: " + data.gunList);
         this.inv.soldGuns = structuredClone(data.soldGuns);
 
     }

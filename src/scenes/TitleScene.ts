@@ -376,6 +376,8 @@ export class TitleScene extends BaseScene {
 			this.addEvent(1000, () => {
 				this.fade(true, 1000, 0x000000);
 				this.addEvent(1050, () => {
+//					this.masterData.saveGame();
+//					this.masterData.loadGame();
 					this.musicTitle.stop();
 					this.scene.start("CutsceneScene", {gameData: this.masterData});
 				});

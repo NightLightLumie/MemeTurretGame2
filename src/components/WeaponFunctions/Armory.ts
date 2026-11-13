@@ -50,7 +50,7 @@ export class Armory {
             this.defaultGuns.set(xby[ix], xbr[ix]);
         }
         this.gunList = new Map([
-            [-999999999, {gID: -999999999, wID: 4, augs: [], passives: this.reference.getGunPassives(4)}],
+            [-999999999, {gID: -999999999, wID: 7, augs: [], passives: this.reference.getGunPassives(7)}],
         ]);
     }
     /*

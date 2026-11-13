@@ -22,11 +22,12 @@ export class Rocket extends Missile{
     initiateParams(){
         this.globalDamageScale = 1+this.scene.player.bonusGunDamage;
         this.damage *= this.globalDamageScale;
+        let dh = this.owner.rollDirectHit();
         switch(this.owner.wp.type){
             case 6: {
                 this.v[0] *= this.owner.wp.spd;
                 this.v[1] *= this.owner.wp.spd;
-                this.damage = this.owner.damage;
+                this.damage = this.owner.damage*dh;
                 this.blast = this.owner.blast;
                 this.radius = 18;
                 this.eScale = 2*this.owner.blast/256;
@@ -37,10 +38,6 @@ export class Rocket extends Missile{
                 break;
             }
         }
-    }
-    
-    rollDirectHit(){
-
     }
 
     processHit(t: Target): void {

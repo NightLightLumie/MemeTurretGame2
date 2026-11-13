@@ -150,10 +150,10 @@ export class GlobalVariables {
         [6, {type:6,name:"LOSSNEN",class:"rocket", dmg: 1655, spd: 5000, rof: 1, spcd: [-1, 1000, 10, 10000], shots: 1, pen: 1, pcd: -999, clip: 2, load: 2.5, width: 1, rad: 280,
          acc: 0.05, arpen: [0,0], crit: [0,1], ele: 1, onhit: 0, weight: 0.3, rarity: 1, burst:[1,1], dot: [], augs: [0,1,1,1, 1,0,1,1, 1,0,1,0, 0,1,0,0, 1,1,0], customaug: {name: "default", index: 0, level: 18, maxlv: 10, lvcap: 10, desc: ""}, passives: [
             {name: "Wholesale", desc: "+60% total damage",activated:false}]}],
-        [7, {type:7,name:"Ottertail",class:"smg", dmg: 185, spd: 22000, rof: 11, spcd: [-1, 1000, 10, 10000], shots: 1, pen: 1.25, pcd: -999, clip: 42, load: 1.75, width: 1, rad: 1,
+        [7, {type:7,name:"Ottertail",class:"smg", dmg: 185, spd: 22000, rof: 11, spcd: [500, 1000, 25, 10000], shots: 1, pen: 1.25, pcd: -999, clip: 42, load: 1.75, width: 1, rad: 1,
          acc: 9, arpen: [0,0], crit: [0.001,1.75], ele: 1, onhit: 0, weight: 0.15, rarity: 1, burst:[1,1], dot: [], augs: [0,1,1,1, 1,0,1,1, 0,1,1,1, 1,1,0,0, 1,1,1], customaug: {name: "Rambunctious", index: 18, level: 0, maxlv: 10, lvcap: 10, desc: "Increased damage when triggering Romp. +20% per upgrade."},
         passives: [{name: "Romp", desc: "Hits from this weapon apply a stack of Romp. At 7 stacks, trigger to deal ", activated: true},
-            {name: "Screwdriver", desc: "Alt-fire to shoot a rapid burst of 7 shots.", activated: true},
+            {name: "Screwdriver", desc: "Alt-fire to shoot a rapid burst of 7 accurate shots.", activated: true},
             {name: "Otter Space", desc: "Each shot inflicts an additional stack of Romp.", activated: false}
         ]}],
         [8, {type:8,name:"NTR-141",class:"pistol", dmg: 60, spd: 20000, rof: 16, spcd: [-1, 1000, 10, 10000], shots: 1, pen: 1, pcd: -999, clip: 21, load: 1, width: 1, rad: 1,
@@ -165,6 +165,11 @@ export class GlobalVariables {
             {name: "Pack Tactics", desc: "All shots will critically strike if any shot rolls a critical strike.", activated: true},
             {name: "Domination", desc: "Third shot fire chance and critical strike chance increased by 35% each.", activated: false},
          ]}],
+        [10, {type:10,name:"WS-Crossfade SE",class:"pistol", dmg: 90, spd: 20000, rof: 9, spcd: [-1, 1000, 10, 10000], shots: 1, pen: 1, pcd: 20, clip: 13, load: 1.15, width: 1, rad: 1,
+        acc: 8, arpen: [0,0], crit: [0.001,1.5], ele: 1, onhit: 10, weight: 0.05, rarity: 1, burst:[1,1], dot: [], augs: [0,1,1,1, 1,0,1,1, 0,0,1,1, 1,1,0,0, 1,1,1], customaug: {name: "Split Shot", index: 18, level: 0, maxlv: 10, lvcap: 10, desc: "Additional flat pierce and onhit damage. +0.2 / +2 per level."}, 
+        passives: [{name: "Flail", desc: "Randomly fire 1, 2 or 3 projectiles per shot.", activated: true},
+            {name: "Havoc", desc: "Fires 1, 2, 3 or 4 projectiles per shot.", activated: false}
+        ]}],
         [10, {type:10,name:"WS-Crossfade SE",class:"pistol", dmg: 90, spd: 20000, rof: 9, spcd: [-1, 1000, 10, 10000], shots: 1, pen: 1, pcd: 20, clip: 13, load: 1.15, width: 1, rad: 1,
         acc: 8, arpen: [0,0], crit: [0.001,1.5], ele: 1, onhit: 10, weight: 0.05, rarity: 1, burst:[1,1], dot: [], augs: [0,1,1,1, 1,0,1,1, 0,0,1,1, 1,1,0,0, 1,1,1], customaug: {name: "Split Shot", index: 18, level: 0, maxlv: 10, lvcap: 10, desc: "Additional flat pierce and onhit damage. +0.2 / +2 per level."}, 
         passives: [{name: "Flail", desc: "Randomly fire 1, 2 or 3 projectiles per shot.", activated: true},

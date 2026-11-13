@@ -288,6 +288,10 @@ export class Weapon extends Phaser.Events.EventEmitter{
     }
 
     canShootSpecial(): boolean{
+        if(this.spCost < 0){
+            return false;
+        }
+        
         if(this.curSp < this.spCost){
             return false;
         } else if ((this.spCD[0] > 0)){
@@ -338,7 +342,9 @@ export class Weapon extends Phaser.Events.EventEmitter{
         if(this.bursts.length > 0){
             let ct = 0;
             this.bursts.forEach((b) => {
-                ct += b.amt;
+                if(!b.ignoreAmmo){
+                    ct += b.amt;
+                }
             })
             let rm = this.curAmmo - ct;
             if(rm <= 0){ 
@@ -447,6 +453,17 @@ export class Weapon extends Phaser.Events.EventEmitter{
             this.overflow = 0;
         } else {
             this.handleOverflow();
+        }
+    }
+
+    updateSpCooldown(){
+        this.spCD[0] = this.spCD[1];
+    }
+
+    updateSpEnergy(){
+        this.curSp -= this.spCost;
+        if(this.curSp < 0){
+            console.log("Special Shot Energy error");
         }
     }
 

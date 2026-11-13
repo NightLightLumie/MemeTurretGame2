@@ -7,6 +7,7 @@ import { SellButton } from "@/components/Buttons/SellButton";
 import { Effect } from "@/components/Graphics/Effect";
 import { DamageText } from "@/components/Graphics/DamageText";
 import { WidgetButton } from "@/components/Buttons/WidgetButton";
+import { Music } from "@/components/Music";
 
 export class UpgradeScene extends BaseScene {
 	private background: Phaser.GameObjects.Image;
@@ -53,7 +54,7 @@ export class UpgradeScene extends BaseScene {
 	public equippedButtons: WeaponButton[];
 
 	public locked: boolean = false;
-
+	private stageMusic: Phaser.Sound.WebAudioSound;
 
 
 	constructor() {
@@ -74,6 +75,9 @@ export class UpgradeScene extends BaseScene {
 		this.background.setOrigin(0,0);
 		this.background.setScale(1);
 		this.background.setDepth(0);
+
+		this.stageMusic = new Music(this,"m_loot",{volume:0.4});
+		this.stageMusic.play();
 
 		this.gfx = [];
 		this.gfxLayer = new Phaser.GameObjects.Container(this,0,0);
@@ -192,7 +196,7 @@ export class UpgradeScene extends BaseScene {
 	initButtons(){
 		this.sellButton = new SellButton(this,1280,758);
 		this.sellButton.setDepth(30);
-		this.widgetButton = new WidgetButton(this,140,140);
+		this.widgetButton = new WidgetButton(this,620,748);
 		this.widgetButton.setDepth(30);
 		this.buttonList = [];
 		let n = 0;
@@ -645,6 +649,8 @@ export class UpgradeScene extends BaseScene {
 	}
 
 	progress() {
+		this.stageMusic.stop();
+		this.sound.stopAll();
 		this.finalizeWeaponSelection();	
 		this.scene.start("GameScene", {gameData: this.masterData});
 	}

@@ -59,7 +59,7 @@ export class LootScene extends BaseScene{
         this.blinkRect.setDepth(999999999);
         this.blinkRect.setVisible(false);
         this.blinkRect.setAlpha(1);
-        this.stageMusic = new Music(this,"m_loot",{volume:0.4});
+        this.stageMusic = new Music(this,"m_up",{volume:0.4});
 		this.stageMusic.play();
         
     }

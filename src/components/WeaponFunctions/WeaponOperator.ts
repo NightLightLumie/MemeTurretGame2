@@ -110,7 +110,12 @@ export class WeaponOperator{
     }
 
     fireSpecial(a: number, w: Weapon){
-        
+        if(!w.canShootSpecial()){
+            return;
+        }
+        w.updateSpCooldown();
+        w.updateSpEnergy();
+        this.fireSpecialShot(a,w,true,true);
     }
 
     checkBursts(t: number, d: number, a: number, w: Weapon){
@@ -153,27 +158,43 @@ export class WeaponOperator{
     }
 
     burstFire(a: number, w: Weapon, b: BurstTracker, recur: boolean = false, unsafe: boolean = false, special: boolean = false){
-        if(!unsafe){
-            if(w.curAmmo < 1){
-                console.log("Attempted to effect burst with no ammo, this should not happen")
-                return;
-            }
-        }
-        if((!recur)){ //take care of overflow shots, if the firing interval is lower than the tick rate of the computer
-            if((w.curAmmo >= 2) && (b.amt >= 2) && (b.stored > 0)) {
-                let rr = b.stored;
-                for(let n = 0; n < rr; n++) {
-                    if((w.curAmmo >= 2) && (b.amt >= 2)){
-                        this.shoot(a,w,true,true,special);
-                    }
+        if(!b.ignoreAmmo){
+            if(!unsafe){
+                if(w.curAmmo < 1){
+                    console.log("Attempted to effect burst with no ammo, this should not happen")
+                    return;
                 }
             }
-            this.p.trackShots++; //Don't track overflow shots, avoid weirdness
+            if((!recur)){ //take care of overflow shots, if the firing interval is lower than the tick rate of the computer
+                if((w.curAmmo >= 2) && (b.amt >= 2) && (b.stored > 0)) {
+                    let rr = b.stored;
+                    for(let n = 0; n < rr; n++) {
+                        if((w.curAmmo >= 2) && (b.amt >= 2)){
+                            this.burstFire(a,w,b,true,true,special);
+                        }
+                    }
+                }
+                this.p.trackShots++; //Don't track overflow shots, avoid weirdness
+            } else {
+                b.stored -= 1;
+            }
         } else {
-            b.stored -= 1;
+            if((!recur)){ //take care of overflow shots, if the firing interval is lower than the tick rate of the computer
+                if((b.amt >= 2) && (b.stored > 0)) {
+                    let rr = b.stored;
+                    for(let n = 0; n < rr; n++) {
+                        if((b.amt >= 2)){
+                            this.burstFire(a,w,b,true,true,special);
+                        }
+                    }
+                }
+                this.p.trackShots++; //Don't track overflow shots, avoid weirdness
+            } else {
+                b.stored -= 1;
+            }
         }
         b.amt -= 1;
-        this.fireBullet(a,w,special);
+        this.fireBullet(a,w,special,b.ignoreAmmo);
     }
 
     shootBurst(a: number, w: Weapon, recur: boolean =  false, unsafe: boolean = false, special: boolean = false){
@@ -237,8 +258,46 @@ export class WeaponOperator{
         this.fireBullet(a,w,special);
     }
 
-    fireBullet(a: number, w: Weapon, special: boolean){
-        w.updateAmmo(1);
+    fireSpecialShot(a: number, w: Weapon, special: boolean, ignoreAmmo: boolean = false){
+        switch(w.type){
+            case 0: { //lutra
+           } case 1: { //windmill
+           } case 3: { //broadhead
+           } case 8: { //NTR-141
+           } case 5: { //windmill
+           } case 2: { //ANTEK
+           } case 9: { //Two-fanged wolf
+           } case 6: { //LOSSNEN
+           } case 10: { //WS-Crossfade SE
+           } case 4: { //bjuron
+            console.log("Error firing special on gun with no special shot");
+            break;
+           } case 7: { //ottertail
+                let cb: BurstTracker;
+                cb = {
+                    amt: 7,
+                    curCD: 0,
+                    maxCD: 50,
+                    special: true,
+                    ignoreAmmo: true,
+                    overflow: 0,
+                    stored: 0,
+                }
+                cb.curCD = cb.maxCD;
+                cb.amt -= 1;
+                this.fireBullet(a,w,special,true);
+                w.addBurst(cb);
+               break; 
+           } default: {
+               break;
+           }
+       }
+    }
+
+    fireBullet(a: number, w: Weapon, special: boolean, ignoreAmmo: boolean = false){
+        if(!ignoreAmmo){
+            w.updateAmmo(1);
+        }
         switch(w.type){
             case 0: { //lutra
                let ofs = Phaser.Math.DegToRad(-1*w.acc+(Math.random()*2*w.acc));
@@ -256,10 +315,14 @@ export class WeaponOperator{
                break;
            } case 7: { //ottertail
                let ofs = Phaser.Math.DegToRad(-1*w.acc+(Math.random()*2*w.acc));
-               this.p.scene.sound.play(("gun_"+w.type),{volume: 0.7});
+
                let mult = 1;
                if(special){
                     mult = w.spDmg;
+                    ofs *= 0.25;
+                    this.p.scene.sound.play(("gun_"+w.type+"_low"),{volume: 0.9});
+               } else {
+                    this.p.scene.sound.play(("gun_"+w.type),{volume: 0.7});
                }
                this.p.scene.addBullet(new Bullet(this.p.scene,this.p.x+(w.fRad*Math.cos(a)), this.p.y+(w.fRad*Math.sin(a)), w.wp.type, w.wp.spd,a+ofs,w.damage*mult,w.pierce, w));
                break; 

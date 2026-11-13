@@ -58,6 +58,7 @@ export class Player extends Phaser.GameObjects.Container {
 	private ttText: Phaser.GameObjects.Text;
 	private fRad: number = 144;
 	private firing: boolean = false;
+	private spFiring: boolean = false;
 	private cd: number = 0;
 	private maxCD: number = 250;
 	public curGunAngle: number;
@@ -196,6 +197,12 @@ export class Player extends Phaser.GameObjects.Container {
 				.addKey(Phaser.Input.Keyboard.KeyCodes.E)
 				.on("down", this.scrollForward, this);
 			this.scene.input.keyboard
+				.addKey(Phaser.Input.Keyboard.KeyCodes.F)
+				.on("down", this.fireSpecial, this);
+			this.scene.input.keyboard
+				.addKey(Phaser.Input.Keyboard.KeyCodes.F)
+				.on("up", this.unFireSpecial, this);
+			this.scene.input.keyboard
 				.addKey(Phaser.Input.Keyboard.KeyCodes.Q)
 				.on("down", this.scrollBackward, this);
 			this.scene.input.keyboard
@@ -290,7 +297,7 @@ export class Player extends Phaser.GameObjects.Container {
 		this.loadout.forEach((lw) => {
 			if(lw.wp.type == id){
 				if(lw.killtracker[1] > 0){
-					console.log("relaying hit");
+					//console.log("relaying hit");
 					lw.killtracker[0]++;
 					if(lw.killtracker[0] > lw.killtracker[1]){
 						lw.killtracker[0] = lw.killtracker[1];
@@ -446,7 +453,7 @@ export class Player extends Phaser.GameObjects.Container {
 		if(this.health <= 0){ 
 			this.health = 0;
 			this.die();
-			console.log("Current iframes: " + this.curIFrames);
+			//console.log("Current iframes: " + this.curIFrames);
 		}
 	}
 
@@ -613,6 +620,11 @@ export class Player extends Phaser.GameObjects.Container {
 		if(this.firing) {
 			this.scene.handler.fire(this.curGunAngle,this.getActiveWeapon());
 		}
+
+		if(this.spFiring) {
+			this.scene.handler.fireSpecial(this.curGunAngle,this.getActiveWeapon());
+		}
+
 		this.scene.handler.checkBursts(time, delta, this.curGunAngle, this.getActiveWeapon());
 
 		this.inputVec.limit(1);
@@ -748,12 +760,12 @@ export class Player extends Phaser.GameObjects.Container {
 
 	scrollForward(){
 		this.loadout[this.activeWeapon].reset();
-		console.log("Bursts: " + this.loadout[this.activeWeapon].bursts);
+		//console.log("Bursts: " + this.loadout[this.activeWeapon].bursts);
 		this.activeWeapon++;
 		if(this.activeWeapon > 2){
 			this.activeWeapon = 0;
 		}
-		console.log("Bursts on Swap: " + this.loadout[this.activeWeapon].bursts);
+		//console.log("Bursts on Swap: " + this.loadout[this.activeWeapon].bursts);
 		if(this.loadout[this.activeWeapon].loadTime > 0){
 			this.scene.sound.play("start_reload", {volume:0.75});	
 		}
@@ -763,12 +775,12 @@ export class Player extends Phaser.GameObjects.Container {
 
 	scrollBackward(){
 		this.loadout[this.activeWeapon].reset();
-		console.log("Bursts: " + this.loadout[this.activeWeapon].bursts);
+		//console.log("Bursts: " + this.loadout[this.activeWeapon].bursts);
 		this.activeWeapon--;
 		if(this.activeWeapon < 0){
 			this.activeWeapon = 2;
 		}
-		console.log("Bursts on Swap: " + this.loadout[this.activeWeapon].bursts);
+		//console.log("Bursts on Swap: " + this.loadout[this.activeWeapon].bursts);
 		if(this.loadout[this.activeWeapon].loadTime > 0){
 			this.scene.sound.play("start_reload", {volume:0.75});	
 		}
@@ -866,14 +878,18 @@ export class Player extends Phaser.GameObjects.Container {
 		this.firing = true;
 	}
 
-	fireSpecial(){
-
-
-	}
-
 	unfire(){
 		this.firing = false;
 	}
+
+	fireSpecial(){
+		this.spFiring = true;
+	}
+	unFireSpecial(){
+		this.spFiring = false;
+	}
+
+
 
 
 	getActiveWeapon(): Weapon{

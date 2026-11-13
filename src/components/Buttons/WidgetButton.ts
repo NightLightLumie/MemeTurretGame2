@@ -14,7 +14,7 @@ export class WidgetButton extends Button{
         this.add(this.sp);
         this.scene.add.existing(this);
         this.sp.setOrigin(0.5, 0.5);
-        this.sp.setScale(1,1);
+        this.sp.setScale(0.5,0.5);
         this.bindInteractive(this.sp);
         this.sp.setInteractive();
         this.lockout = false;

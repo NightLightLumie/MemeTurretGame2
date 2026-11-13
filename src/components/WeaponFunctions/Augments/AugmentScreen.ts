@@ -63,7 +63,7 @@ export class AugmentScreen extends Phaser.GameObjects.Container{
         this.bkg = this.scene.add.image(0, 0, "augbkg");
         this.add(this.bkg);
 		this.bkg.setOrigin(0,0);
-		this.bkg.setScale(1);
+		this.bkg.setScale(2,2);
 		this.bkg.setDepth(0);
         this.upbtn = new AugmentControlButton(this.scene,this,"upgradebtn", 370, 880, "upgrade");
         this.add(this.upbtn);

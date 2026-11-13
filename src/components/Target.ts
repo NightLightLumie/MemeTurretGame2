@@ -436,12 +436,12 @@ export class Target extends Phaser.GameObjects.Container{
         let rr = n*100;
         rr = Math.round(rr);
         if((rr % 100) == 0){
-            return ""+Math.trunc(rr*0.01);
+            return ""+Math.trunc(rr/100);
         } else if ((rr % 10) == 0) {
-            rr = Math.trunc(rr*0.1);
-            return ""+(rr*0.1);
+            rr = Math.trunc(rr*0.1)/10;
+            return ""+(rr);
         } else {
-            return rr.toFixed(2);
+            return (rr/100).toFixed(2);
         }
     }
 

@@ -102,8 +102,8 @@ export class CutsceneScene extends BaseScene {
 		if(this.fadeMusic[0] < this.fadeMusic[1]){
 			this.fadeMusic[0] += delta;
 			if(this.fadeMusic[0] >= this.fadeMusic[1]){
-				this.fadeMusic = [1000,1000,0,1];
 				this.stageMusic.setVolume(this.fadeMusic[3]);
+				this.fadeMusic = [1000,1000,0,1];
 			} else {
 				this.stageMusic.setVolume(this.fadeMusic[2] + ((this.fadeMusic[0]/this.fadeMusic[1])*(this.fadeMusic[3]-this.fadeMusic[2])));
 			}

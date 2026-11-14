@@ -3,7 +3,7 @@ import { Button } from "../WeaponFunctions/Button";
 import { image } from "@/assets/util";
 import { BaseScene } from "@/scenes/BaseScene";
 import { AugmentScreen } from "../WeaponFunctions/Augments/AugmentScreen";
-import { Augment } from "../WeaponFunctions/Weapon";
+import { Augment } from "../DataTypes";
 
 export class AugmentSelectButton extends Button{
     public scene: BaseScene;

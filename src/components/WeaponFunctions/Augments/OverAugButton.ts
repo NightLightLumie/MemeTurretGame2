@@ -77,6 +77,7 @@ export class OverAugButton extends Button{
         this.back.fillColor = 0xFF57CD;
         //console.log("Amount consumed: " + this.storedamt);
         this.ref.signalRoll(this.storedamt);
+        this.ref.softLockButtons();
         //this.process();
         /*
         this.sp.setFrame(0);

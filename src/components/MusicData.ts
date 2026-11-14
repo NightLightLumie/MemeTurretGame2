@@ -80,6 +80,13 @@ const Data = {
 		loop: true,
 		start: 0,
 		end: 6150094 / 44100,
+	},
+	m_tutorial: {
+		offset: 0,
+		bpm: 144,
+		loop: true,
+		start: 0,
+		end: 8455167 / 44100,
 	}
 };
 

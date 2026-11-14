@@ -2,7 +2,7 @@ import { UpgradeScene } from "@/scenes/UpgradeScene";
 import { Button } from "../Button";
 import { AugmentBar } from "./AugmentBar";
 import { AugmentScreen } from "./AugmentScreen";
-import { PassiveAbility } from "../Armory";
+import { PassiveAbility } from "@/components/DataTypes";
 
 export class PassiveDisplay extends Button{
     public scene: UpgradeScene;
@@ -118,6 +118,7 @@ export class PassiveDisplay extends Button{
             this.sp.setTint(0xFF57CD);
             //console.log("Amount consumed: " + this.storedamt);
             this.ref.signalRoll(this.storedamt);
+            this.ref.softLockButtons();
         }
     }
 

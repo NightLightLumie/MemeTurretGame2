@@ -1,5 +1,6 @@
 import { BaseScene } from "@/scenes/BaseScene";
 import { GlobalVariables } from "@/components/GlobalVariables";
+import { Augment } from "@/components/DataTypes";
 import { WeaponButton } from "@/components/WeaponFunctions/WeaponButton";
 import { AugmentUI } from "@/components/WeaponFunctions/Augments/AugmentUI";
 import { NextSceneButton } from "@/components/Buttons/NextSceneButton";
@@ -234,7 +235,7 @@ export class UpgradeScene extends BaseScene {
 		}
 		let ps = this.masterData.inv.fetchGun(this.buttonList[ns].gID);
 		let val = 2000;
-		ps.augs.forEach((ag) => {
+		ps.augs.forEach((ag: Augment) => {
 			val += (500)+(ag.level*50);
 		})
 		let av = new DamageText(this,1280,758,"+" + val + "€","money");

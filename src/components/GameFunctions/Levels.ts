@@ -23,7 +23,7 @@ LEVEL CODING GUIDE:
 */
     public levelData: LevelEntry[][] = [
         [
-        {cmd: ["spawn", "thug", "xx"], args: [2,5,1000], cond: []},
+        {cmd: ["spawn", "thug", "xx"], args: [2,6,1000], cond: []},
         {cmd: ["waitEnemies"], args: [], cond: []},
         {cmd: ["wait"], args: [5000], cond: []},
         {cmd: ["loop"], args: [0,2,9999], cond: []},

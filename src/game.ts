@@ -6,6 +6,7 @@ import { LootScene } from "./scenes/LootScene";
 import OutlinePipelinePlugin from "phaser3-rex-plugins/plugins/outlinepipeline-plugin.js";
 import { UpgradeScene } from "./scenes/UpgradeScene";
 import { CutsceneScene } from "./scenes/CutsceneScene";
+import { TutorialScene } from "./scenes/TutorialScene";
 
 const config: Phaser.Types.Core.GameConfig = {
 	type: Phaser.WEBGL,
@@ -16,7 +17,7 @@ const config: Phaser.Types.Core.GameConfig = {
 	scale: {
 		mode: Phaser.Scale.FIT,
 	},
-	scene: [PreloadScene, TitleScene, CutsceneScene, GameScene, UpgradeScene, LootScene],
+	scene: [PreloadScene, TitleScene, CutsceneScene, GameScene, UpgradeScene, LootScene, TutorialScene],
 
 	plugins: {
 		global: [

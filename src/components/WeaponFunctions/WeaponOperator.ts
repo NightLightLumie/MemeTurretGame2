@@ -1,9 +1,10 @@
 import { Player } from "../Player"
 import { Target } from "../Target";
-import { PassiveAbility } from "./Armory";
+import { Augment,PassiveAbility } from "../DataTypes";
 import { Bullet } from "./Bullet";
 import { Rocket } from "./Rocket";
-import { Augment, Buff, BurstTracker, Weapon } from "./Weapon";
+import { Buff, BurstTracker, Weapon } from "./Weapon";
+
 
 export interface HitInfo{
     tg: Target;

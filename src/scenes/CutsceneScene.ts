@@ -1,22 +1,6 @@
 import { BaseScene } from "@/scenes/BaseScene";
 import { Music } from "@/components/Music";
-
-import { title, version } from "@/version.json";
 import { GlobalVariables } from "@/components/GlobalVariables";
-import { Effect } from "@/components/Graphics/Effect";
-import { BasicEffect } from "@/components/Graphics/BasicEffect";
-
-const creditsLeft = `${title} 
-
-@Handle
-@Handle
-@Handle`;
-
-const creditsRight = `
-
-role
-role
-role`;
 
 export class CutsceneScene extends BaseScene {
 	public bkg: Phaser.GameObjects.Image;
@@ -27,13 +11,21 @@ export class CutsceneScene extends BaseScene {
 	public index: number;
 	public end: number;
 	public masterData: GlobalVariables;
+    public skipTimer: number[]
+    public skipping: boolean;
 	public ending: boolean;
 	private stageMusic: Phaser.Sound.WebAudioSound;
 	private fadeMusic: number[];
 
 	constructor() {
 		super({ key: "CutsceneScene" });
-		this.masterData = new GlobalVariables();
+	}
+
+    init(data: { gameData: GlobalVariables; })
+	{
+		console.log('init, data');
+		this.masterData = data.gameData;
+        console.log(this.masterData.skipcutscenes);
 	}
 
 	create(): void {
@@ -43,6 +35,8 @@ export class CutsceneScene extends BaseScene {
 		this.ending = false;
 		this.flashTimer = [0,500];
 		this.progressTimer = [1000,1000];
+        this.skipTimer = [0,1000];
+        this.skipping = false;
 		this.fadeMusic = [1000,1000,0,1];
 
 		this.bkg = this.add.image(0,0,"expo_" + this.index);
@@ -64,6 +58,16 @@ export class CutsceneScene extends BaseScene {
 
 		this.stageMusic = new Music(this,"m_mystery",{volume:0});
 		this.stageMusic.play();
+
+        console.log(this.masterData.skipcutscenes);
+
+        if(this.masterData.skipcutscenes){
+            console.log("skipping scenes");
+            this.skipping = true;
+            this.skipTimer = [1000,1000];
+            this.progressTimer = [0,1000];
+            this.bkg.setTexture("skipscreen");
+        }
 
 		this.input.addPointer(2);
 		let touchId: number = -1;
@@ -99,6 +103,14 @@ export class CutsceneScene extends BaseScene {
 			}
 		}
 
+		if(this.skipTimer[0] > 0){
+			this.skipTimer[0] -= delta;
+			if(this.skipTimer[0] <= 0){
+				this.skipTimer[0] = 0;
+                this.progress();
+			}
+		}
+
 		if(this.fadeMusic[0] < this.fadeMusic[1]){
 			this.fadeMusic[0] += delta;
 			if(this.fadeMusic[0] >= this.fadeMusic[1]){
@@ -112,7 +124,7 @@ export class CutsceneScene extends BaseScene {
 
 	next(){
 		if(this.progressTimer[0] <= 0){
-			if(this.ending){
+			if(this.ending || this.skipping){
 				return;
 			}
 			this.sound.play("scroll", {volume:0.75});
@@ -147,7 +159,11 @@ export class CutsceneScene extends BaseScene {
 		this.musicFade(1000,0.4,0);
 		this.addEvent(1050, () => {
 			this.stageMusic.stop();
-			this.scene.start("UpgradeScene", {gameData: this.masterData});
+            if(this.skipping){
+                this.scene.start("UpgradeScene", {gameData: this.masterData});
+            } else {
+                this.scene.start("TutorialScene", {gameData: this.masterData});
+            }
 		});
 	}
 

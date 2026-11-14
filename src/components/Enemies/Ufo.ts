@@ -192,6 +192,9 @@ export class Ufo extends Target{
             if(Math.random() < this.scene.getDropChance("ufo")){
                 this.scene.dropBox();
             }
+            if(Math.random() < this.scene.getWidgetChance("ufo")){
+                this.scene.dropWidget();
+            }
             this.processOnKill();
         }
         this.deleteFlag = true;

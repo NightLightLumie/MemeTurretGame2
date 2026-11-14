@@ -1,8 +1,7 @@
-import { Armory, PassiveAbility, WeaponEntry } from "./WeaponFunctions/Armory";
 import { WeaponParams } from "./WeaponFunctions/WeaponOperator";
-import { Augment } from "./WeaponFunctions/Weapon";
 import { WeaponButton } from "./WeaponFunctions/WeaponButton";
-import { SaveData, SaveState } from "./SaveData";
+import { Armory } from "./WeaponFunctions/Armory";
+import { WeaponEntry, Augment, PassiveAbility, TempSave } from "./DataTypes";
 
 export interface ItemParams{
     id: number;
@@ -24,6 +23,7 @@ export class GlobalVariables {
     public boxCount: number = 0;
     public money: number = 0;
     public widgets: number = 999;
+    public skipcutscenes: boolean;
 
     public defaultItem: ItemParams = {id: -999, name: "default", spr: ["itemtile", "itemtile"], curLevel:0, maxLevel:10, desc:"DEFAULT", upgradeDesc: "DEFAULT"};
 
@@ -184,6 +184,7 @@ export class GlobalVariables {
     public secondary: WeaponEntry;
 
     constructor(){
+        this.skipcutscenes = false;
         this.inv = new Armory(this);
         this.side = this.inv.fetchGun(-999999999 - 3);
         this.primary = this.inv.fetchGun(-999999999 - 2);
@@ -511,7 +512,9 @@ export class GlobalVariables {
         } catch {
             console.log("Attempted to remove invalid data.");
         }
-        let save: SaveState;
+        let save: TempSave;
+        let gl = structuredClone(this.inv.gunList);
+        let sg = structuredClone(this.inv.soldGuns);
         save = {
             version: this.version,
             curGunID: this.curGunID,
@@ -519,9 +522,10 @@ export class GlobalVariables {
             lootBoxes: structuredClone(this.lootBoxes),
             money: this.money,
             widgets: this.widgets,
-
-            gunList: structuredClone(this.inv.gunList),
-            soldGuns: structuredClone(this.inv.soldGuns)
+            gunListKeys: Array.from(gl.keys()),
+            gunListValues: Array.from(gl.values()),
+            soldGunKeys: Array.from(sg.keys()),
+            soldGunValues: Array.from(sg.values()), 
         }
 
         let savestring = JSON.stringify(save);
@@ -532,31 +536,50 @@ export class GlobalVariables {
         const mySave = localStorage.getItem("memeturretsave2");
         if(mySave != null){
             try {
-                let parsedata = JSON.parse(mySave);
-                if(parsedata satisfies SaveState){
-                    this.parseSave(parsedata);
-                }
+                const parsedata = JSON.parse(mySave);
+                const save = TempSave.parse(parsedata);
+                this.parseSave(save);
             } catch {
                 console.log("Attempted to load inadequate savedata.");
+                try{
+                    localStorage.removeItem("memeturretsave2");
+                } catch {
+                    console.log("Attempted to remove invalid data.");
+                }
             }
         }
     }
 
-    parseSave(data: SaveState){
+    parseSave(data: TempSave){
         if(data.version != this.version){
             console.log("Tried to load different save version.");
+            try{
+                localStorage.removeItem("memeturretsave2");
+            } catch {
+                console.log("Attempted to remove invalid data.");
+            }
             return;
         }
+
         this.curGunID = data.curGunID;
         this.boxCount = data.boxCount;
-        this.lootBoxes = structuredClone(data.lootBoxes);
+        this.lootBoxes = Array.from(data.lootBoxes);
         this.widgets = data.widgets;
         this.money = data.money;
-        console.log("Setting gun list from save: " + data.gunList);
-        this.inv.gunList = structuredClone(data.gunList);
-        console.log("Setting sold guns from save: " + data.gunList);
-        this.inv.soldGuns = structuredClone(data.soldGuns);
+        let gk = data.gunListKeys;
+        let gv = data.gunListValues;
 
+        let sk = data.soldGunKeys;
+        let sv = data.soldGunValues;
+        this.inv.gunList = new Map();
+        for(let ng = 0; ng < gk.length; ng++){
+            this.inv.gunList.set(gk[ng], gv[ng]);
+            
+        }
+        this.inv.soldGuns = new Map();
+        for(let ns = 0; ns < sk.length; ns++){
+            this.inv.gunList.set(sk[ns], sv[ns]);
+        }
     }
 
     newGame(){

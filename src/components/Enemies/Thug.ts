@@ -8,27 +8,27 @@ import { BoneEffect } from "../Graphics/BoneEffect";
 
 export class Thug extends Target{
 
-    private spr: Phaser.GameObjects.Sprite;
+    protected spr: Phaser.GameObjects.Sprite;
 
-    private v: number = 0;
-    private a: number = 0;
-    private mod: number = 1;
-    private ofss: number = 0;
+    protected v: number = 0;
+    protected a: number = 0;
+    protected mod: number = 1;
+    protected ofss: number = 0;
     protected atype: number = 0;
     protected cd: number = 0;
     protected maxcd: number = 1000;
-    private txt: Phaser.GameObjects.Text;
+    protected txt: Phaser.GameObjects.Text;
 
-    private aCD: number[] = [0, 1000];
-    private aRange: number = 20;
+    protected aCD: number[] = [0, 1000];
+    protected aRange: number = 20;
 
-    private boundState: number = 0;
+    protected boundState: number = 0;
 
     protected seekType: string = "x";
     protected seekRad: number = 800;
 
     public gx: Phaser.GameObjects.Graphics;
-    private radOfs: number = 0;
+    protected radOfs: number = 0;
 
     constructor(scene:GameScene,x:number,y:number, mode: string = "x", ofs: number = 0, seek: string = "x", diff: number = -1){
         super(scene,x,y);
@@ -217,6 +217,9 @@ export class Thug extends Target{
             this.scene.playSound("dead",0.5);
             if(Math.random() < this.scene.getDropChance("thug")){
                 this.scene.dropBox();
+            }
+            if(Math.random() < this.scene.getWidgetChance("thug")){
+                this.scene.dropWidget();
             }
             this.processOnKill();
         }

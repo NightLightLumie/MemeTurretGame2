@@ -3,13 +3,12 @@ import { AugmentSelector } from "./AugmentSelector";
 import { AugmentUI } from "./AugmentUI";
 import { AugmentControlButton } from "../../Buttons/AugmentControlButton";
 import { AugmentSelectButton } from "../../Buttons/AugmentSelectButton";
-import { Augment } from "../Weapon";
+import { Augment,PassiveAbility } from "@/components/DataTypes";
 import { OverAugButton } from "./OverAugButton";
 import { TempBar } from "./TempBar";
 import { WidgetDisplay } from "./WidgetDisplay";
 import { AugmentBar } from "./AugmentBar";
 import { PassiveDisplay } from "./PassiveDisplay";
-import { PassiveAbility } from "../Armory";
 import { BasicEffect } from "@/components/Graphics/BasicEffect";
 import { ExpandEffect } from "@/components/Graphics/ExpandEffect";
 import { DamageText } from "@/components/Graphics/DamageText";
@@ -238,7 +237,7 @@ export class AugmentScreen extends Phaser.GameObjects.Container{
         if(this.owner.tempGun.augs.length < 4){
             maxed = false;
         }
-        this.owner.tempGun.augs.forEach((ag) => {
+        this.owner.tempGun.augs.forEach((ag: Augment) => {
             if(ag.maxlv < 13){
                 maxed = false;
             }
@@ -264,7 +263,7 @@ export class AugmentScreen extends Phaser.GameObjects.Container{
 
     checkPassives(){
         let maxed = true;
-        this.owner.tempGun.passives.forEach((ps) => {
+        this.owner.tempGun.passives.forEach((ps: PassiveAbility) => {
             if(!ps.activated){
                 maxed = false;
             }
@@ -347,9 +346,18 @@ export class AugmentScreen extends Phaser.GameObjects.Container{
         }
     }
 
+    softLockButtons(){
+        this.overAugBtns.forEach((ab) => {
+            ab.softLock();
+        });
+        this.psvBars.forEach((pb) => {
+            pb.softLock();
+        });
+    }
+
     drawPassiveButtons(){
         let nn = 1;
-        this.owner.tempGun.passives.forEach((ps) => {
+        this.owner.tempGun.passives.forEach((ps: PassiveAbility) => {
             let pb = new PassiveDisplay(this.scene,AugmentUI.defX+AugmentScreen.offX-32,(72*nn)+AugmentUI.defY+AugmentScreen.offY-600,
                 this.scene.masterData.inv.copyPassive(ps),this, nn);
             this.tempBarLayer.add(pb);

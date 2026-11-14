@@ -14,7 +14,8 @@
     "@neutralinojs/lib": "6.0.0",
     "mobx": "^6.13.7",
     "phaser": "^3.90.0",
-    "phaser3-rex-plugins": "^1.80.16"
+    "phaser3-rex-plugins": "^1.80.16",
+    "zod": "^4.6.7"
   },
   "devDependencies": {
     "@electron/asar": "^4.0.0",

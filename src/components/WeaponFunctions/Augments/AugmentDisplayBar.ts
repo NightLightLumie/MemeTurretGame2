@@ -1,6 +1,6 @@
 import { LootScene } from "@/scenes/LootScene";
 import { AugmentButton } from "./AugmentButton";
-import { Augment } from "../Weapon";
+import { Augment } from "@/components/DataTypes";
 import { Button } from "../Button";
 
 export class AugmentDisplayBar extends Button{

@@ -1,7 +1,7 @@
 import { BaseScene } from "@/scenes/BaseScene";
 import { UpgradeScene } from "@/scenes/UpgradeScene";
 import { AugmentBar } from "./AugmentBar";
-import { PassiveAbility, WeaponEntry } from "../Armory";
+import { PassiveAbility, WeaponEntry } from "@/components/DataTypes";
 import { GunDataDisplay } from "../GunDataDisplay";
 import { AugmentScreen } from "./AugmentScreen";
 

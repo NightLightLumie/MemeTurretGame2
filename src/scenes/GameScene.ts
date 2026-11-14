@@ -110,7 +110,6 @@ export class GameScene extends BaseScene {
 		super({ key: "GameScene" });
 	}
 
-
 	init(data: { gameData: GlobalVariables; })
 	{
 		console.log('init, data');
@@ -659,6 +658,12 @@ export class GameScene extends BaseScene {
 		}
 	}
 
+	dropWidget(){
+		this.masterData.widgets++;
+		this.playSound("dropbox", 0.5);
+		this.addPlayerEffect(new TextEffect(this,this.player.x-100+(Math.random()*200),this.player.y-100+(Math.random()*200),"Found a widget!", "aqua", 60, true, "white", 1200,50, 2, 0));
+	}
+
 	dropNormalBox(){
 		this.playSound("dropbox", 0.5);
 		this.addPlayerEffect(new TextEffect(this,this.player.x,this.player.y,"Loot Box Obtained!", "yellow", 60, true, "white", 1200,50, 2, 0));
@@ -683,6 +688,22 @@ export class GameScene extends BaseScene {
 				return 0.005;
 			} case "ufo": {
 				return 0.025;
+			} case "gthug": {
+				return 0.01;
+			} default: {
+				return 0.01;
+			}
+		}
+	}
+
+	getWidgetChance(name: string): number{
+		switch(name){
+			case "thug": {
+				return 0.05;
+			} case "ufo": {
+				return 0.2;
+			} case "gthug": {
+				return 0.01;
 			} default: {
 				return 0.01;
 			}

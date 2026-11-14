@@ -1,6 +1,6 @@
 import { UpgradeScene } from "@/scenes/UpgradeScene";
 import { AugmentButton } from "./AugmentButton";
-import { Augment } from "../Weapon";
+import { Augment } from "@/components/DataTypes";
 import { AugmentUI } from "./AugmentUI";
 
 export class AugmentBar extends Phaser.GameObjects.Container{

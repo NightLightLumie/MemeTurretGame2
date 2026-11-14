@@ -2,7 +2,7 @@ import { GlobalVariables } from "@/components/GlobalVariables";
 import { BaseScene } from "./BaseScene";
 import { Lootbox } from "@/components/WeaponFunctions/Lootbox";
 import { AugmentDisplayBar } from "@/components/WeaponFunctions/Augments/AugmentDisplayBar";
-import { WeaponEntry } from "@/components/WeaponFunctions/Armory";
+import { WeaponEntry } from "@/components/DataTypes";
 import { Music } from "@/components/Music";
 import { Effect } from "@/components/Graphics/Effect";
 import { SimpleParticle } from "@/components/Graphics/SimpleParticle";
@@ -34,35 +34,6 @@ export class LootScene extends BaseScene{
 	constructor() {
 		super({ key: "LootScene" });
 	}
-
-    resetVariables(){
-        super.resetVariables();
-        this.lootTable = [];
-        this.displayBars = []
-        this.effectList = [];
-        this.effectLayer = new Phaser.GameObjects.Container(this,0,0);
-        this.add.existing(this.effectLayer);
-        this.effectLayer.setDepth(-10);
-        this.waitTime = [1000,1000];
-        this.genTime = [200,200];
-        this.state = "waiting";
-        this.xps = 960;
-        this.yps = 810;
-        this.spacer = 68;
-        this.skip = false;
-        if(this.blinkRect){
-            this.blinkRect?.destroy();
-        }
-        this.flashTimer = [];
-        this.blinkRect = this.add.rectangle(960, 540, this.W*1.25, this.H*1.25, 0);
-        this.blinkRect.setOrigin(0.5,0.5);
-        this.blinkRect.setDepth(999999999);
-        this.blinkRect.setVisible(false);
-        this.blinkRect.setAlpha(1);
-        this.stageMusic = new Music(this,"m_up",{volume:0.4});
-		this.stageMusic.play();
-        
-    }
 
 	init(data: { gameData: GlobalVariables; })
 	{
@@ -97,6 +68,34 @@ export class LootScene extends BaseScene{
             this.initTouchControls();
             this.fade(false, 200, 0x000000);
         }
+    }
+    
+    resetVariables(){
+        super.resetVariables();
+        this.lootTable = [];
+        this.displayBars = []
+        this.effectList = [];
+        this.effectLayer = new Phaser.GameObjects.Container(this,0,0);
+        this.add.existing(this.effectLayer);
+        this.effectLayer.setDepth(-10);
+        this.waitTime = [1000,1000];
+        this.genTime = [200,200];
+        this.state = "waiting";
+        this.xps = 960;
+        this.yps = 810;
+        this.spacer = 68;
+        this.skip = false;
+        if(this.blinkRect){
+            this.blinkRect?.destroy();
+        }
+        this.flashTimer = [];
+        this.blinkRect = this.add.rectangle(960, 540, this.W*1.25, this.H*1.25, 0);
+        this.blinkRect.setOrigin(0.5,0.5);
+        this.blinkRect.setDepth(999999999);
+        this.blinkRect.setVisible(false);
+        this.blinkRect.setAlpha(1);
+        this.stageMusic = new Music(this,"m_up",{volume:0.4});
+		this.stageMusic.play();
     }
 
     generateLootTable(q: number): number[]{

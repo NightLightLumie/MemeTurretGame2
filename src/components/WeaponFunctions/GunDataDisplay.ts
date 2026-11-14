@@ -1,9 +1,6 @@
-import { BaseScene } from "@/scenes/BaseScene";
 import { UpgradeScene } from "@/scenes/UpgradeScene";
-import { WeaponEntry } from "./Armory";
+import { WeaponEntry } from "../DataTypes";
 import { WeaponFrame } from "./WeaponFrame";
-import { WeaponParams } from "./WeaponOperator";
-import { Weapon } from "./Weapon";
 
 export class GunDataDisplay extends Phaser.GameObjects.Container{
     public scene:UpgradeScene;

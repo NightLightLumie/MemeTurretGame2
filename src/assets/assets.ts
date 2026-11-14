@@ -29,6 +29,24 @@ const images: Image[] = [
 	image('cutscenes/expo9', 'expo_9'),
 	image('cutscenes/expo10', 'expo_10'),
 
+	//tutorial scenes
+	image('cutscenes/tu_0_0', 'tu_0_0'),
+	image('cutscenes/tu_0_1', 'tu_0_1'),
+	image('cutscenes/tu_0_2', 'tu_0_2'),
+	image('cutscenes/tu_1', 'tu_1'),
+	image('cutscenes/tu_2', 'tu_2'),
+	image('cutscenes/tu_3', 'tu_3'),
+	image('cutscenes/tu_4', 'tu_4'),
+	image('cutscenes/tu_d1', 'tu_d1'),
+	image('cutscenes/tu_d2', 'tu_d2'),
+	image('cutscenes/tu_d3', 'tu_d3'),
+	image('cutscenes/tu_d4', 'tu_d4'),
+	image('cutscenes/tu_d5', 'tu_d5'),
+	image('cutscenes/tu_d6', 'tu_d6'),
+	image('cutscenes/tu_d7', 'tu_d7'),
+	image('cutscenes/tu_d8', 'tu_d8'),
+	image('cutscenes/tu_d9', 'tu_d9'),
+	image('cutscenes/skipscreen', 'skipscreen'),
 	// Characters
 	image('characters/player', 'player'),
 
@@ -88,7 +106,6 @@ const images: Image[] = [
 	// UI
 	image('ui/hud', 'hud'),
 	image('ui/progressarrow', 'progressarrow'),
-
 	image('ui/sp_icon', 'sp_icon'),
 	image('ui/panelred', 'panelred'),
 	image('ui/panelblu', 'panelblu'),
@@ -228,7 +245,8 @@ const spritesheets: SpriteSheet[] = [
 
 	spritesheet('ui/startbtn', 'startbtn',240,120),
 	spritesheet('ui/loadbtn', 'loadbtn',280,120),
-
+	spritesheet('ui/skipt', 'skipt',400,160),
+	spritesheet('ui/playt', 'playt',400,160),
 	spritesheet("ui/upgradebtn", "upgradebtn", 400, 300),
 	spritesheet("ui/closeaugbtn", "closeaugbtn", 400, 300),	
 	spritesheet("ui/widgetbutton", "widgetbutton", 256, 256),	
@@ -257,6 +275,7 @@ const audios: Audio[] = [
 	music('overdrive', 'm_od'),
 	music('idletank', 'm_up'),
 	music('mystery', 'm_mystery'),
+	music('tutorial', 'm_tutorial'),
 	sound('tree/rustle', 't_rustle', 0.5),
 	sound('tree/vineboom', 'vineboom', 0.5),
 	sound('enemies/oof', 'oof', 0.5),

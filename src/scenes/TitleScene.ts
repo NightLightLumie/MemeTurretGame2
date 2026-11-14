@@ -382,6 +382,10 @@ export class TitleScene extends BaseScene {
 			return;
 		}
 		if(!this.isStarting){
+			this.masterData.skipcutscenes = true;
+			console.log("loading game");
+			this.sBtn.lock();
+			this.lBtn.lock();
 			this.masterData.loadGame();
 			this.progress();
 		}
@@ -389,11 +393,13 @@ export class TitleScene extends BaseScene {
 
 	newgameAndContinue(){
 		if(!this.ready){
-			console.log("not ready");
 			return;
 		}
 		if(!this.isStarting){
-			console.log("starting game");
+			this.masterData.skipcutscenes = false;
+			console.log("starting new game");
+			this.sBtn.lock();
+			this.lBtn.lock();
 			this.masterData.newGame();
 			this.progress();
 		}
@@ -424,6 +430,7 @@ export class TitleScene extends BaseScene {
 //					this.masterData.saveGame();
 //					this.masterData.loadGame();
 					this.musicTitle.stop();
+					console.log(this.masterData.skipcutscenes);
 					this.scene.start("CutsceneScene", {gameData: this.masterData});
 				});
 			});

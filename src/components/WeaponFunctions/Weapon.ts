@@ -1,21 +1,13 @@
 import { BaseScene } from "@/scenes/BaseScene";
 import { GameScene } from "@/scenes/GameScene";
 import { WeaponOperator, WeaponParams } from "./WeaponOperator";
+import { Augment } from "../DataTypes";
 //10 upgrade slots
 //up to 3, +1 for augmentation
 //level goes to 10, + 13 for augmentation
 
 
 
-export interface Augment{
-    name: string;
-    index: number;
-    level: number;
-    maxlv: number;
-    lvcap: number;
-    desc: string;
-
-}
 export interface WeaponData {
     
     rarity: number;

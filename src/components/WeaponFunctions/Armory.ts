@@ -1,25 +1,12 @@
 import { GlobalVariables } from "../GlobalVariables";
-import { Augment, Weapon } from "./Weapon";
+import { Augment,PassiveAbility,WeaponEntry } from "../DataTypes";
+import { Weapon } from "./Weapon";
 import { WeaponParams } from "./WeaponOperator";
 import { WeaponSlot } from "./WeaponSlot";
-
-export interface WeaponEntry{
-    gID: number;
-    wID: number;
-    augs: Augment[];
-    passives: PassiveAbility[];
-}
-
-export interface PassiveAbility{
-    name: string;
-    desc: string;
-    activated: boolean;
-}
 
 export interface LootEntry{
 
 }
-
 
 export class Armory {
     public wlist: WeaponSlot[]; // do not push
@@ -50,7 +37,7 @@ export class Armory {
             this.defaultGuns.set(xby[ix], xbr[ix]);
         }
         this.gunList = new Map([
-            [-999999999, {gID: -999999999, wID: 11, augs: [], passives: this.reference.getGunPassives(11)}],
+            [-999999999, {gID: -999999999, wID: 4, augs: [], passives: this.reference.getGunPassives(4)}],
         ]);
     }
     /*

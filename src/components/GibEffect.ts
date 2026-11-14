@@ -27,6 +27,10 @@ export class GibEffect extends Effect {
         //this.spr.setDepth(3);
     }
 
+    setTint(color: number){
+        this.spr.setTint(color);
+    }
+
     update(t:number, d:number) {
         if(this.dTime[0] > 0){
             this.dTime[0] -= d;

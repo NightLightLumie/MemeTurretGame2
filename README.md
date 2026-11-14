@@ -1,6 +1,6 @@
-# Chocobois Game Jam Template
+# Memeturretgame 2
 
-We make game, but faster
+A prequel to the first Memeturretgame.
 
 ## Quick start
 ### Prerequisites

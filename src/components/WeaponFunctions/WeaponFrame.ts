@@ -1,7 +1,6 @@
 import { BaseScene } from "@/scenes/BaseScene";
 import { GameScene } from "@/scenes/GameScene";
 import { WeaponOperator, WeaponParams } from "./WeaponOperator";
-import { emit } from "node:cluster";
 import { BurstTracker } from "./Weapon";
 import { Augment } from "./Weapon";
 //10 upgrade slots
@@ -139,7 +138,7 @@ export class WeaponFrame {
     initiatePassive(name: string){
         switch(name){
             case "Shear": {} case "Quality and Quantity": {} case "Wholesale": {}  case "Long Bolts": {}
-            case "Hi-Point": {
+            case "Hi-Point": {} case "Nimble": {
                 this.parseBasePassives(name);
                 break;
             } case "Timeless": {
@@ -150,8 +149,8 @@ export class WeaponFrame {
             } case "Full Tilt": {
                 this.maxAmmo = Math.trunc(Math.round(this.maxAmmo *= 1.25));
                 this.curAmmo = this.maxAmmo;
-                this.killtracker = [0,8];
-                this.maxCD = 1000/(this.rof*(1+0.1+(0.05*this.killtracker[2])));
+                this.killtracker = [0,10];
+                this.maxCD = 1000/(this.rof*(1+0.1));
                 break;
             } case "Snaggletooth": {
                 this.pvalue[0] += 0.5
@@ -199,6 +198,9 @@ export class WeaponFrame {
                 break;
             } case "Wholesale": {
                 this.damage *= 1.6;
+                break;
+            } case "Nimble": {
+                this.maxLoad *= 0.6;
                 break;
             } default: {
                 break;

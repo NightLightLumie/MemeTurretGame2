@@ -42,9 +42,11 @@ export interface BuffState{
 }
 
 export interface Buff {
+    name: string;
     type: string;
     duration: number;
     amount: number;
+    deleteMe: boolean;
 }
 
 export class Weapon extends Phaser.Events.EventEmitter{
@@ -126,7 +128,10 @@ export class Weapon extends Phaser.Events.EventEmitter{
     public spAccel: number = 1;
 
     public myBuffs: BuffState;
+    public baseBuffState: BuffState;
     public buffList: Buff[];
+
+
 
 
     constructor(scene: GameScene, wp: WeaponParams, augments: Augment[] = []){
@@ -137,10 +142,18 @@ export class Weapon extends Phaser.Events.EventEmitter{
         this.myBuffs = {
             rof: 1,
             dmg: 1,
-            dh: 1,
-            crit: 1,
+            dh: 0,
+            crit: 0,
             pierce: 1,
         }
+        this.baseBuffState = {
+            rof: 1,
+            dmg: 1,
+            dh: 0,
+            crit: 0,
+            pierce: 1,
+        }
+        
         this.buffList = [];
         this.augVars = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
         this.augModifier = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
@@ -243,7 +256,7 @@ export class Weapon extends Phaser.Events.EventEmitter{
     initiatePassive(name: string){
         switch(name){
             case "Shear": {} case "Quality and Quantity": {} case "Wholesale": {}  case "Long Bolts": {}
-            case "Hi-Point": case "Nimble": {
+            case "Hi-Point": {} case "Nimble": {
                 this.parseBasePassives(name);
                 break;
             } case "Timeless": {
@@ -305,6 +318,9 @@ export class Weapon extends Phaser.Events.EventEmitter{
                 break;
             } case "Wholesale": {
                 this.damage *= 1.6;
+                break;
+            } case "Nimble": {
+                this.maxLoad *= 0.6;
                 break;
             } default: {
                 break;
@@ -383,8 +399,9 @@ export class Weapon extends Phaser.Events.EventEmitter{
 
     rollDirectHit(): number{
         let r = 1;
-        let nm = Math.trunc(this.dh);
-        let res = this.dh-nm;
+        let dhh = this.dh + this.myBuffs.dh;
+        let nm = Math.trunc(dhh);
+        let res = dhh-nm;
         if(nm > 0){
             for(let ii = 0; ii < nm; ii++){
                 r*=1.25;
@@ -421,6 +438,8 @@ export class Weapon extends Phaser.Events.EventEmitter{
                 this.overflow += Math.abs(this.cooldown);
             }
         }
+
+        this.updateBuffs(t, d);
 
         if(this.spCD[0] > 0){
             this.spCD[0] -= d;
@@ -460,9 +479,9 @@ export class Weapon extends Phaser.Events.EventEmitter{
         this.updaters.forEach((u) => {
             switch(u){
                 case "Full Tilt": {
-                    this.cooldown = this.cooldown/this.maxCD;
+                    this.cooldown = this.cooldown/(this.maxCD*(1/this.myBuffs.rof));
                     this.maxCD = 1000/(this.rof*(1+0.1+(this.conv*this.killtracker[0])));
-                    this.cooldown *= this.maxCD;
+                    this.cooldown *= (this.maxCD*(1/this.myBuffs.rof));
                     break;
                 } default: {
                     break;
@@ -471,9 +490,111 @@ export class Weapon extends Phaser.Events.EventEmitter{
         })
     }
 
+    updateBuffs(t: number, d: number){
+        for(let b = (this.buffList.length-1); b >= 0; b--){
+			if(this.buffList[b].duration > 0){
+                this.buffList[b].duration -= d;
+                if(this.buffList[b].duration <= 0){
+                    this.buffList[b].deleteMe = true;
+                }
+            } else {
+                this.buffList[b].deleteMe = true;
+            }
+			if(this.buffList[b].deleteMe) {
+                this.removeBuff(this.buffList[b]);
+				this.buffList.splice(b,1);
+			}
+		}
+    }
+
+    applyBuff(b: Buff){
+        let curbuff = this.findBuff(b.name);
+        if(curbuff.name != "default"){
+            curbuff.duration = b.duration;
+            if(b.amount > curbuff.amount){
+                let difference = b.amount-curbuff.amount;
+                curbuff.amount += difference;
+                b.amount = difference;
+                this.parseBuff(b);
+            }
+            b.deleteMe = false;
+        } else {
+            this.buffList.push(b);
+            this.parseBuff(b);
+        }
+    }
+
+    parseBuff(b: Buff){
+        switch(b.type){
+            case "rof": {
+                this.myBuffs.rof += b.amount;
+                break;
+            } case "dmg": {
+                this.myBuffs.dmg += b.amount;
+                break;
+            } case "dh": {
+                this.myBuffs.dh += b.amount;
+                break;
+            } case "crit": {
+                this.myBuffs.crit += b.amount;
+                break;
+            } case "pierce": {
+                this.myBuffs.pierce += b.amount;
+                break;
+            } default: {
+                break;
+            }
+        }
+    }
+
+    removeBuff(b: Buff){
+        let ref = structuredClone(this.baseBuffState);
+        switch(b.type){
+            case "rof": {
+                this.myBuffs.rof -= b.amount;
+                if(this.myBuffs.rof < ref.rof){ this.myBuffs.rof = ref.rof }
+                break;
+            } case "dmg": {
+                this.myBuffs.dmg -= b.amount;
+                if(this.myBuffs.dmg < ref.dmg){ this.myBuffs.dmg = ref.dmg }
+                break;
+            } case "dh": {
+                this.myBuffs.dh -= b.amount;
+                if(this.myBuffs.dh < ref.dh){ this.myBuffs.dh = ref.dh }
+                break;
+            } case "crit": {
+                this.myBuffs.crit -= b.amount;
+                if(this.myBuffs.crit < ref.crit){ this.myBuffs.crit = ref.crit }
+                break;
+            } case "pierce": {
+                this.myBuffs.pierce -= b.amount;
+                if(this.myBuffs.pierce < ref.pierce){ this.myBuffs.pierce = ref.pierce }
+                break;
+            } default: {
+                break;
+            }
+        }
+    }
+
+    findBuff(index: string): Buff{
+        this.buffList.forEach((b)=> {
+            if(b.name == index){
+                return b;
+            }
+        })
+
+        return {
+            name: "default",
+            type: "default",
+            duration: 1,
+            amount: 0,
+            deleteMe: true,
+        }
+    }
+
     updateCooldown(){
-        if(this.overflow < (this.maxCD)){
-            this.cooldown = this.maxCD-this.overflow;
+        if(this.overflow < (this.maxCD*(1/this.myBuffs.rof))){
+            this.cooldown = (this.maxCD*(1/this.myBuffs.rof))-this.overflow;
             //console.log(this.wp.name + "CURRENT COOLDOWN: " + this.cooldown);
             this.overflow = 0;
         } else {
@@ -515,11 +636,11 @@ export class Weapon extends Phaser.Events.EventEmitter{
     }
 
     handleOverflow(){
-        if(this.overflow > (this.maxCD)){
-            let cn = Math.trunc(this.overflow/this.maxCD)
+        if(this.overflow > (this.maxCD*(1/this.myBuffs.rof))){
+            let cn = Math.trunc(this.overflow/(this.maxCD*(1/this.myBuffs.rof)))
             this.stored += cn;
-            this.overflow -= (cn*this.maxCD);
-            this.cooldown = this.maxCD - this.overflow;
+            this.overflow -= (cn*(this.maxCD*(1/this.myBuffs.rof)));
+            this.cooldown = (this.maxCD*(1/this.myBuffs.rof)) - this.overflow;
             if(this.cooldown < 0){
                 this.cooldown = 1;
             }
@@ -535,17 +656,7 @@ export class Weapon extends Phaser.Events.EventEmitter{
         }
     }
 
-    applyBuff(){
 
-    }
-
-    parseBuff(b: Buff){
-        switch(b.type){
-            case "rof": {
-
-            }
-        }
-    }
 
     fire(){
 

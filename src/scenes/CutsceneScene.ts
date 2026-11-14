@@ -142,14 +142,12 @@ export class CutsceneScene extends BaseScene {
 		if(this.ending){
 			return;
 		}
-		this.addEvent(1000, () => {
-			this.ending = true;
-			this.fade(true, 1000, 0x000000);
-			this.musicFade(1000,0.4,0);
-			this.addEvent(1050, () => {
-				this.stageMusic.stop();
-				this.scene.start("UpgradeScene", {gameData: this.masterData});
-			});
+		this.ending = true;
+		this.fade(true, 1000, 0x000000);
+		this.musicFade(1000,0.4,0);
+		this.addEvent(1050, () => {
+			this.stageMusic.stop();
+			this.scene.start("UpgradeScene", {gameData: this.masterData});
 		});
 	}
 

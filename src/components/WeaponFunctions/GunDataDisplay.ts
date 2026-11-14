@@ -122,9 +122,9 @@ export class GunDataDisplay extends Phaser.GameObjects.Container{
 */
 
     xredraw(tmp:WeaponEntry): WeaponEntry{
-        let e = this.scene.masterData.getGunParams(tmp);
+        let e = this.scene.masterData.loadGun(tmp);
         let ag = this.scene.masterData.inv.augmentToArray(tmp.augs);
-        let wp = new WeaponFrame(this.scene,e,tmp.augs)
+        let wp = new WeaponFrame(this.scene,e,tmp.augs);
         this.ndisp.setText(e.name);
         let dtg = ""
         if(e.shots == 1){

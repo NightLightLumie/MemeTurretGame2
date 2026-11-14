@@ -3,7 +3,7 @@ import { Target } from "../Target";
 import { PassiveAbility } from "./Armory";
 import { Bullet } from "./Bullet";
 import { Rocket } from "./Rocket";
-import { Augment, BurstTracker, Weapon } from "./Weapon";
+import { Augment, Buff, BurstTracker, Weapon } from "./Weapon";
 
 export interface HitInfo{
     tg: Target;
@@ -288,6 +288,18 @@ export class WeaponOperator{
                 this.fireBullet(a,w,special,true);
                 w.addBurst(cb);
                break; 
+           } case 11: { //WS-Windmill-SE
+                let cb: Buff;
+                cb = {
+                    name: "Beyond Tilt",
+                    type: "rof",
+                    duration: 6000,
+                    amount: 0.4,
+                    deleteMe: false
+                }
+                w.applyBuff(cb);
+                this.p.scene.sound.play("activate_1", {volume: 0.25});
+                break;
            } default: {
                break;
            }
@@ -308,6 +320,7 @@ export class WeaponOperator{
            } case 3: { //broadhead
            } case 8: { //NTR-141
            } case 5: { //windmill
+           } case 11: { //windmill SE
            } case 4: { //bjuron
                let ofs = Phaser.Math.DegToRad(-1*w.acc+(Math.random()*2*w.acc));
                this.p.scene.sound.play(("gun_"+w.type),{volume: 0.7});

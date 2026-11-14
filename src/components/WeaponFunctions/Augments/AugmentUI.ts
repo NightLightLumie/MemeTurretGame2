@@ -289,6 +289,7 @@ export class AugmentUI extends Phaser.GameObjects.Container{
             }
         })
         this.finalizePassives();
+
     }
 
     finalizeAugments(){

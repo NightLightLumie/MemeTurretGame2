@@ -22,6 +22,7 @@ export class Rocket extends Missile{
     initiateParams(){
         this.globalDamageScale = 1+this.scene.player.bonusGunDamage;
         this.damage *= this.globalDamageScale;
+        this.damage *= this.owner.myBuffs.dmg;
         let dh = this.owner.rollDirectHit();
         switch(this.owner.wp.type){
             case 6: {

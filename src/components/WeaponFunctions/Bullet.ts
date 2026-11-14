@@ -118,6 +118,7 @@ export class Bullet extends Phaser.GameObjects.Container{
         this.globalDamageScale = 1+this.scene.player.bonusGunDamage;
 
         this.dmg *= this.globalDamageScale;
+        this.dmg *= this.owner.myBuffs.dmg;
         //add to display done in game for layer reasons
 
     }
@@ -161,14 +162,7 @@ export class Bullet extends Phaser.GameObjects.Container{
     calculateCrit(){
         if(this.holdcrit){
             return;
-        }
-        if(this.crit > 1){
-            //console.log("crit ineligible " + this.crit);
-            return;
-            this.crit = this.owner.crit[1];
-            this.dmg *= this.crit;
-            //this.handleLinkedBullets();  
-        } else if(Math.random() < (this.owner.crit[0]+this.bonuscrit)){
+        } else if(Math.random() < (this.owner.crit[0]+this.bonuscrit + this.owner.myBuffs.crit)){
             //console.log("Rolled crit: " + (this.bonuscrit + (this.owner.crit[0])));
             this.crit = this.owner.crit[1];
             this.dmg *= this.crit;

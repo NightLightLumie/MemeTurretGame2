@@ -5,20 +5,9 @@ on:
     branches:
       - main
 
-  workflow_dispatch:
-
-permissions:
-  contents: write
-  pages: write
-  id-token: write
-
-concurrency:
-  group: "pages"
-  cancel-in-progress: false
-
 jobs:
   build:
-    name: Build and Deploy
+    name: Build
     runs-on: ubuntu-latest
 
     steps:
@@ -26,39 +15,35 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          lfs: true
 
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: 24
+          node-version: 20
 
       - name: Install dependencies
         run: npm install && sudo apt install genisoimage
 
       - name: Load game.config.json
-        uses: antifree/json-to-variables@v1.3.0
+        uses: antifree/json-to-variables@v1.1.2
         with:
-          filename: "game.config.json"
+          filename: 'game.config.json'
           prefix: game
 
       - name: Build project
         run: npm run build
 
       - name: Load meta.json
-        uses: antifree/json-to-variables@v1.3.0
+        uses: antifree/json-to-variables@v1.1.2
         with:
-          filename: "dist/meta.json"
+          filename: 'dist/meta.json'
           prefix: meta
 
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: ./dist/web
-
       - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./dist/web
 
       - name: Create release
         uses: "marvinpinto/action-automatic-releases@latest"
@@ -75,7 +60,7 @@ jobs:
 
       - name: Upload to Itch
         if: ${{env.game_itch_upload  == 'true'}}
-        uses: Ayowel/butler-to-itch@v1.2.0
+        uses: Ayowel/butler-to-itch@v1.0.0
         with:
           butler_key: ${{ secrets.BUTLER_CREDENTIALS }}
           itch_user: ${{ env.game_itch_username }}

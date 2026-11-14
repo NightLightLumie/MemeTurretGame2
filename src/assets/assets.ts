@@ -88,6 +88,7 @@ const images: Image[] = [
 	// UI
 	image('ui/hud', 'hud'),
 	image('ui/progressarrow', 'progressarrow'),
+
 	image('ui/sp_icon', 'sp_icon'),
 	image('ui/panelred', 'panelred'),
 	image('ui/panelblu', 'panelblu'),
@@ -223,6 +224,9 @@ const spritesheets: SpriteSheet[] = [
 	spritesheet("ui/aug_extra", "aug_extra", 48, 64),
 	spritesheet("ui/aug_button_frame", "aug_button_frame", 64, 64),
 	spritesheet("ui/aug_button_back", "aug_button_back", 64, 64),
+
+	spritesheet('ui/startbtn', 'startbtn',240,120),
+	spritesheet('ui/loadbtn', 'loadbtn',280,120),
 
 	spritesheet("ui/upgradebtn", "upgradebtn", 400, 300),
 	spritesheet("ui/closeaugbtn", "closeaugbtn", 400, 300),	

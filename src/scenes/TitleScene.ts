@@ -5,6 +5,7 @@ import { title, version } from "@/version.json";
 import { GlobalVariables } from "@/components/GlobalVariables";
 import { Effect } from "@/components/Graphics/Effect";
 import { BasicEffect } from "@/components/Graphics/BasicEffect";
+import { MainSceneButton } from "@/components/Graphics/MainSceneButton";
 
 const creditsLeft = `${title} 
 
@@ -38,6 +39,9 @@ export class TitleScene extends BaseScene {
 	public initiated: boolean = false;
 	public placed: boolean = false;
 	public ready: boolean = false;
+
+	public sBtn: MainSceneButton;
+	public lBtn: MainSceneButton;
 
 	public ltimer: number[];
 	public fx: Effect[];
@@ -113,9 +117,21 @@ export class TitleScene extends BaseScene {
 		this.fscreen = this.add.rectangle((1920/2),(1080/2),1940,1200);
 		this.fscreen.setFillStyle(0xFFFFFF);
 		this.fscreen.setOrigin(0.5,0.5);
-		this.fscreen.setDepth(20);
+		this.fscreen.setDepth(99);
 		this.fscreen.setVisible(false);
 		this.add.existing(this.fscreen);
+
+		this.sBtn = new MainSceneButton(this,500,920,"startbtn");
+		this.add.existing(this.sBtn);
+		this.sBtn.setScale(2.5);
+		this.sBtn.setDepth(10);
+		this.lBtn = new MainSceneButton(this,1420,920,"loadbtn");
+		this.lBtn.setScale(2.5);
+		this.add.existing(this.lBtn);
+		this.lBtn.setDepth(10);
+
+		this.sBtn.veil();
+		this.lBtn.veil();
 
 		this.background.setVisible(false);
 		this.background.setDepth(-5);
@@ -142,7 +158,7 @@ export class TitleScene extends BaseScene {
 			y: 0.87 * this.H,
 			size: 120,
 			color: "#000",
-			text: "Tap to start",
+			text: "",
 		});
 		this.subtitle.setOrigin(0.5);
 		this.subtitle.setStroke("#FFF", 3);
@@ -157,7 +173,7 @@ export class TitleScene extends BaseScene {
 			y: this.CY,
 			size: 140,
 			color: "#000",
-			text: "Tap to focus",
+			text: "",
 		});
 		this.tap.setOrigin(0.5);
 		this.tap.setAlpha(-1);
@@ -217,6 +233,7 @@ export class TitleScene extends BaseScene {
 
 		// Input
 
+		/*
 		this.input.keyboard
 			?.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE)
 			.on("down", this.progress, this);
@@ -229,6 +246,10 @@ export class TitleScene extends BaseScene {
 			},
 			this
 		);
+		*/
+		this.sBtn.on("down",()=> {this.newgameAndContinue();})
+		this.lBtn.on("down", ()=> {this.loadAndContinue();})
+
 		this.isStarting = false;
 	}
 
@@ -289,6 +310,8 @@ export class TitleScene extends BaseScene {
 				let exp = new BasicEffect(this,"meme_exp",this.c1.x+986,this.c1.y+424,18,40,false,0,0,[12,12]);
 				this.effectLayer.add(exp);
 				this.fx.push(exp);
+				this.sBtn.unveil();
+				this.lBtn.unveil();
 			}
 		}
 
@@ -351,6 +374,28 @@ export class TitleScene extends BaseScene {
 
 		if (this.isStarting) {
 			this.subtitle.setAlpha(0.6 + 0.4 * Math.sin((50 * time) / 1000));
+		}
+	}
+
+	loadAndContinue(){
+		if(!this.ready){
+			return;
+		}
+		if(!this.isStarting){
+			this.masterData.loadGame();
+			this.progress();
+		}
+	}
+
+	newgameAndContinue(){
+		if(!this.ready){
+			console.log("not ready");
+			return;
+		}
+		if(!this.isStarting){
+			console.log("starting game");
+			this.masterData.newGame();
+			this.progress();
 		}
 	}
 

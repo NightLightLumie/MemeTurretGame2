@@ -897,6 +897,7 @@ export class GameScene extends BaseScene {
 		this.sound.stopAll();
 		this.addEvent(1050, () => {
 			//this.musicTitle.stop();
+			this.masterData.saveGame();
 			this.scene.start("LootScene", {gameData: this.masterData});
 		});
 	}

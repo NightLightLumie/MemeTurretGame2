@@ -82,6 +82,7 @@ Merciless (30% extra damage below 50% hp)
 Featherweight (-25% movement penalty)
 Dominus (+30% damage to bosses and big mobs)
 
+
 Weapon types:
 Sidearms
 WC.WS-Lontra Perks: 
@@ -118,3 +119,5 @@ TJI-Rawhide KOBA
 Quicksilver Storm gun
 Ricochet gun
 Luxx fire blaster
+Starfire sniper
+Leviathan's lament (l2draw cones...)

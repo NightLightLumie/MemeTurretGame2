@@ -33,6 +33,20 @@ export interface BurstTracker{
     stored: number;
 }
 
+export interface BuffState{
+    rof: number;
+    dmg: number;
+    dh: number;
+    crit: number;
+    pierce: number;
+}
+
+export interface Buff {
+    type: string;
+    duration: number;
+    amount: number;
+}
+
 export class Weapon extends Phaser.Events.EventEmitter{
 
     public scene: GameScene;
@@ -111,12 +125,23 @@ export class Weapon extends Phaser.Events.EventEmitter{
     public spCD: number[] = [0,10000];
     public spAccel: number = 1;
 
+    public myBuffs: BuffState;
+    public buffList: Buff[];
+
 
     constructor(scene: GameScene, wp: WeaponParams, augments: Augment[] = []){
         super();
         this.scene = scene;
         this.wp = wp;
         this.augs = augments;
+        this.myBuffs = {
+            rof: 1,
+            dmg: 1,
+            dh: 1,
+            crit: 1,
+            pierce: 1,
+        }
+        this.buffList = [];
         this.augVars = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
         this.augModifier = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
         this.loadAugment();
@@ -218,7 +243,7 @@ export class Weapon extends Phaser.Events.EventEmitter{
     initiatePassive(name: string){
         switch(name){
             case "Shear": {} case "Quality and Quantity": {} case "Wholesale": {}  case "Long Bolts": {}
-            case "Hi-Point": {
+            case "Hi-Point": case "Nimble": {
                 this.parseBasePassives(name);
                 break;
             } case "Timeless": {
@@ -507,6 +532,18 @@ export class Weapon extends Phaser.Events.EventEmitter{
         this.killtracker[0] = 0;
         if(this.loadTime > 0) {
             this.loadTime = this.maxLoad;
+        }
+    }
+
+    applyBuff(){
+
+    }
+
+    parseBuff(b: Buff){
+        switch(b.type){
+            case "rof": {
+
+            }
         }
     }
 

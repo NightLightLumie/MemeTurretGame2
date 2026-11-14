@@ -112,6 +112,9 @@ export class CutsceneScene extends BaseScene {
 
 	next(){
 		if(this.progressTimer[0] <= 0){
+			if(this.ending){
+				return;
+			}
 			this.sound.play("scroll", {volume:0.75});
 			this.arrow.setVisible(false);
 			this.index++;

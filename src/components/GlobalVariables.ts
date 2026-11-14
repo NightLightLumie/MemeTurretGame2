@@ -170,13 +170,12 @@ export class GlobalVariables {
         [10, {type:10,name:"WS-Crossfade SE",class:"pistol", dmg: 90, spd: 20000, rof: 9, spcd: [-1, 1000, 10, 10000], shots: 1, pen: 1, pcd: 20, clip: 13, load: 1.15, width: 1, rad: 1,
         acc: 8, arpen: [0,0], crit: [0.001,1.5], ele: 1, onhit: 10, weight: 0.05, rarity: 1, burst:[1,1], dot: [], augs: [0,1,1,1, 1,0,1,1, 0,0,1,1, 1,1,0,0, 1,1,1], customaug: {name: "Split Shot", index: 18, level: 0, maxlv: 10, lvcap: 10, desc: "Additional flat pierce and onhit damage. +0.2 / +2 per level."}, 
         passives: [{name: "Flail", desc: "Randomly fire 1, 2 or 3 projectiles per shot.", activated: true},
-            {name: "Havoc", desc: "Fires 1, 2, 3 or 4 projectiles per shot.", activated: false}
+            {name: "Havoc", desc: "Can also fire 4 projectiles per shot.", activated: false}
         ]}],
-        [10, {type:10,name:"WS-Crossfade SE",class:"pistol", dmg: 90, spd: 20000, rof: 9, spcd: [-1, 1000, 10, 10000], shots: 1, pen: 1, pcd: 20, clip: 13, load: 1.15, width: 1, rad: 1,
-        acc: 8, arpen: [0,0], crit: [0.001,1.5], ele: 1, onhit: 10, weight: 0.05, rarity: 1, burst:[1,1], dot: [], augs: [0,1,1,1, 1,0,1,1, 0,0,1,1, 1,1,0,0, 1,1,1], customaug: {name: "Split Shot", index: 18, level: 0, maxlv: 10, lvcap: 10, desc: "Additional flat pierce and onhit damage. +0.2 / +2 per level."}, 
-        passives: [{name: "Flail", desc: "Randomly fire 1, 2 or 3 projectiles per shot.", activated: true},
-            {name: "Havoc", desc: "Fires 1, 2, 3 or 4 projectiles per shot.", activated: false}
-        ]}],
+        [11, {type:11,name:"WS-Windmill SE",class:"smg", dmg: 98, spd: 20000, rof: 9, spcd: [250, 1000, 10, 10000], shots: 1, pen: 1.75, pcd: -999, clip: 40, load: 1.5, width: 1, rad: 1,
+         acc: 5.5, arpen: [0,0], crit: [0.001,1.75], ele: 1, onhit: 0, weight: 0.025, rarity: 1, burst:[1,1], dot: [], augs: [0,1,1,1, 1,0,1,1, 0,1,1,1, 1,1,0,0, 1,1,0], customaug: {name: "default", index: 18, level: 0, maxlv: 10, lvcap: 10, desc: ""}, 
+         passives: [{name: "Beyond Tilt", desc: "Gain 40% fire rate for 3s.", activated: true}, {name: "Nimble", desc: "-40% base reload speed.", activated: false}]}],
+
         
     ]);
 

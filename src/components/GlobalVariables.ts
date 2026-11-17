@@ -21,8 +21,8 @@ export class GlobalVariables {
     public maxAugOverLevel: number = 13;
     public maxAugLevel: number = 10;
     public boxCount: number = 0;
-    public money: number = 0;
-    public widgets: number = 999;
+    public money: number = 500;
+    public widgets: number = 10;
     public skipcutscenes: boolean;
 
     public defaultItem: ItemParams = {id: -999, name: "default", spr: ["itemtile", "itemtile"], curLevel:0, maxLevel:10, desc:"DEFAULT", upgradeDesc: "DEFAULT"};
@@ -140,7 +140,7 @@ export class GlobalVariables {
         [2, {type:2,name:"ANTIK",class:"shotgun", dmg: 115, spd: 20000, rof: 2.5, spcd: [-1, 1000, 10, 10000], shots: 6, pen: 1.5, pcd: -999, clip: 8, load: 2.5, width: 1, rad: 1,
          acc: 15, arpen: [0,0], crit: [0.001,1.5], ele: 1, onhit: 0, weight: 0.125, rarity: 1, burst:[1,1], dot: [], augs: [0,1,1,1, 1,0,1,1, 0,1,1,1, 1,1,0,0, 1,1,0], customaug: {name: "default", index: 18, level: 0, maxlv: 10, lvcap: 10, desc: ""}, 
          passives: [{name: "Timeless", desc: "+3 pellets and +1 flat rate of fire",activated:false}]}],
-        [3, {type:3,name:"WS-Broadhead",class:"sniper", dmg: 765, spd: 50000, rof: 1.5, spcd: [-1, 1000, 10, 10000], shots: 1, pen: 3, pcd: -999, clip: 5, load: 2, width: 1, rad: 1,
+        [3, {type:3,name:"WS-Broadhead",class:"sniper", dmg: 765, spd: 50000, rof: 1.5, spcd: [-1, 1000, 10, 10000], shots: 1, pen: 3.25, pcd: -999, clip: 5, load: 2, width: 1, rad: 1,
          acc: 0, arpen: [0,0], crit: [0.001,3], ele: 1, onhit: 0, weight: 0.35, rarity: 1, burst:[1,1], dot: [], augs: [0,1,1,1, 1,0,1,1, 0,1,0,1, 1,1,0,0, 1,1,0], customaug: {name: "default", index: 18, level: 0, maxlv: 10, lvcap: 10, desc: ""}, passives: [
             {name: "Long Bolts", desc: "+40% crit chance",activated:false}]}],
         [4, {type:4,name:"BJURÖN",class:"assault", dmg: 175, spd: 28000, rof: 6, spcd: [-1, 1000, 10, 10000], shots: 1, pen: 2.5, pcd: -999, clip: 40, load: 2, width: 1, rad: 1,
@@ -161,13 +161,14 @@ export class GlobalVariables {
         [8, {type:8,name:"NTR-141",class:"pistol", dmg: 60, spd: 20000, rof: 16, spcd: [-1, 1000, 10, 10000], shots: 1, pen: 1, pcd: -999, clip: 21, load: 1, width: 1, rad: 1,
          acc: 2, arpen: [0,0], crit: [0.001,2.75], ele: 1, onhit: 0, weight: 0.05, rarity: 1, burst:[1,1], dot: [], augs: [0,1,1,1, 1,0,1,1, 0,1,1,1, 1,1,0,0, 1,1,0], customaug: {name: "default", index: 18, level: 0, maxlv: 10, lvcap: 10, desc: ""}, 
          passives: [{name: "Quality and Quantity", desc: "+22 flat on-hit damage", activated: false}]}],
+
         [9, {type:9,name:"Two-Fanged Wolf",class:"smg", dmg: 140, spd: 20000, rof: 7, spcd: [-1, 1000, 10, 10000], shots: 2, pen: 2, pcd: -999, clip: 50, load: 1.75, width: 1, rad: 1,
          acc: 1.5, arpen: [0,0], crit: [0.001,2.25], ele: 1, onhit: 0, weight: 0.1, rarity: 1, burst:[1,1], dot: [], augs: [0,1,1,1, 1,0,1,1, 0,1,1,1, 1,1,0,0, 1,1,0], customaug: {name: "default", index: 18, level: 0, maxlv: 10, lvcap: 10, desc: ""}, 
          passives: [{name: "Snaggletooth", desc: "50% chance to fire a third, inaccurate shot with 35% increased critical strike chance.", activated: true},
             {name: "Pack Tactics", desc: "All shots will critically strike if any shot rolls a critical strike.", activated: true},
             {name: "Domination", desc: "Third shot fire chance and critical strike chance increased by 35% each.", activated: false},
          ]}],
-        [10, {type:10,name:"WS-Crossfade SE",class:"pistol", dmg: 90, spd: 20000, rof: 9, spcd: [-1, 1000, 10, 10000], shots: 1, pen: 1, pcd: 20, clip: 13, load: 1.15, width: 1, rad: 1,
+        [10, {type:10,name:"WS-Crossfade SE",class:"pistol", dmg: 90, spd: 20000, rof: 9, spcd: [-1, 1000, 10, 10000], shots: 1, pen: 1, pcd: -999, clip: 13, load: 1.15, width: 1, rad: 1,
         acc: 8, arpen: [0,0], crit: [0.001,1.5], ele: 1, onhit: 10, weight: 0.05, rarity: 1, burst:[1,1], dot: [], augs: [0,1,1,1, 1,0,1,1, 0,0,1,1, 1,1,0,0, 1,1,1], customaug: {name: "Split Shot", index: 18, level: 0, maxlv: 10, lvcap: 10, desc: "Additional flat pierce and onhit damage. +0.2 / +2 per level."}, 
         passives: [{name: "Flail", desc: "Randomly fire 1, 2 or 3 projectiles per shot.", activated: true},
             {name: "Havoc", desc: "Can also fire 4 projectiles per shot.", activated: false}
@@ -176,6 +177,12 @@ export class GlobalVariables {
          acc: 5.5, arpen: [0,0], crit: [0.001,1.75], ele: 1, onhit: 0, weight: 0.025, rarity: 1, burst:[1,1], dot: [], augs: [0,1,1,1, 1,0,1,1, 0,1,1,1, 1,1,1,0, 1,1,0], customaug: {name: "default", index: 18, level: 0, maxlv: 10, lvcap: 10, desc: ""}, 
          passives: [{name: "Beyond Tilt", desc: "Alt-fire to gain 40% fire rate for 6s.", activated: true}, {name: "Nimble", desc: "Base reload time decreased by 40%.", activated: false}]}],
 
+
+        /*
+        [11, {type:11,name:"Luxxrazer",class:"blaster", dmg: 98, spd: 20000, rof: 9, spcd: [500, 1000, 25, 15000], shots: 1, pen: 1.75, pcd: -999, clip: 40, load: 1.5, width: 1, rad: 1,
+        acc: 5.5, arpen: [0,0], crit: [0.001,1.75], ele: 1, onhit: 0, weight: 0.025, rarity: 1, burst:[1,1], dot: [], augs: [0,1,1,1, 1,0,1,1, 0,1,1,1, 1,1,1,0, 1,1,0], customaug: {name: "Blast Burn", index: 18, level: 0, maxlv: 10, lvcap: 10, desc: "Burn detonations reapply burn. +0.25s burn per upgrade."}, 
+        passives: [{name: "Dragonling", desc: "Hits extend the weapon's burn effect. Taking burn damage for over 3 seconds detonates the remaining burn.", activated: true}, {name: "Fire and Dice", desc: "Alt-fire to smite all enemies in a cone before you.", activated: true}, {name: "Convert Fire Resistance", desc: "Gain 1% damage per 1% enemy fire resistance. Damage ignores 50% of fire resistance.", activated: false}]}],
+        */
         
     ]);
 
@@ -376,7 +383,7 @@ export class GlobalVariables {
             }
         }
         list.push(0);  // have a chance for blank augment
-        console.log ("List of augments for selection: " + list);
+        //console.log ("List of augments for selection: " + list);
         
         list.forEach((l) =>{
             if((l >= 0) && (l < this.augmentWeights.length)){

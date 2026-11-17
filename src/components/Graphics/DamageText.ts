@@ -118,10 +118,20 @@ export class DamageText extends Effect{
                 break;
             } case "money": {
                 size = 80;
+                this.negative *= 2;
                 color1 = "yellow";
                 color2 = "yellow";
                 flash = false;
                 amplitude = 0;
+                break;
+            } case "widgetgain": {
+                size = 80;
+                this.negative *= 2;
+                color1 = "aqua";
+                color2 = "white";
+                flash = true;
+                amplitude = 0;
+                break;
             } case "widgetloss": {
                 size = 80;
                 this.negative *= -2.5;
@@ -130,6 +140,7 @@ export class DamageText extends Effect{
                 color2 = "goldenrod";
                 flash = true;
                 amplitude = 0.25;
+                break;
             } default: {
                 break;
             }

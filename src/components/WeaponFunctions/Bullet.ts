@@ -312,7 +312,9 @@ export class Bullet extends Phaser.GameObjects.Container{
         for(let n = 0; n < this.thits.length; n++){
             if(rp >= 0){
                 if(this.processPierceHitData(n)){
-                    rp--;
+                    if(rp < 999999){
+                        rp--;
+                    }
                 }
                 
                 if(rp <= 0) {

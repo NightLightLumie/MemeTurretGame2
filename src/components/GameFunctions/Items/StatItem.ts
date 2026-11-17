@@ -37,7 +37,7 @@ export class StatItem extends Item{
                 this.owner.smite += 0.15;
                 break;
             } case "Ultravibration": {
-                this.owner.execute += 0.05;
+                this.owner.execute += 0.1;
                 break;
             } case "Sticky Bomb": {
                 this.owner.sticky += 50;

@@ -41,6 +41,8 @@ export class UpgradeScene extends BaseScene {
 	public dragGun: Phaser.GameObjects.Image;
 	public gunning: boolean = false;
 	public gImage: Phaser.GameObjects.Image;
+
+	public moneyTxt: Phaser.GameObjects.Text;
 	public p1: Phaser.Math.Vector2;
 	public p2: Phaser.Math.Vector2;
 	public p3: Phaser.Math.Vector2;
@@ -103,6 +105,17 @@ export class UpgradeScene extends BaseScene {
 		this.botlay.setOrigin(0,0);
 		this.botlay.setScale(1);
 		this.botlay.setDepth(1);
+
+        this.moneyTxt = this.addText({
+			x: 24,
+			y: 96,
+			size: 42,
+			color: "white",
+			text: "Money: " + "\n" + (this.masterData.money) + "€",
+		});
+		this.moneyTxt.setOrigin(0,0.5);
+		this.moneyTxt.setDepth(11);
+		this.add.existing(this.moneyTxt);
 
 		this.flashlines = this.add.image(0, 0, "redlines");
 		this.flashlines.setOrigin(0,0);
@@ -190,8 +203,8 @@ export class UpgradeScene extends BaseScene {
 				this.lockout = 0;
 			}
 		}
-
 		this.augUI.update(time,delta);
+		this.moneyTxt.setText("Money: " + "\n" + (this.masterData.money) + "€");
 	}
 
 	initButtons(){
@@ -235,13 +248,25 @@ export class UpgradeScene extends BaseScene {
 		}
 		let ps = this.masterData.inv.fetchGun(this.buttonList[ns].gID);
 		let val = 2000;
+		let wval = 6;
 		ps.augs.forEach((ag: Augment) => {
 			val += (500)+(ag.level*50);
+			wval += 1;
+			if(ag.level > 5){
+				wval += 1;
+				if(ag.level > 10){
+					wval += 2;
+				}
+			}
 		})
 		let av = new DamageText(this,1280,758,"+" + val + "€","money");
+		let aw = new DamageText(this,620,758,"+" + wval,"widgetgain");
 		this.gfx.push(av);
 		this.gfxLayer.add(av);
+		this.gfx.push(aw);
+		this.gfxLayer.add(aw);
 		this.masterData.money += val;
+		this.masterData.widgets += wval;
 		this.cancelDrag();
 		this.removeButton(ns);
 
@@ -260,12 +285,12 @@ export class UpgradeScene extends BaseScene {
 			console.log("Tried to remove nonexistent weapon button/index.");
 			return;
 		}
-		console.log("Selling position: " + this.curPos);
+		//console.log("Selling position: " + this.curPos);
 
 		if(n < (this.buttonList.length-1)){
 			//if not the final element, move the rest of the list up and keep curpos the same
 			for(let pp = n+1; pp < this.buttonList.length; pp++){
-				console.log("Moving button from position " + this.buttonList[pp].position + " to " + (this.buttonList[pp].position-1));
+				//console.log("Moving button from position " + this.buttonList[pp].position + " to " + (this.buttonList[pp].position-1));
 				this.buttonList[pp].position--;
 				this.buttonList[pp].teleportUp(256);
 			}

@@ -5,13 +5,17 @@ import { DamageText } from "./Graphics/DamageText";
 import { ScalingEffect } from "./Graphics/ScalingEffect";
 import { StickyTracer } from "./Graphics/StickyTracer";
 
-export interface DamageBatch{
+export interface DamageBatch {
     key: string;
     amt: number;
     interval: number[];
     type: string;
     deleteFlag: boolean;
     params: string[];
+}
+
+export interface ArmorType {
+    
 }
 
 export class Target extends Phaser.GameObjects.Container{

@@ -43,7 +43,7 @@ export class LootScene extends BaseScene{
 
     create(): void {
         this.resetVariables();
-        console.log("Amount of boxes: " + this.masterData.lootBoxes.length);
+        //console.log("Amount of boxes: " + this.masterData.lootBoxes.length);
         if(this.masterData.lootBoxes.length <= 0){
             this.skip = true;
             this.progress();
@@ -55,7 +55,7 @@ export class LootScene extends BaseScene{
             this.bkg.setDepth(-20);
             this.curIndex = this.masterData.lootBoxes.length-1;
             this.tOff = Math.random()*200000;
-            console.log("Generating Box");
+            //console.log("Generating Box");
             this.curBox = new Lootbox(this,960,540,this.masterData.lootBoxes[this.curIndex],this.generateLootTable(this.masterData.lootBoxes[this.curIndex]));
             this.add.existing(this.curBox);
             this.curBox.setDepth(5);

@@ -66,12 +66,13 @@ Items
 
 
 Companies
-WC Weapons Supply (wc.ws)
-Jagaimo-Tatsumaki Engineering (JT)
-NeoTech Revolutionary (NTR)
-Voracity-- ** Has been replaced with Feral Complex (FC)
-Lawson Securities
-PYROFOX
+WC Weapons Supply (wc.ws) - Dark colors, bronze, dusty/rugged looking, nonsensical names - straightforward and bad.
+NIKEA - IKEA themed, beige and dark blue with yellow highlights, IKEA product names in all caps - straighforward and functional.
+Jagaimo-Tatsumaki Engineering (JT) - White and silver, sleek looking. Rifles and snipers mostly. 
+NeoTech Revolutionary (NTR) - Glitzy, green/yellow hues. Mostly high RoF weapons, shotguns.
+Voracity-- ** Has been replaced with Feral Complex (FC) - Furry, lilac/pink/purple. Mostly weapons with weird perks.
+Lawson Securities - Yellow/orange industrial looking guns with blue/red signage. Explosive weapons and LMGs.
+Drakalmagest - Edgy black and red/blue/starry highlights, "space guns". Mostly snipers/blasters/launchers.
 
 New Brand Names:
 WC.Weapons Supply
@@ -81,6 +82,45 @@ Precise (15% base crit)
 Merciless (30% extra damage below 50% hp)
 Featherweight (-25% movement penalty)
 Dominus (+30% damage to bosses and big mobs)
+
+
+Current Planned Weapons:
+Sidearms:
+WS-Lontra
+NTR-141
+WS-Crossfade SE
+
+SMGs:
+WS-Windmill
+WS-Windmill SE
+Ottertail
+Two-Fanged Wolf
+
+Shotguns:
+ANTIK
+RINGSKAR
+
+Rifles:
+BJURON
+TJI-Rawhide KOBA*
+
+LMGs:
+WS-Cropper
+Lawson 621E*
+
+Snipers:
+WS-Broadhead
+DsK-00 ''Leviathan's Lament''*
+DsK-67 ''Eltanin''*
+
+Launchers:
+LOSSNEN
+
+Blasters:
+Luxxrazer*
+
+
+
 
 
 Weapon types:
@@ -111,7 +151,6 @@ Lawson CHKi
 
 Special:
 Grater
-
 
 Other concepts:
 Shrapnel spawning sniper

@@ -4,6 +4,7 @@ import { Augment,PassiveAbility } from "../DataTypes";
 import { Bullet } from "./Bullet";
 import { Rocket } from "./Rocket";
 import { Buff, BurstTracker, Weapon } from "./Weapon";
+import { BulletSpawner } from "./BulletSpawner";
 
 
 export interface HitInfo{
@@ -433,12 +434,8 @@ export class WeaponOperator{
                 if(b.tags.includes("pburst")){
                     let a = params[0];
                     let amt = params[1];
-                    let ofs = Phaser.Math.DegToRad(-1*4*w.acc+(Math.random()*2*4*w.acc));
-                    this.p.scene.sound.play("gun_"+w.type,{volume: 0.7});
-                    for(let r = 0; r < (amt*w.shots); r++) {
-                        ofs = Phaser.Math.DegToRad(-1*4*w.acc+(Math.random()*2*4*w.acc));
-                        this.p.scene.addBullet(new Bullet(this.p.scene,bLoc[0], bLoc[1], w.wp.type, w.wp.spd,a+ofs,w.damage,w.pierce+1, w, [{cmd: "bonusonhit", amt: (2+(6*w.specialStat))*(1+(0.1*w.augVars[7]))}]));
-                    }
+                    let sp = new BulletSpawner(this.p.scene, bLoc[0], bLoc[1], amt, w.shots, 50, w.type, a, w.damage, 4*w.acc, w.pierce+1, w, [{cmd: "bonusonhit", amt: (2+(6*w.specialStat))*(w.pierce+1 - 2)*(1+(0.1*w.augVars[7]))}],[]);
+                    this.p.scene.addPlayerProjectile(sp);
                 }
                 break; 
             } default: {

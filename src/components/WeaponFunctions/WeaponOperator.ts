@@ -301,6 +301,13 @@ export class WeaponOperator{
                 w.applyBuff(cb);
                 this.p.scene.sound.play("activate_1", {volume: 0.25});
                 break;
+           } case 12: {
+                let ofs = 0.01*Phaser.Math.DegToRad(-1*w.acc+(Math.random()*2*w.acc));
+                let xamt = w.curAmmo;
+                w.updateAmmo(w.curAmmo);
+                let bb = new Bullet(this.p.scene,this.p.x+(w.fRad*Math.cos(a)), this.p.y+(w.fRad*Math.sin(a)), w.wp.type, w.wp.spd,a+ofs,0,1, w, [{cmd: "burst", amt: 1}, {cmd: "pburst", amt: 1}], [a,xamt]);
+                this.p.scene.addBullet(bb);
+                break; 
            } default: {
                break;
            }
@@ -340,9 +347,10 @@ export class WeaponOperator{
                }
                this.p.scene.addBullet(new Bullet(this.p.scene,this.p.x+(w.fRad*Math.cos(a)), this.p.y+(w.fRad*Math.sin(a)), w.wp.type, w.wp.spd,a+ofs,w.damage*mult,w.pierce, w));
                break; 
-           } case 2: { //ANTEK
+           } case 12: {
+           } case 2: { //ANTIK, Zazamushi
                let ofs = Phaser.Math.DegToRad(-1*w.acc+(Math.random()*2*w.acc));
-               this.p.scene.sound.play("machinegun",{volume: 0.7});
+               this.p.scene.sound.play("gun_"+w.type,{volume: 0.7});
                for(let r = 0; r < w.shots; r++) {
                    ofs = Phaser.Math.DegToRad(-1*w.acc+(Math.random()*2*w.acc));
                    this.p.scene.addBullet(new Bullet(this.p.scene,this.p.x+(w.fRad*Math.cos(a)), this.p.y+(w.fRad*Math.sin(a)), w.wp.type, w.wp.spd,a+ofs,w.damage,w.pierce, w));
@@ -400,7 +408,7 @@ export class WeaponOperator{
        }
     }
 
-    processSpecial(t: Target, wp: number, w: Weapon, dmg: number){
+    processSpecial(t: Target, wp: number, w: Weapon, b: Bullet, dmg: number, params: number[] = [], bLoc: number[] = [0,0]){
         if(t.deleteFlag == true){
             return;
         }
@@ -421,6 +429,18 @@ export class WeaponOperator{
                     //console.log(t.stackLog);
                 }
                 break;
+            } case 12: {
+                if(b.tags.includes("pburst")){
+                    let a = params[0];
+                    let amt = params[1];
+                    let ofs = Phaser.Math.DegToRad(-1*4*w.acc+(Math.random()*2*4*w.acc));
+                    this.p.scene.sound.play("gun_"+w.type,{volume: 0.7});
+                    for(let r = 0; r < (amt*w.shots); r++) {
+                        ofs = Phaser.Math.DegToRad(-1*4*w.acc+(Math.random()*2*4*w.acc));
+                        this.p.scene.addBullet(new Bullet(this.p.scene,bLoc[0], bLoc[1], w.wp.type, w.wp.spd,a+ofs,w.damage,w.pierce+1, w, [{cmd: "bonusonhit", amt: (2+(6*w.specialStat))*(1+(0.1*w.augVars[7]))}]));
+                    }
+                }
+                break; 
             } default: {
                 break;
             }

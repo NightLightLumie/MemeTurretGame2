@@ -1,9 +1,8 @@
 import { GameScene } from "@/scenes/GameScene";
-import { Player } from "../Player";
-import { BasicEffect } from "../Graphics/BasicEffect";
 import { Target } from "../Target";
+import { PlayerObject } from "../PlayerObject";
 
-export class Missile extends Phaser.GameObjects.Container{
+export class Missile extends PlayerObject{
     protected spr: Phaser.GameObjects.Sprite;
     public scene: GameScene;
     protected key: string = "";
@@ -12,7 +11,6 @@ export class Missile extends Phaser.GameObjects.Container{
     public radius: number = 10;
     protected hitAnim: string = "hit_spark";
     protected hitAnimFrames: number = 3;
-    public deleteFlag: boolean = false; 
     public vangle: number = 0;
     public globalDamageScale: number = 0;
     protected spin: number = 0;

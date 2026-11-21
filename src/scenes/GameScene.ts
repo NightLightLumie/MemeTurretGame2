@@ -26,6 +26,7 @@ import { StickyTracer } from "@/components/Graphics/StickyTracer";
 import { ScalingEffect } from "@/components/Graphics/ScalingEffect";
 import { ItemShop } from "@/components/GameFunctions/ItemShop";
 import { FlashScreen } from "@/components/Graphics/FlashScreen";
+import { PlayerObject } from "@/components/PlayerObject";
 
 export interface DamageInstance{
 	amt: number;
@@ -63,7 +64,7 @@ export class GameScene extends BaseScene {
 	private eBulletList: EnemyBullet[];
 	private tList: Target[];
 	private playerEffects: Effect[];
-	private playerProjectiles: Missile[];
+	private playerProjectiles: PlayerObject[];
 	private hitEffects: Effect[];
 	private partEffects: Effect[];
 	private tracerList: Tracer[];
@@ -877,14 +878,14 @@ export class GameScene extends BaseScene {
 		return this.pID;
 	}
 
-	addPlayerProjectile(m: Missile){
-		this.playerProjectiles.push(m);
-		this.bDisp.add(m);
+	addPlayerProjectile(p: PlayerObject){
+		this.playerProjectiles.push(p);
+		this.bDisp.add(p);
 	}
 
-	addGroundHazard(m: Missile){
-		this.playerProjectiles.push(m);
-		this.grDisp.add(m);
+	addGroundHazard(p: PlayerObject){
+		this.playerProjectiles.push(p);
+		this.grDisp.add(p);
 	}
 
 	dot(x: number, y: number){

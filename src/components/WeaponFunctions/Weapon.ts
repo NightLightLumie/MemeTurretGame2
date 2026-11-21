@@ -122,6 +122,7 @@ export class Weapon extends Phaser.Events.EventEmitter{
     public myBuffs: BuffState;
     public baseBuffState: BuffState;
     public buffList: Buff[];
+    private reqAmmoForSpecial: boolean = false;
 
 
 
@@ -285,6 +286,10 @@ export class Weapon extends Phaser.Events.EventEmitter{
                 break;
             } case "Havoc": {
                 this.pvalue[0] = 1;
+                break;
+            } case "Penetrating Blast": {
+                this.reqAmmoForSpecial = true;
+                break;
             } default: {
                 break;
             }
@@ -323,6 +328,12 @@ export class Weapon extends Phaser.Events.EventEmitter{
     canShootSpecial(): boolean{
         if(this.spCost < 0){
             return false;
+        }
+
+        if(this.reqAmmoForSpecial){
+            if((this.curAmmo < 1) || this.loading){
+                return false;
+            }
         }
         
         if(this.curSp < this.spCost){
@@ -451,12 +462,7 @@ export class Weapon extends Phaser.Events.EventEmitter{
                 this.loadTime -= d;
                 this.killtracker[0] = 0;
                 if(this.loadTime <= 0){
-                    this.scene.sound.play("end_reload", {volume:0.75});
-                    this.loadTime = 0;
-                    this.loading = false;
-                    this.curAmmo = this.maxAmmo;
-                    this.scene.player.emit("finishReload");
-                    this.lastAmmoReloaded = 0;
+                    this.endReload();
                 }
             }
         }
@@ -472,9 +478,11 @@ export class Weapon extends Phaser.Events.EventEmitter{
             switch(u){
                 case "Full Tilt": {
                     this.cooldown = this.cooldown/(this.maxCD*(1/this.myBuffs.rof));
-                    this.maxCD = 1000/(this.rof*(1+0.1+(this.conv*this.killtracker[0])));
+                    this.maxCD = (1/this.myBuffs.rof)*1000/(this.rof*(1+0.1+(this.conv*this.killtracker[0])));
                     this.cooldown *= (this.maxCD*(1/this.myBuffs.rof));
                     break;
+                } case "Hibachi": {
+
                 } default: {
                     break;
                 }
@@ -625,6 +633,24 @@ export class Weapon extends Phaser.Events.EventEmitter{
             this.scene.player.emit("startReload");
             this.killtracker[0] = 0;
         }
+    }
+
+    endReload(){
+        this.scene.sound.play("end_reload", {volume:0.75});
+        this.loadTime = 0;
+        this.loading = false;
+        this.curAmmo = this.maxAmmo;
+        this.scene.player.emit("finishReload");
+        this.lastAmmoReloaded = 0;
+    }
+
+    instantLoad(){
+        this.killtracker[0] = 0;
+        this.scene.sound.play("end_reload", {volume:0.75});
+        this.loadTime = 0;
+        this.loading = false;
+        this.curAmmo = this.maxAmmo;
+        this.lastAmmoReloaded = 0;
     }
 
     handleOverflow(){

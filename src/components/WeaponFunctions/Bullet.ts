@@ -26,6 +26,7 @@ export class Bullet extends Phaser.GameObjects.Container{
     //rendering x/y for sprite stretching
     private rX: number;
     private rY: number;
+    private extraParams: number[];
 
     public spr: Phaser.GameObjects.Sprite;
 
@@ -73,13 +74,17 @@ export class Bullet extends Phaser.GameObjects.Container{
     public forcecrit: boolean = false;
     public holdcrit: boolean = false;
     private relay: boolean = false;
+    private burst: boolean = false;
+    private bonusDmg: number = 0;
+    private bonusOnhit: number = 0;
+    public tags: string[];
 
     public repeat: number = 0;
     public globalDamageScale: number = 0;
 
     public cmds: BonusCommand[] = [];
 
-    constructor(scene:GameScene,x:number,y:number, wp: number, v:number,a:number,dmg: number, pen: number, own: Weapon, cmds: BonusCommand[] = []){
+    constructor(scene:GameScene,x:number,y:number, wp: number, v:number,a:number,dmg: number, pen: number, own: Weapon, cmds: BonusCommand[] = [], prm: number[] = []){
         super(scene,x,y);
         this.scene=scene;
 
@@ -89,6 +94,7 @@ export class Bullet extends Phaser.GameObjects.Container{
         this.dmg = dmg;
 
         this.thits = [];
+        this.tags = [];
         this.cmds = cmds;
         this.a = a;
 
@@ -119,6 +125,7 @@ export class Bullet extends Phaser.GameObjects.Container{
 
         this.dmg *= this.globalDamageScale;
         this.dmg *= this.owner.myBuffs.dmg;
+        this.extraParams = prm;
         //add to display done in game for layer reasons
 
     }
@@ -131,7 +138,14 @@ export class Bullet extends Phaser.GameObjects.Container{
             } case "bonuscrit": {
                 this.bonuscrit += b.amt;
                 break;
+            } case "burst": {
+                this.burst = true;
+                break;
+            } case "bonusonhit": {
+                this.bonusOnhit += b.amt;
+                break;
             } default: {
+                this.tags.push(b.cmd);
                 break;
             }
         }
@@ -428,7 +442,7 @@ export class Bullet extends Phaser.GameObjects.Container{
 
     processBasicHit(n: number, repeat: boolean = false){
         let xr = 1;
-        this.scene.handler.processSpecial(this.thits[n].tg,this.weaponID, this.owner, this.dmg);
+        this.scene.handler.processSpecial(this.thits[n].tg,this.weaponID, this.owner, this, this.dmg, this.extraParams, [this.thits[n].vt.x, this.thits[n].vt.y]);
         if(Math.random() < 0.5){
             xr *= -1;
         }
@@ -449,8 +463,8 @@ export class Bullet extends Phaser.GameObjects.Container{
             }
         }
         //need to scale onhit damage here as it's not included up top
-        if(this.owner.onHit > 0){
-            this.thits[n].tg.takeTypedDamage({amt: this.owner.onHit*this.globalDamageScale, type: b, tags: otgs}, [30,30]);
+        if((this.owner.onHit > 0) && (!this.burst)){
+            this.thits[n].tg.takeTypedDamage({amt: (this.owner.onHit+this.bonusOnhit)*this.globalDamageScale, type: b, tags: otgs}, [30,30]);
         }
     }
 

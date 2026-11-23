@@ -4,7 +4,7 @@ import { Weapon } from "./Weapon";
 import { Target } from "../Target";
 import { BasicEffect } from "../Graphics/BasicEffect";
 
-export class Rocket extends Missile{
+export class Rocket extends Missile {
     public scene: GameScene;
     private owner: Weapon;
     private eScale: number = 1;

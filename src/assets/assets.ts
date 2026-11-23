@@ -137,6 +137,7 @@ const images: Image[] = [
 	image('characters/gungun', 'gungun'),
 	image('characters/heart', 'heart'),
 	image('characters/pbullet', 'pbullet'),
+	image('characters/pbullet_r', 'pbullet_r'),
 	image('characters/super', 'super'),
 
 	// Weapons
@@ -301,7 +302,8 @@ const audios: Audio[] = [
 	sound('weapons/gun_11', 'gun_11', 0.5),
 	sound('weapons/gun_12', 'gun_12', 0.5),
 	sound('weapons/gun_12_multi', 'gun_12_multi', 0.5),
-
+	
+	sound('weapons/multishrap', 'multishrap', 0.5),
 	sound('weapons/equip', 'equip', 0.5),
 	sound('weapons/crit', 'crit', 0.5),
 	sound('weapons/activate_1', 'activate_1', 0.5),

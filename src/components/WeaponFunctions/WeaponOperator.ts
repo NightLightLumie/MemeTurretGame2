@@ -305,8 +305,9 @@ export class WeaponOperator{
            } case 12: {
                 let ofs = 0.01*Phaser.Math.DegToRad(-1*w.acc+(Math.random()*2*w.acc));
                 let xamt = w.curAmmo;
+                this.p.scene.sound.play("gun_12_multi", {volume: 0.9});
                 w.updateAmmo(w.curAmmo);
-                let bb = new Bullet(this.p.scene,this.p.x+(w.fRad*Math.cos(a)), this.p.y+(w.fRad*Math.sin(a)), w.wp.type, w.wp.spd,a+ofs,0,1, w, [{cmd: "burst", amt: 1}, {cmd: "pburst", amt: 1}], [a,xamt]);
+                let bb = new Bullet(this.p.scene,this.p.x+(w.fRad*Math.cos(a)), this.p.y+(w.fRad*Math.sin(a)), w.wp.type, w.wp.spd/2, a+ofs,0,1, w, [{cmd: "burst", amt: 1}, {cmd: "pburst", amt: 1}], [a,xamt]);
                 this.p.scene.addBullet(bb);
                 break; 
            } default: {
@@ -434,7 +435,7 @@ export class WeaponOperator{
                 if(b.tags.includes("pburst")){
                     let a = params[0];
                     let amt = params[1];
-                    let sp = new BulletSpawner(this.p.scene, bLoc[0], bLoc[1], amt, w.shots, 50, w.type, a, w.damage, 4*w.acc, w.pierce+1, w, [{cmd: "bonusonhit", amt: (2+(6*w.specialStat))*(w.pierce+1 - 2)*(1+(0.1*w.augVars[7]))}],[]);
+                    let sp = new BulletSpawner(this.p.scene, bLoc[0], bLoc[1], amt, w.shots, 50, w.wp.type, a, w.damage, w.wp.spd, 4*w.acc, w.pierce+1, w, [{cmd: "bonusonhit", amt: (2+(3*w.specialStat))*(2)*(1+(0.1*w.augVars[7]))}],[],[],"multishrap","pbullet_r");
                     this.p.scene.addPlayerProjectile(sp);
                 }
                 break; 

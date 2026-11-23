@@ -25,21 +25,37 @@ export class BulletSpawner extends PlayerObject{
         y: number;
     };
     public timer: number[] = [0,0];
-    constructor(scene: GameScene, x: number, y: number, repeats: number, amt: number, cooldown: number, type: number, angle: number, damage: number, acc: number, pierce: number, w: Weapon, cmds: BonusCommand[] = [], ep: number[] = [], sound: string = "default"){
+    private bstr: string;
+    private hasKill: boolean = false;
+    private kills: number = 0;
+    private tags: string[];
+
+
+    constructor(scene: GameScene, x: number, y: number, repeats: number, amt: number, cooldown: number, type: number, angle: number, damage: number, spd: number, acc: number, pierce: number, w: Weapon, cmds: BonusCommand[] = [], ep: number[] = [], tags: string[] = [], sound: string = "default", bstr: string = "default"){
         super(scene,x,y);
         this.scene = scene;
-        this.params.rp = repeats;
-        this.params.amt = amt;
-        this.params.cd = cooldown;
-        this.params.type = type;
-        this.params.angle = angle;
-        this.params.damage = damage;
-        this.params.acc = acc;
-        this.params.pierce = pierce;
-        this.params.w = w;
-        this.params.cmd = cmds;
-        this.params.ep = ep;
+        this.params = {
+            rp: repeats,
+            amt: amt,
+            cd: cooldown,
+            type: type,
+            angle: angle,
+            damage: damage,
+            spd: spd,
+            acc: acc,
+            pierce: pierce,
+            w: w,
+            cmd: cmds,
+            ep: ep,
+        }
+        this.velocity = {
+            x: 0,
+            y: 0,
+        }
         this.sound = sound;
+        this.bstr = bstr;
+        this.timer = [1, this.params.cd];
+        this.tags = tags;
     }
 
     setMotion(x: number, y: number){
@@ -47,15 +63,33 @@ export class BulletSpawner extends PlayerObject{
         this.velocity.y = y;
     }
 
+	notify(type: string, amt: number){
+        switch(type){
+            case "kill": {
+                if(this.params.w.type == 12){
+                    this.kills++;
+                    if((this.kills >= 3) && (!this.hasKill)){
+                        this.hasKill = true;
+                        console.log(this.kills);
+                        this.params.w.instantLoad();
+                    }
+                }
+                break;
+            } default: {
+                break;
+            }
+        }
+	}
+
     update(t: number, d: number){
         this.x += this.velocity.x*(d/1000);
-        this.y += this.velocity.y*(d/1000);
+        this.y += this.velocity.y*(d/1000);   
 
         if(this.timer[0] > 0){
             this.timer[0] -= d;
             if(this.timer[0] <= 0){
                 this.shoot();
-                this.timer[0] = this.timer[1];
+                this.timer[0] += this.timer[1];
             }
         }       
     }
@@ -69,7 +103,12 @@ export class BulletSpawner extends PlayerObject{
 
             for(let r = 0; r < this.params.amt; r++) {
                 ofs = Phaser.Math.DegToRad(-1*this.params.acc+(Math.random()*2*this.params.acc));
-                this.scene.addBullet(new Bullet(this.scene,this.x, this.y, this.params.type, this.params.spd, this.params.angle+ofs, this.params.damage, this.params.pierce, this.params.w, structuredClone(this.params.cmd), structuredClone(this.params.ep)));
+                let bx = new Bullet(this.scene,this.x, this.y, this.params.type, this.params.spd, this.params.angle+ofs, this.params.damage, this.params.pierce, this.params.w, structuredClone(this.params.cmd), structuredClone(this.params.ep));
+                bx.addTracker(this);
+                if(this.bstr != "default"){
+                    bx.setSprite(this.bstr);
+                }
+                this.scene.addBullet(bx);
             }
 
             this.params.rp -= 1;

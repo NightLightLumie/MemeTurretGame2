@@ -14,6 +14,7 @@ import { StickyTracer } from "./Graphics/StickyTracer";
 import { Echolocator } from "./GameFunctions/Items/Echolocator";
 import { ItemDisplay } from "./Graphics/ItemDisplay";
 import { DamageText } from "./Graphics/DamageText";
+import { Notifiable } from "./WeaponFunctions/Receiver";
 
 const ACCELERATION = 350;
 const MAX_SPEED = 500;
@@ -29,7 +30,8 @@ export interface ShieldSource{
 	duration: number;
 }
 
-export class Player extends Phaser.GameObjects.Container {
+export class Player extends Phaser.GameObjects.Container 
+implements Notifiable {
 	public scene: GameScene;
 
 	// Sprites
@@ -756,6 +758,10 @@ export class Player extends Phaser.GameObjects.Container {
 		if(p instanceof Echolocator){
 			p.resonate(tp);
 		}
+	}
+
+	notify(type: string, amt: number){
+
 	}
 
 	scrollForward(){

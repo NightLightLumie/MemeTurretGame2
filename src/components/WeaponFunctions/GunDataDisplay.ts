@@ -1,6 +1,6 @@
 import { UpgradeScene } from "@/scenes/UpgradeScene";
 import { WeaponEntry } from "../DataTypes";
-import { WeaponFrame } from "./WeaponFrame";
+import { Weapon } from "./Weapon";
 
 export class GunDataDisplay extends Phaser.GameObjects.Container{
     public scene:UpgradeScene;
@@ -121,7 +121,7 @@ export class GunDataDisplay extends Phaser.GameObjects.Container{
     xredraw(tmp:WeaponEntry): WeaponEntry{
         let e = this.scene.masterData.loadGun(tmp);
         let ag = this.scene.masterData.inv.augmentToArray(tmp.augs);
-        let wp = new WeaponFrame(this.scene,e,tmp.augs);
+        let wp = new Weapon(this.scene,e,tmp.augs);
         this.ndisp.setText(e.name);
         let dtg = ""
         if(e.shots == 1){
@@ -201,91 +201,4 @@ export class GunDataDisplay extends Phaser.GameObjects.Container{
         }
         return tmp;
     }
-
-    /*
-    redraw(tmp: WeaponEntry): WeaponEntry{
-        let e = this.scene.masterData.getParams(tmp.wID);
-        let ag = this.scene.masterData.inv.augmentToArray(tmp.augs);
-        this.ndisp.setText(e.name);
-        let dtg = ""
-        if(e.shots == 1){
-            dtg = ("Damage: " + (e.dmg*(1+(ag[1]*0.1))).toFixed(2));
-        } else {
-            dtg = ("Damage: " + ""+(e.dmg*(1+(ag[1]*0.1))).toFixed(2) + " x " + e.shots + "");
-        }
-        if((e.onhit > 0) || (ag[7] > 0)){
-            dtg += "  ";
-            dtg += ("On-Hit: " + ((e.onhit*(1+(ag[7]*0.1))) + (ag[7]*3)).toFixed(2));
-        }
-        this.dmg.setText(dtg);
-        this.rof.setText("Cycle Rate: " + (e.rof*(1+(ag[2]*0.1))).toFixed(2) + " / sec");
-
-        let ctt = ("Capacity: " + Math.trunc(Math.round(e.clip*(1+(ag[3]*0.1)))));
-        let spd = 0;
-        if((e.weight != 0) || (ag[16] != 0)){
-            spd = 100*((-1*e.weight) + (ag[16]*0.05));
-            ctt += ("  " + "Movement: ");
-            if(spd >= 0){
-                ctt+= "+";
-            }
-            ctt += spd.toFixed(1)+" %";  
-        }
-        this.cap.setText(ctt);
-        this.reload.setText("Reload Time: " + ((1/(1+(0.1*ag[4])))*e.load).toFixed(2) + " sec");
-        if(e.rad > 1){
-            let io = ""
-            if(e.pen > 1) {
-                io += "Pierce: " + (e.pen*(1+(ag[9]*0.1))).toFixed(2);
-                io += "  ";
-            }
-            io += "Blast Radius: " + (e.rad*(1+(0.05*ag[8]))).toFixed(2);
-            this.pierce.setText(io);
-        } else {
-            this.pierce.setText("Pierce: " + (e.pen*(1+(ag[9]*0.1))).toFixed(2));
-        }
-        let deg = "";
-        if(e.type == 10) {}
-        this.acc.setText("Accuracy Cone: " + (2*e.acc*(1/(1+(0.1*ag[10])))).toFixed(2) + " deg");
-        this.crit.setText("Crit Chance/Damage: " + ((100*e.crit[0])+(2.5*ag[11])).toFixed(2) + "% / " + (100*(e.crit[1]*(1+(0.06*ag[12])))).toFixed(2) + "%");
-        this.arpen.setText("Armor Penetration: " + (e.arpen[0]+(ag[6])) + " / " + (100*(e.arpen[1]+(ag[6]*0.05))) + "%");
-        if(tmp.passives.length > 0){
-            let pst = "";
-            let count = 0;
-            for(let px = 0; px < tmp.passives.length; px++){
-                if(tmp.passives[px].activated) {
-                    pst += (""+tmp.passives[px].name+": "+tmp.passives[px].desc);
-                    count++;
-                    switch(tmp.passives[px].name){
-                        case "Romp": {
-                            pst+= ("true damage equal to "+(10*(1+(ag[18]*0.2))).toFixed(2) + "x the pre-augment base damage.");
-                            break;
-                        } default: {
-                            break;
-                        }
-                    }
-                    pst+= (""+"\n"+"\n");
-                } else if (count <= 0) {
-                    pst += (""+"\n"+"\n");
-                    pst += (""+"???");
-                    pst+= (""+"\n"+"\n");
-                } else {
-                    pst += (""+"???");
-                    pst+= (""+"\n"+"\n");
-                }
-            }
-            this.psdesc.setText(pst);
-            if(count > 0) {
-                this.pstitle.setText("Passive Abilities: ");
-            } else {
-                this.pstitle.setText("Passive Abilities Not Unlocked ");
-            }
-        } else {
-            this.pstitle.setText("");
-            this.psdesc.setText("");
-        }
-
-        return tmp;
-   
-    }
-    */
 }

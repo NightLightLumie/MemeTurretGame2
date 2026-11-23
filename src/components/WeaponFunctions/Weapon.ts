@@ -1,7 +1,8 @@
-import { BaseScene } from "@/scenes/BaseScene";
 import { GameScene } from "@/scenes/GameScene";
-import { WeaponOperator, WeaponParams } from "./WeaponOperator";
+import { WeaponParams } from "./WeaponOperator";
 import { Augment } from "../DataTypes";
+import { Notifiable } from "./Receiver";
+import { BaseScene } from "@/scenes/BaseScene";
 //10 upgrade slots
 //up to 3, +1 for augmentation
 //level goes to 10, + 13 for augmentation
@@ -41,9 +42,10 @@ export interface Buff {
     deleteMe: boolean;
 }
 
-export class Weapon extends Phaser.Events.EventEmitter{
+export class Weapon extends Phaser.Events.EventEmitter 
+implements Notifiable {
 
-    public scene: GameScene;
+    public scene: BaseScene;
     public active: boolean = false;
     public bursts: BurstTracker[];
     public type: number;
@@ -122,12 +124,12 @@ export class Weapon extends Phaser.Events.EventEmitter{
     public myBuffs: BuffState;
     public baseBuffState: BuffState;
     public buffList: Buff[];
-    private reqAmmoForSpecial: boolean = false;
+    public reqAmmoForSpecial: boolean = false;
 
 
 
 
-    constructor(scene: GameScene, wp: WeaponParams, augments: Augment[] = []){
+    constructor(scene: BaseScene, wp: WeaponParams, augments: Augment[] = []){
         super();
         this.scene = scene;
         this.wp = wp;
@@ -222,7 +224,7 @@ export class Weapon extends Phaser.Events.EventEmitter{
         this.speed = (1-this.wp.weight)+(0.05*this.augVars[16]);
         this.dh += 0.1*this.augVars[13];
         this.specialStat = this.augVars[18];
-        this.parseSpecialStat()
+        this.parseSpecialStat();
     }
 
     parseSpecialStat(){
@@ -230,6 +232,9 @@ export class Weapon extends Phaser.Events.EventEmitter{
             case 10: {
                 this.pierce += 0.2*this.specialStat;
                 this.onHit += 2*this.specialStat;
+                break;
+            } case 12: {
+                this.onHit += (3*this.specialStat*(this.pierce-this.wp.pen))*(1+(0.1*this.augVars[7]));
                 break;
             } default: {
                 break;
@@ -249,7 +254,7 @@ export class Weapon extends Phaser.Events.EventEmitter{
     initiatePassive(name: string){
         switch(name){
             case "Shear": {} case "Quality and Quantity": {} case "Wholesale": {}  case "Long Bolts": {}
-            case "Hi-Point": {} case "Nimble": {
+            case "Hi-Point": {} case "Nimble": {} case "Hibachi": {
                 this.parseBasePassives(name);
                 break;
             } case "Timeless": {
@@ -318,6 +323,10 @@ export class Weapon extends Phaser.Events.EventEmitter{
                 break;
             } case "Nimble": {
                 this.maxLoad *= 0.6;
+                break;
+            } case "Hibachi": {
+                this.maxAmmo += 4;
+                this.curAmmo = this.maxAmmo;
                 break;
             } default: {
                 break;
@@ -630,7 +639,10 @@ export class Weapon extends Phaser.Events.EventEmitter{
             this.loadTime = this.maxLoad;
             this.loading = true;
             this.lastAmmoReloaded = this.maxAmmo-this.curAmmo;
-            this.scene.player.emit("startReload");
+            if(this.scene instanceof GameScene){
+                this.scene.player.emit("startReload");
+            }
+
             this.killtracker[0] = 0;
         }
     }
@@ -640,7 +652,9 @@ export class Weapon extends Phaser.Events.EventEmitter{
         this.loadTime = 0;
         this.loading = false;
         this.curAmmo = this.maxAmmo;
-        this.scene.player.emit("finishReload");
+        if(this.scene instanceof GameScene){
+            this.scene.player.emit("finishReload");
+        }
         this.lastAmmoReloaded = 0;
     }
 
@@ -674,7 +688,9 @@ export class Weapon extends Phaser.Events.EventEmitter{
         }
     }
 
+	notify(type: string, amt: number){
 
+	}
 
     fire(){
 

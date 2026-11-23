@@ -5,12 +5,14 @@ import { Player } from "@/components/Player";
 export class UltrasonicBarrier extends Item {
     private shieldCoeff: number = 0.25;
     private regenRate: number = 0.01;
+    private lastStoredHP: number = 0;
     constructor(scene: GameScene, p: Player, name: string, slot: number){
         super(scene, p, name, slot);
         this.owner.pShield = [(this.shieldCoeff*this.owner.maxHP), (this.shieldCoeff*this.owner.maxHP)];
         this.owner.on("ouch", this.pauseShield, this);
         this.cooldown = 0;
         this.maxCD = 3000;
+        this.lastStoredHP = this.owner.maxHP;
     }
 
     levelUp(){
@@ -27,12 +29,21 @@ export class UltrasonicBarrier extends Item {
         }
     }
 
+    refactorShield(){
+        this.owner.pShield[0] = this.owner.pShield[0]/this.owner.pShield[1];
+        this.owner.pShield[1] = (this.shieldCoeff*this.owner.maxHP);
+        this.owner.pShield[0] *= this.owner.pShield[1];
+    }
+
     pauseShield(){
         this.cooldown = this.maxCD;
     }
 
     update(t: number, d: number){
-        this.owner.pShield[1] = (this.shieldCoeff*this.owner.maxHP);
+        if(this.lastStoredHP != this.owner.maxHP){
+            this.lastStoredHP = this.owner.maxHP;
+            this.refactorShield();
+        }
         if(this.cooldown > 0){
             this.cooldown -= d;
             if(this.cooldown <= 0){

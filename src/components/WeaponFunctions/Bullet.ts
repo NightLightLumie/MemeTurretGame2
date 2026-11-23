@@ -3,12 +3,12 @@
 //PLS call the collision before calling draw or else it will look wonkers
 
 import { GameScene } from "@/scenes/GameScene";
-import { Vector } from "matter";
 import { Target } from "../Target";
 import { BasicEffect } from "../Graphics/BasicEffect";
 import { HitInfo } from "./WeaponOperator";
 import { Tracer } from "./Tracer";
 import { Weapon } from "./Weapon";
+import { Notifiable } from "./Receiver";
 
 export interface BonusCommand {
     cmd: string,
@@ -81,6 +81,7 @@ export class Bullet extends Phaser.GameObjects.Container{
 
     public repeat: number = 0;
     public globalDamageScale: number = 0;
+    private trackers: Notifiable[];
 
     public cmds: BonusCommand[] = [];
 
@@ -95,6 +96,7 @@ export class Bullet extends Phaser.GameObjects.Container{
 
         this.thits = [];
         this.tags = [];
+        this.trackers = [];
         this.cmds = cmds;
         this.a = a;
 
@@ -149,6 +151,10 @@ export class Bullet extends Phaser.GameObjects.Container{
                 break;
             }
         }
+    }
+
+    setSprite(s: string){
+        this.spr.setTexture(s);
     }
 
     addLinkedBullets(b:Bullet){
@@ -382,7 +388,7 @@ export class Bullet extends Phaser.GameObjects.Container{
                 b = "crit";
                 tgs.push("crit");
             }
-            if(this.thits[ix].tg.takeTypedDamage({amt: this.dmg, type: b, tags: tgs}, [20,20])){
+            if(this.thits[ix].tg.takeTypedDamage({amt: this.dmg, type: b, tags: tgs}, [20,20]) == true){
                 this.processBasicHit(ix);
                 if(this.owner.repeats.length > 0){
                     this.owner.repeats.forEach((r)=>{
@@ -402,6 +408,10 @@ export class Bullet extends Phaser.GameObjects.Container{
                 this.hX = this.thits[ix].vt.x;
                 this.hY = this.thits[ix].vt.y;
                 this.pierce = 0;
+                if((this.thits[ix].tg.deleteFlag == true) && (!this.thits[ix].tg.killTracked)){
+                    this.thits[ix].tg.killTracked = true;
+                    this.informKill();
+                }
             }
             
             this.thits = [];
@@ -416,7 +426,7 @@ export class Bullet extends Phaser.GameObjects.Container{
             b = "crit";
             ptgs.push("crit");
         }
-        if(this.thits[n].tg.takePierceDamage({amt: this.dmg, type: b, tags: ptgs},this.pID,this.weaponID)){
+        if(this.thits[n].tg.takePierceDamage({amt: this.dmg, type: b, tags: ptgs},this.pID,this.weaponID) == true){
             this.processBasicHit(n);
             if(this.owner.repeats.length > 0){
                 this.owner.repeats.forEach((r)=>{
@@ -432,6 +442,10 @@ export class Bullet extends Phaser.GameObjects.Container{
                         this.processBasicHit(n, true);
                     }
                 })
+            }
+            if((this.thits[n].tg.deleteFlag == true) && (!this.thits[n].tg.killTracked)){
+                this.thits[n].tg.killTracked = true;
+                this.informKill();
             }
             return true;
         } else {
@@ -454,7 +468,7 @@ export class Bullet extends Phaser.GameObjects.Container{
 
         let b = "gun";
         let otgs = ["gun", "projectile", "onhit"];
-        if(this.owner.onHit > 0){
+        if((this.owner.onHit+this.bonusOnhit) > 0){
             if(repeat){
                 b = "onhitrepeat";
                 otgs.push("repeat");
@@ -463,9 +477,22 @@ export class Bullet extends Phaser.GameObjects.Container{
             }
         }
         //need to scale onhit damage here as it's not included up top
-        if((this.owner.onHit > 0) && (!this.burst)){
+        if(((this.owner.onHit+this.bonusOnhit) > 0) && (!this.burst)){
             this.thits[n].tg.takeTypedDamage({amt: (this.owner.onHit+this.bonusOnhit)*this.globalDamageScale, type: b, tags: otgs}, [30,30]);
         }
+    }
+
+    informKill(){
+        this.trackers.forEach((t) => {
+            if(t != null){
+                console.log("notifying kill");
+                t.notify("kill", 1);
+            } 
+        });
+    }
+
+    addTracker(n: Notifiable){
+        this.trackers.push(n);
     }
 
     getDist(v: Phaser.Math.Vector2){

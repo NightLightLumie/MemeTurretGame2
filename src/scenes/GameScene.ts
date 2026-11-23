@@ -767,6 +767,9 @@ export class GameScene extends BaseScene {
 			if((t != null) && (t.deleteFlag != true)){
 				if(Math.abs(t.x-x) < (t.radius+radius)){
 					dmg.forEach((d) => {
+						if(d.tags.includes("crit")){
+							this.sound.play("crit",{volume: 0.35});
+						}
 						t.takeTypedDamage(d,[20,20]);
 					});
 				}
@@ -779,6 +782,9 @@ export class GameScene extends BaseScene {
 			if((t != null) && (t.deleteFlag != true)){
 				if(Math.abs(t.y-y) < (t.radius+radius)){
 					dmg.forEach((d) => {
+						if(d.tags.includes("crit")){
+							this.sound.play("crit",{volume: 0.35});
+						}
 						t.takeTypedDamage(d,[20,20]);
 					});
 				}

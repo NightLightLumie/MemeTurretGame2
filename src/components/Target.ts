@@ -15,7 +15,7 @@ export interface DamageBatch {
 }
 
 export interface ArmorType {
-    
+
 }
 
 export class Target extends Phaser.GameObjects.Container{
@@ -45,6 +45,7 @@ export class Target extends Phaser.GameObjects.Container{
     public damageScale: number = 1;
     public debuff: number = 1;
     public buff: number = 1;
+    public killTracked: boolean = false;
 
     public batchedDamage: DamageBatch[];
     public totalBatchedDamage: number;

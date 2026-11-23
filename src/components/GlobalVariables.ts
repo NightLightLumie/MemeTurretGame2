@@ -177,9 +177,9 @@ export class GlobalVariables {
          acc: 5.5, arpen: [0,0], crit: [0.001,1.75], ele: 1, onhit: 0, weight: 0.025, rarity: 1, burst:[1,1], dot: [], augs: [0,1,1,1, 1,0,1,1, 0,1,1,1, 1,1,1,0, 1,1,0], customaug: {name: "default", index: 18, level: 0, maxlv: 10, lvcap: 10, desc: ""}, 
          passives: [{name: "Beyond Tilt", desc: "Alt-fire to gain 40% fire rate for 6s.", activated: true}, {name: "Nimble", desc: "Base reload time decreased by 40%.", activated: false}]}],
 
-        [12, {type:12,name:"TJi v33 'Zazamushi'",class:"shotgun", dmg: 122, spd: 15000, rof: 2, spcd: [300, 1000, 50, 5000], shots: 11, pen: 2, pcd: -999, clip: 7.15, load: 1.25, width: 1, rad: 1,
-        acc: 22.5, arpen: [0,0], crit: [0.001,1.5], ele: 1, onhit: 0, weight: 0.2, rarity: 1, burst:[1,1], dot: [], augs: [0,1,0,1, 1,0,1,1, 0,1,1,1, 1,1,1,0, 1,1,0], customaug: {name: "Stinger", index: 18, level: 0, maxlv: 10, lvcap: 10, desc: "Gain 6 on-hit damage per bonus pierce."}, 
-        passives: [{name: "Penetrating Blast", desc: "Alt-fire to consume all current ammo and fire a slug shot that explodes into an equivalent amount of shrapnel. Shrapnel bullets have 1 bonus pierce.", activated: true}, {name: "Hibachi", desc: "Killing 10 enemies instantly refills the magazine.", activated: false}]}],
+        [12, {type:12,name:"TJi v33 'Zazamushi'",class:"shotgun", dmg: 162, spd: 15000, rof: 1.5, spcd: [300, 1000, 50, 5000], shots: 11, pen: 2, pcd: -999, clip: 3, load: 1.75, width: 1, rad: 1,
+        acc: 22.5, arpen: [0,0], crit: [0.001,1.5], ele: 1, onhit: 0, weight: 0.2, rarity: 1, burst:[1,1], dot: [], augs: [0,1,0,1, 0,0,1,1, 0,1,1,1, 1,1,1,0, 1,1,1], customaug: {name: "Stinger", index: 18, level: 0, maxlv: 10, lvcap: 10, desc: "Gain 3 on-hit damage per bonus pierce."}, 
+        passives: [{name: "Penetrating Blast", desc: "Alt-fire to consume all current ammo and fire a slug shot that explodes into an equivalent amount of shrapnel. Shrapnel has 1 bonus pierce and instantly refills the magazine after 5 kills.", activated: true}, {name: "Hibachi", desc: "+4 flat clip size.", activated: false}]}],
 
 
         /*

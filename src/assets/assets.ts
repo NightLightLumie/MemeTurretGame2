@@ -154,6 +154,7 @@ const images: Image[] = [
 	image('weapons/gun_10', 'gun_10'),
 	image('weapons/gun_11', 'gun_11'),
 	image('weapons/gun_12', 'gun_12'),
+	image('weapons/gun_13', 'gun_13'),
 	image('weapons/gun_placeholder', 'gun_placeholder'),
 
 	image('weapons/aug_0', 'aug_0'),

@@ -295,6 +295,8 @@ implements Notifiable {
             } case "Penetrating Blast": {
                 this.reqAmmoForSpecial = true;
                 break;
+            } case "Teamchat": {
+                this.onHit
             } default: {
                 break;
             }

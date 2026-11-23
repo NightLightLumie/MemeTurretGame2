@@ -140,7 +140,7 @@ export class GlobalVariables {
         [2, {type:2,name:"ANTIK",class:"shotgun", dmg: 115, spd: 20000, rof: 2.5, spcd: [-1, 1000, 10, 10000], shots: 6, pen: 1.5, pcd: -999, clip: 8, load: 2.5, width: 1, rad: 1,
          acc: 15, arpen: [0,0], crit: [0.001,1.5], ele: 1, onhit: 0, weight: 0.125, rarity: 1, burst:[1,1], dot: [], augs: [0,1,1,1, 1,0,1,1, 0,1,1,1, 1,1,0,0, 1,1,0], customaug: {name: "default", index: 18, level: 0, maxlv: 10, lvcap: 10, desc: ""}, 
          passives: [{name: "Timeless", desc: "+3 pellets and +1 flat rate of fire",activated:false}]}],
-        [3, {type:3,name:"WS-Broadhead",class:"sniper", dmg: 765, spd: 50000, rof: 1.5, spcd: [-1, 1000, 10, 10000], shots: 1, pen: 3.25, pcd: -999, clip: 5, load: 2, width: 1, rad: 1,
+        [3, {type:3,name:"WS-Broadhead",class:"sniper", dmg: 785, spd: 50000, rof: 1.75, spcd: [-1, 1000, 10, 10000], shots: 1, pen: 3.25, pcd: -999, clip: 5, load: 2, width: 1, rad: 1,
          acc: 0, arpen: [0,0], crit: [0.001,3], ele: 1, onhit: 0, weight: 0.35, rarity: 1, burst:[1,1], dot: [], augs: [0,1,1,1, 1,0,1,1, 0,1,0,1, 1,1,0,0, 1,1,0], customaug: {name: "default", index: 18, level: 0, maxlv: 10, lvcap: 10, desc: ""}, passives: [
             {name: "Long Bolts", desc: "+40% crit chance",activated:false}]}],
         [4, {type:4,name:"BJURÖN",class:"assault", dmg: 175, spd: 28000, rof: 6, spcd: [-1, 1000, 10, 10000], shots: 1, pen: 2.5, pcd: -999, clip: 40, load: 2, width: 1, rad: 1,

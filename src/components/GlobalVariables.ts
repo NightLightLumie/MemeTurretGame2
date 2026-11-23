@@ -152,7 +152,7 @@ export class GlobalVariables {
         [6, {type:6,name:"LOSSNEN",class:"rocket", dmg: 1655, spd: 5000, rof: 1, spcd: [-1, 1000, 10, 10000], shots: 1, pen: 1, pcd: -999, clip: 2, load: 2.5, width: 1, rad: 280,
          acc: 0.05, arpen: [0,0], crit: [0,1], ele: 1, onhit: 0, weight: 0.3, rarity: 1, burst:[1,1], dot: [], augs: [0,1,1,1, 1,0,1,1, 1,0,1,0, 0,1,0,0, 1,1,0], customaug: {name: "default", index: 0, level: 18, maxlv: 10, lvcap: 10, desc: ""}, passives: [
             {name: "Wholesale", desc: "+60% total damage",activated:false}]}],
-        [7, {type:7,name:"Ottertail",class:"smg", dmg: 205, spd: 22000, rof: 11, spcd: [500, 1000, 25, 10000], shots: 1, pen: 1.25, pcd: -999, clip: 42, load: 1.75, width: 1, rad: 1,
+        [7, {type:7,name:"Ottertail",class:"smg", dmg: 235, spd: 22000, rof: 11, spcd: [500, 1000, 25, 10000], shots: 1, pen: 1, pcd: -999, clip: 42, load: 1.75, width: 1, rad: 1,
          acc: 9, arpen: [0,0], crit: [0.001,1.75], ele: 1, onhit: 0, weight: 0.15, rarity: 1, burst:[1,1], dot: [], augs: [0,1,1,1, 1,0,1,1, 0,1,1,1, 1,1,1,1, 1,1,1], customaug: {name: "Rambunctious", index: 18, level: 0, maxlv: 10, lvcap: 10, desc: "Increased damage when triggering Romp. +25% per upgrade."},
         passives: [{name: "Romp", desc: "Hits from this weapon apply a stack of Romp. At 7 stacks, trigger to deal ", activated: true},
             {name: "Screwdriver", desc: "Alt-fire to shoot a rapid burst of 7 accurate shots.", activated: true},
@@ -181,9 +181,9 @@ export class GlobalVariables {
         acc: 22.5, arpen: [0,0], crit: [0.001,1.5], ele: 1, onhit: 0, weight: 0.2, rarity: 1, burst:[1,1], dot: [], augs: [0,1,0,0, 0,0,1,1, 0,1,1,1, 1,1,1,0, 1,1,1], customaug: {name: "Stinger", index: 18, level: 0, maxlv: 10, lvcap: 10, desc: "Gain 3 on-hit damage per bonus pierce."}, 
         passives: [{name: "Penetrating Blast", desc: "Alt-fire to consume all current ammo and fire a slug shot that explodes into an equivalent amount of shrapnel. Shrapnel has 1 bonus pierce and instantly refills the magazine after 5 kills.", activated: true}, {name: "Hibachi", desc: "+4 flat clip size.", activated: false}]}],
 
-        [13, {type:13,name:"NTR-67 PS'",class:"rifle", dmg: 151, spd: 15000, rof: 12.5, spcd: [-1, 1000, 10, 10000], shots: 1, pen: 2, pcd: -999, clip: 50, load: 2.25, width: 1, rad: 1,
-        acc: 2.25, arpen: [0,0], crit: [0.001,2], ele: 1, onhit: 52, weight: 0.15, rarity: 1, burst:[1,1], dot: [], augs: [0,1,1,1, 1,0,1,1, 0,1,1,1, 1,1,1,0, 1,1,1], customaug: {name: "default", index: 18, level: 0, maxlv: 10, lvcap: 10, desc: ""}, 
-        passives: [{name: "Teamchat", desc: "On-hit damage also benefits from base damage upgrades.", activated: true}, {name: "Against The Flow", desc: "Hitting an enemy restores 20% of the magazine ammo (rounded down) per second for 2 seconds.", activated: false}]}],
+        [13, {type:13,name:"NTR-67 PS'",class:"assault", dmg: 131, spd: 15000, rof: 12.5, spcd: [-1, 1000, 10, 10000], shots: 1, pen: 2, pcd: -999, clip: 50, load: 2.25, width: 1, rad: 1,
+        acc: 2.25, arpen: [0,0], crit: [0.001,2], ele: 1, onhit: 41, weight: 0.15, rarity: 1, burst:[1,1], dot: [], augs: [0,1,1,1, 1,0,1,1, 0,1,1,1, 1,1,1,0, 1,1,1], customaug: {name: "default", index: 18, level: 0, maxlv: 10, lvcap: 10, desc: ""}, 
+        passives: [{name: "Teamchat", desc: "On-hit damage also benefits from base damage upgrades.", activated: true}, {name: "Against The Flow", desc: "Hitting an enemy restores 25% of the magazine ammo (rounded down) per second for 2 seconds.", activated: false}]}],
 
         /*
         [11, {type:11,name:"Luxxrazer",class:"blaster", dmg: 98, spd: 20000, rof: 9, spcd: [500, 1000, 25, 15000], shots: 1, pen: 1.75, pcd: -999, clip: 40, load: 1.5, width: 1, rad: 1,

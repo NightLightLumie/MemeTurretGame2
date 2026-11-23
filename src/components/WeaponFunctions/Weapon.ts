@@ -254,7 +254,7 @@ implements Notifiable {
     initiatePassive(name: string){
         switch(name){
             case "Shear": {} case "Quality and Quantity": {} case "Wholesale": {}  case "Long Bolts": {}
-            case "Hi-Point": {} case "Nimble": {} case "Hibachi": {
+            case "Hi-Point": {} case "Nimble": {} case "Hibachi": case "Teamchat": {
                 this.parseBasePassives(name);
                 break;
             } case "Timeless": {
@@ -295,8 +295,6 @@ implements Notifiable {
             } case "Penetrating Blast": {
                 this.reqAmmoForSpecial = true;
                 break;
-            } case "Teamchat": {
-                this.onHit
             } default: {
                 break;
             }
@@ -325,6 +323,9 @@ implements Notifiable {
                 break;
             } case "Nimble": {
                 this.maxLoad *= 0.6;
+                break;
+            } case "Teamchat": {
+                this.onHit = (this.wp.onhit*(1+(0.1*this.augVars[7]))*(1+(0.1*this.augVars[1])))+(3*this.augVars[7]);
                 break;
             } case "Hibachi": {
                 this.maxAmmo += 4;

@@ -37,7 +37,8 @@ export interface BuffState{
 export interface Buff {
     name: string;
     type: string;
-    duration: number;
+    duration: number[];
+    cooldown: number[];
     amount: number;
     deleteMe: boolean;
 }
@@ -205,8 +206,8 @@ implements Notifiable {
         this.pcd = this.wp.pcd;
         this.shots = this.wp.shots;
         this.img = ("gun_"+this.wp.type);
-        this.curAmmo = Math.trunc(Math.round(this.wp.clip)*((1+(0.1*this.augVars[3]))));
-        this.maxAmmo = Math.trunc(Math.round(this.wp.clip)*((1+(0.1*this.augVars[3]))));
+        this.maxAmmo = Math.trunc(Math.round(this.wp.clip*((1+(0.1*this.augVars[3])))));
+        this.curAmmo = this.maxAmmo;
         this.spDmg = 1+(0.15*this.augVars[15]);
         this.spCost = this.wp.spcd[0];
         this.spCap = this.wp.spcd[1];
@@ -242,13 +243,22 @@ implements Notifiable {
         }
     }
 
-    hasPassive(name: string){
+    hasPassive(name: string, activated: boolean = false){
+        let check = false;
         this.wp.passives.forEach((w) => {
             if(w.name == name){
-                return true;
+                if(w.activated && activated){
+                    check = true;
+                } else if (!activated) {
+                    check = true;
+                }
             }
-        })
-        return false;
+        });
+        if(check){
+            return true;
+        } else {
+            return false;
+        }
     }
 
     initiatePassive(name: string){
@@ -503,10 +513,19 @@ implements Notifiable {
     }
 
     updateBuffs(t: number, d: number){
+        let str = "";
         for(let b = (this.buffList.length-1); b >= 0; b--){
-			if(this.buffList[b].duration > 0){
-                this.buffList[b].duration -= d;
-                if(this.buffList[b].duration <= 0){
+            //console.log("updating buff: " + this.buffList[b].name)
+            str += this.buffList[b].name + " ,";
+            if(this.buffList[b].cooldown[0] > 0){
+                this.buffList[b].cooldown[0] -= d;
+                if(this.buffList[b].cooldown[0] <= 0){
+                    this.buffList[b].cooldown[0] = 0;
+                }
+            }
+			if(this.buffList[b].duration[0] > 0){
+                this.buffList[b].duration[0] -= d;
+                if(this.buffList[b].duration[0] <= 0){
                     this.buffList[b].deleteMe = true;
                 }
             } else {
@@ -515,22 +534,50 @@ implements Notifiable {
 			if(this.buffList[b].deleteMe) {
                 this.removeBuff(this.buffList[b]);
 				this.buffList.splice(b,1);
-			}
+			} else {
+                if(this.buffList[b].type == "temp"){
+                    this.updateTempBuff(this.buffList[b]);
+                }
+            }
 		}
+        //console.log("buffs: "+ str);
+    }
+
+    updateTempBuff(b: Buff){
+        switch(b.name){
+            case "Against the Flow": {
+                if(b.cooldown[0] <= 0){
+                    this.curAmmo += Math.trunc(b.amount*this.maxAmmo);
+                    if(this.curAmmo > this.maxAmmo){
+                        this.curAmmo = this.maxAmmo;
+                    }
+                    b.cooldown[0] = b.cooldown[1];
+                    //console.log("cur cooldown" + b.cooldown);
+                    this.scene.sound.play("end_reload", {volume:0.75});
+                }
+                break;
+            } default: {
+                break;
+            }
+        }
     }
 
     applyBuff(b: Buff){
         let curbuff = this.findBuff(b.name);
         if(curbuff.name != "default"){
-            curbuff.duration = b.duration;
-            if(b.amount > curbuff.amount){
-                let difference = b.amount-curbuff.amount;
-                curbuff.amount += difference;
-                b.amount = difference;
-                this.parseBuff(b);
+            if(curbuff.name == b.name){
+                if(curbuff.duration[0] < b.duration[0]){
+                    curbuff.duration[0] = b.duration[0];
+                }
+                if(b.amount > curbuff.amount){
+                    let difference = b.amount-curbuff.amount;
+                    curbuff.amount += difference;
+                    b.amount = difference;
+                    this.parseBuff(b);
+                }
+                curbuff.deleteMe = false;
             }
-            b.deleteMe = false;
-        } else {
+        } else {;
             this.buffList.push(b);
             this.parseBuff(b);
         }
@@ -589,25 +636,26 @@ implements Notifiable {
     }
 
     findBuff(index: string): Buff{
-        this.buffList.forEach((b)=> {
-            if(b.name == index){
-                return b;
-            }
-        })
-
-        return {
+        let bx = {
             name: "default",
             type: "default",
-            duration: 1,
+            duration: [1,1],
+            cooldown: [1,1],
             amount: 0,
             deleteMe: true,
-        }
+        };
+
+        this.buffList.forEach((b)=> {
+            if(b.name == index){
+                bx = b;
+            }
+        })
+        return bx;
     }
 
     updateCooldown(){
         if(this.overflow < (this.maxCD*(1/this.myBuffs.rof))){
             this.cooldown = (this.maxCD*(1/this.myBuffs.rof))-this.overflow;
-            //console.log(this.wp.name + "CURRENT COOLDOWN: " + this.cooldown);
             this.overflow = 0;
         } else {
             this.handleOverflow();

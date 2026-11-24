@@ -282,7 +282,6 @@ export class AugmentScreen extends Phaser.GameObjects.Container{
             this.scene.addEffect(new BasicEffect(this.scene,"spellhitblue",this.widgetDisp.x,this.widgetDisp.y,3,100,false,0,Math.random()*360,[3,3]));
             this.animpause = [250,250];
             this.waiting = true;
-            this.scene.masterData.widgets -= 1;
             return true;
         }
         this.scene.sound.play("suck", {volume: 0.75});

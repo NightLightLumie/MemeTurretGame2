@@ -175,17 +175,23 @@ export class GlobalVariables {
         ]}],
         [11, {type:11,name:"WS-Windmill SE",class:"smg", dmg: 98, spd: 20000, rof: 9, spcd: [500, 1000, 25, 15000], shots: 1, pen: 1.75, pcd: -999, clip: 40, load: 1.5, width: 1, rad: 1,
          acc: 5.5, arpen: [0,0], crit: [0.001,1.75], ele: 1, onhit: 0, weight: 0.025, rarity: 1, burst:[1,1], dot: [], augs: [0,1,1,1, 1,0,1,1, 0,1,1,1, 1,1,1,0, 1,1,0], customaug: {name: "default", index: 18, level: 0, maxlv: 10, lvcap: 10, desc: ""}, 
-         passives: [{name: "Beyond Tilt", desc: "Alt-fire to gain 40% fire rate for 6s.", activated: true}, {name: "Nimble", desc: "Base reload time decreased by 40%.", activated: false}]}],
-
+         passives: [{name: "Beyond Tilt", desc: "Alt-fire to gain 40% fire rate for 6s.", activated: true}, {name: "Nimble", desc: "Base reload time decreased by 40%.", activated: false}]}
+        ],
         [12, {type:12,name:"TJi v33 'Zazamushi'",class:"shotgun", dmg: 162, spd: 15000, rof: 1.5, spcd: [300, 1000, 50, 5000], shots: 11, pen: 2, pcd: -999, clip: 3, load: 1.75, width: 1, rad: 1,
         acc: 22.5, arpen: [0,0], crit: [0.001,1.5], ele: 1, onhit: 0, weight: 0.2, rarity: 1, burst:[1,1], dot: [], augs: [0,1,0,0, 0,0,1,1, 0,1,1,1, 1,1,1,0, 1,1,1], customaug: {name: "Stinger", index: 18, level: 0, maxlv: 10, lvcap: 10, desc: "Gain 3 on-hit damage per bonus pierce."}, 
-        passives: [{name: "Penetrating Blast", desc: "Alt-fire to consume all current ammo and fire a slug shot that explodes into an equivalent amount of shrapnel. Shrapnel has 1 bonus pierce and instantly refills the magazine after 5 kills.", activated: true}, {name: "Hibachi", desc: "+4 flat clip size.", activated: false}]}],
-
-        [13, {type:13,name:"NTR-67 PS'",class:"assault", dmg: 131, spd: 15000, rof: 12.5, spcd: [-1, 1000, 10, 10000], shots: 1, pen: 2, pcd: -999, clip: 50, load: 2.25, width: 1, rad: 1,
+        passives: [{name: "Penetrating Blast", desc: "Alt-fire to consume all current ammo and fire a slug shot that explodes into an equivalent amount of shrapnel. Shrapnel has 1 bonus pierce and instantly refills the magazine after 5 kills.", activated: true}, {name: "Hibachi", desc: "+4 flat clip size.", activated: false}]}
+        ],
+        [13, {type:13,name:"NTR-67 PS",class:"assault", dmg: 131, spd: 15000, rof: 12.5, spcd: [-1, 1000, 10, 10000], shots: 1, pen: 2, pcd: -999, clip: 50, load: 2.25, width: 1, rad: 1,
         acc: 2.25, arpen: [0,0], crit: [0.001,2], ele: 1, onhit: 41, weight: 0.15, rarity: 1, burst:[1,1], dot: [], augs: [0,1,1,1, 1,0,1,1, 0,1,1,1, 1,1,1,0, 1,1,1], customaug: {name: "default", index: 18, level: 0, maxlv: 10, lvcap: 10, desc: ""}, 
-        passives: [{name: "Teamchat", desc: "On-hit damage also benefits from base damage upgrades.", activated: true}, {name: "Against The Flow", desc: "Hitting an enemy restores 25% of the magazine ammo (rounded down) per second for 2 seconds.", activated: false}]}],
+        passives: [{name: "Teamchat", desc: "On-hit damage also benefits from base damage upgrades.", activated: true}, {name: "Against the Flow", desc: "Hitting an enemy restores 25% of the magazine ammo (rounded down) per second for 2 seconds.", activated: false}]}
+        ],
 
         /*
+        [14, {type:14,name:"TJi v6 'Rawhide Koba'",class:"assault", dmg: 131, spd: 15000, rof: 12.5, spcd: [-1, 1000, 10, 10000], shots: 1, pen: 2, pcd: -999, clip: 50, load: 2.25, width: 1, rad: 1,
+        acc: 2.25, arpen: [0,0], crit: [0.001,2], ele: 1, onhit: 41, weight: 0.15, rarity: 1, burst:[1,1], dot: [], augs: [0,1,1,1, 1,0,1,1, 0,1,1,1, 1,1,1,0, 1,1,1], customaug: {name: "default", index: 18, level: 0, maxlv: 10, lvcap: 10, desc: ""}, 
+        passives: [{name: "Teamchat", desc: "On-hit damage also benefits from base damage upgrades.", activated: true}, {name: "Against the Flow", desc: "Hitting an enemy restores 25% of the magazine ammo (rounded down) per second for 2 seconds.", activated: false}]}
+        ],
+
         [11, {type:11,name:"Luxxrazer",class:"blaster", dmg: 98, spd: 20000, rof: 9, spcd: [500, 1000, 25, 15000], shots: 1, pen: 1.75, pcd: -999, clip: 40, load: 1.5, width: 1, rad: 1,
         acc: 5.5, arpen: [0,0], crit: [0.001,1.75], ele: 1, onhit: 0, weight: 0.025, rarity: 1, burst:[1,1], dot: [], augs: [0,1,1,1, 1,0,1,1, 0,1,1,1, 1,1,1,0, 1,1,0], customaug: {name: "Blast Burn", index: 18, level: 0, maxlv: 10, lvcap: 10, desc: "Burn detonations reapply burn. +0.25s burn per upgrade."}, 
         passives: [{name: "Dragonling", desc: "Hits extend the weapon's burn effect. Taking burn damage for over 3 seconds detonates the remaining burn.", activated: true}, {name: "Fire and Dice", desc: "Alt-fire to smite all enemies in a cone before you.", activated: true}, {name: "Convert Fire Resistance", desc: "Gain 1% damage per 1% enemy fire resistance. Damage ignores 50% of fire resistance.", activated: false}]}],

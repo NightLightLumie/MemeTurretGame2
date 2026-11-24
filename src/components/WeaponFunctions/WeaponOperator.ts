@@ -271,6 +271,7 @@ export class WeaponOperator{
            } case 9: { //Two-fanged wolf
            } case 6: { //LOSSNEN
            } case 10: { //WS-Crossfade SE
+           } case 13: {  //NTR-67 PS
            } case 4: { //bjuron
             console.log("Error firing special on gun with no special shot");
             break;
@@ -295,7 +296,8 @@ export class WeaponOperator{
                 cb = {
                     name: "Beyond Tilt",
                     type: "rof",
-                    duration: 6000,
+                    duration: [6000,6000],
+                    cooldown: [-1, -1],
                     amount: 0.4,
                     deleteMe: false
                 }
@@ -332,6 +334,7 @@ export class WeaponOperator{
            } case 5: { //windmill
            } case 11: { //windmill SE
            } case 4: { //bjuron
+           } case 13: { //NTR-67 PS
                let ofs = Phaser.Math.DegToRad(-1*w.acc+(Math.random()*2*w.acc));
                this.p.scene.sound.play(("gun_"+w.type),{volume: 0.7});
                this.p.scene.addBullet(new Bullet(this.p.scene,this.p.x+(w.fRad*Math.cos(a)), this.p.y+(w.fRad*Math.sin(a)), w.wp.type, w.wp.spd,a+ofs,w.damage,w.pierce, w));
@@ -439,7 +442,21 @@ export class WeaponOperator{
                     this.p.scene.addPlayerProjectile(sp);
                 }
                 break; 
-            } default: {
+            } case 13: {
+                if(w.hasPassive("Against the Flow", true)){
+                    w.applyBuff({
+                        name: "Against the Flow",
+                        type: "temp",
+                        duration: [2000,2000],
+                        cooldown: [50,1000],
+                        amount: 0.25,
+                        deleteMe: false,
+                    })
+                } else {
+                    console.log("Could not find in: " + w.wp.passives);
+                }
+                break;
+           } default: {
                 break;
             }
         }

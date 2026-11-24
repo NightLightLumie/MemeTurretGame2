@@ -303,6 +303,7 @@ const audios: Audio[] = [
 	sound('weapons/gun_11', 'gun_11', 0.5),
 	sound('weapons/gun_12', 'gun_12', 0.5),
 	sound('weapons/gun_12_multi', 'gun_12_multi', 0.5),
+	sound('weapons/gun_13', 'gun_13', 0.5),
 	
 	sound('weapons/multishrap', 'multishrap', 0.5),
 	sound('weapons/equip', 'equip', 0.5),

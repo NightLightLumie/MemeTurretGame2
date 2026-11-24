@@ -153,8 +153,9 @@ export class Bullet extends Phaser.GameObjects.Container{
         }
     }
 
-    setSprite(s: string){
+    setSprite(s: string, spritesize: number[] = [64,64]){
         this.spr.setTexture(s);
+        this.sprSc = spritesize;
     }
 
     addLinkedBullets(b:Bullet){

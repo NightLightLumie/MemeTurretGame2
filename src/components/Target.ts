@@ -4,6 +4,7 @@ import { BasicEffect } from "./Graphics/BasicEffect";
 import { DamageText } from "./Graphics/DamageText";
 import { ScalingEffect } from "./Graphics/ScalingEffect";
 import { StickyTracer } from "./Graphics/StickyTracer";
+import { DotTracker } from "./WeaponFunctions/DotTracker";
 
 export interface DamageBatch {
     key: string;
@@ -33,6 +34,7 @@ export class Target extends Phaser.GameObjects.Container{
     public smited: boolean = false;
     protected seeking: boolean = false;
     protected tpr: number[] = [];
+    protected dots: DotTracker[];
     protected unstackFactor: number = 500;
     public hp: number = 500;
     public maxHP: number = 500;

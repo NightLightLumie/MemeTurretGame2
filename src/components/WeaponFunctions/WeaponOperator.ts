@@ -5,6 +5,9 @@ import { Bullet } from "./Bullet";
 import { Rocket } from "./Rocket";
 import { Buff, BurstTracker, Weapon } from "./Weapon";
 import { BulletSpawner } from "./BulletSpawner";
+import { DamageInstance } from "@/scenes/GameScene";
+import { BasicEffect } from "../Graphics/BasicEffect";
+import { DelayedBlast } from "../Graphics/DelayedBlast";
 
 
 export interface HitInfo{
@@ -339,7 +342,14 @@ export class WeaponOperator{
                this.p.scene.sound.play(("gun_"+w.type),{volume: 0.7});
                this.p.scene.addBullet(new Bullet(this.p.scene,this.p.x+(w.fRad*Math.cos(a)), this.p.y+(w.fRad*Math.sin(a)), w.wp.type, w.wp.spd,a+ofs,w.damage,w.pierce, w));
                break;
-           } case 7: { //ottertail
+           } case 14: { //Azuraeus
+               let ofs = Phaser.Math.DegToRad(-1*w.acc+(Math.random()*2*w.acc));
+               this.p.scene.sound.play(("gun_"+w.type),{volume: 0.7});
+               let bx = new Bullet(this.p.scene,this.p.x+(w.fRad*Math.cos(a)), this.p.y+(w.fRad*Math.sin(a)), w.wp.type, w.wp.spd,a+ofs,w.damage,w.pierce, w);
+               bx.setSprite("pbullet_b_big", [64,64])
+               this.p.scene.addBullet(bx);
+               break;
+            } case 7: { //ottertail
                let ofs = Phaser.Math.DegToRad(-1*w.acc+(Math.random()*2*w.acc));
 
                let mult = 1;
@@ -414,12 +424,13 @@ export class WeaponOperator{
     }
 
     processSpecial(t: Target, wp: number, w: Weapon, b: Bullet, dmg: number, params: number[] = [], bLoc: number[] = [0,0]){
-        if(t.deleteFlag == true){
-            return;
-        }
+
         let wr = this.getParams(wp);
         switch(wp){
             case 7: {
+                if(t.deleteFlag == true){
+                    return;
+                }
                 if(t.hasStack(wp)) {
                     let mm = t.stackLog.get(wp);
                     if(mm != null){
@@ -452,8 +463,48 @@ export class WeaponOperator{
                         amount: 0.25,
                         deleteMe: false,
                     })
-                } else {
-                    console.log("Could not find in: " + w.wp.passives);
+                }
+                break;
+           } case 14: {
+                if(!b.tags.includes("secondary")){
+                    if(w.hasPassive("Radical no.212", true)){
+                        if(Math.random() < 0.25){
+                            let a = Math.random()*2*Math.PI;
+                            let b1 = new Bullet(this.p.scene,bLoc[0], bLoc[1], w.wp.type, w.wp.spd,a,w.damage,w.pierce, w, [{cmd: "secondary", amt: 1}], []);
+                            t.logBullet(b1.pID, w.wp.pcd, w.wp.type);
+                            let b2 = new Bullet(this.p.scene,bLoc[0], bLoc[1], w.wp.type, w.wp.spd,a+(2*Math.PI/3),w.damage,w.pierce, w, [{cmd: "secondary", amt: 1}], []);
+                            t.logBullet(b2.pID, w.wp.pcd, w.wp.type);
+                            let b3 = new Bullet(this.p.scene,bLoc[0], bLoc[1], w.wp.type, w.wp.spd,a+(4*Math.PI/3),w.damage,w.pierce, w, [{cmd: "secondary", amt: 1}], []);
+                            t.logBullet(b3.pID, w.wp.pcd, w.wp.type);
+                            b1.setSprite("pbullet_b_big", [64,64]);
+                            b2.setSprite("pbullet_b_big", [64,64]);
+                            b3.setSprite("pbullet_b_big", [64,64]);
+                            this.p.scene.addBullet(b1);
+                            this.p.scene.addBullet(b2);
+                            this.p.scene.addBullet(b3);
+                        }
+                    }
+                    let mult = w.rollDirectHit();
+                    let dmg: DamageInstance = {
+                        amt: w.damage*mult,
+                        type: "gun",
+                        tags: ["gun", "projectile", "aoe"]
+                    }
+                    this.p.scene.simpleExplode([dmg], bLoc[0], bLoc[1], w.blast);
+                    this.p.scene.sound.play("miniblast", {volume: 0.75});
+                    this.p.scene.addHitEffect(new BasicEffect(this.p.scene,"blue_grav",bLoc[0], bLoc[1],18,15,false,0,Math.random()*360,[2*w.blast/120,2*w.blast/120]));
+                    if(w.specialStat > 0){
+                        let dmg2: DamageInstance = {
+                            amt: w.damage*mult*(0.4+(w.specialStat*0.1)),
+                            type: "gun",
+                            tags: ["gun", "projectile", "aoe"]
+                        }
+                        let ofs = 100*(1/(1+(0.1*w.augVars[10])));
+                        let x1 = new DelayedBlast(this.p.scene,[dmg2],w.blast,"miniblast",125+(Math.random()*75),"blue_grav",bLoc[0]+((-1*ofs)+(Math.random()*2*ofs)), bLoc[1]+((-1*ofs)+(Math.random()*2*ofs)),18,15,false,0,Math.random()*360,[2*w.blast/120,2*w.blast/120]);
+                        this.p.scene.addHitEffect(x1);
+                        let x2 = new DelayedBlast(this.p.scene,[structuredClone(dmg2)],w.blast,"miniblast",250+(Math.random()*150),"blue_grav",bLoc[0]+((-1*ofs)+(Math.random()*2*ofs)), bLoc[1]+((-1*ofs)+(Math.random()*2*ofs)),18,15,false,0,Math.random()*360,[2*w.blast/120,2*w.blast/120]);
+                        this.p.scene.addHitEffect(x2);
+                    }
                 }
                 break;
            } default: {

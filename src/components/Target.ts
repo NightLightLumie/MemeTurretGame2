@@ -364,6 +364,10 @@ export class Target extends Phaser.GameObjects.Container{
         this.stackLog.set(pd,ap);
     }
 
+    logBullet(bulletID: number, pcd: number, wid: number){
+        this.bLog.set(bulletID,{cooldown: pcd, weaponID: wid});
+    }
+
     takePierceDamage(d: DamageInstance, p: number, wID: number): boolean{
         if(this.bLog.has(p)){
             let tr = this.bLog.get(p);

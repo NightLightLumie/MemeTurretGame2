@@ -127,6 +127,8 @@ implements Notifiable {
     public buffList: Buff[];
     public reqAmmoForSpecial: boolean = false;
 
+    private multiplier: number = 0.25;
+
 
 
 
@@ -341,6 +343,10 @@ implements Notifiable {
                 this.maxAmmo += 4;
                 this.curAmmo = this.maxAmmo;
                 break;
+            } case "Blueshift": {
+                this.multiplier *= 2;
+                this.dh += 1;
+                break;
             } default: {
                 break;
             }
@@ -429,11 +435,11 @@ implements Notifiable {
         let res = dhh-nm;
         if(nm > 0){
             for(let ii = 0; ii < nm; ii++){
-                r*=1.25;
+                r*=(1+this.multiplier);
             }
         }
         if(Math.random() < res){
-            r*=1.25;
+            r*=(1+this.multiplier);
         }
         return r;
     }

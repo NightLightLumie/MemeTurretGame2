@@ -138,6 +138,7 @@ const images: Image[] = [
 	image('characters/heart', 'heart'),
 	image('characters/pbullet', 'pbullet'),
 	image('characters/pbullet_r', 'pbullet_r'),
+	image('characters/pbullet_b_big', 'pbullet_b_big'),
 	image('characters/super', 'super'),
 
 	// Weapons
@@ -155,6 +156,7 @@ const images: Image[] = [
 	image('weapons/gun_11', 'gun_11'),
 	image('weapons/gun_12', 'gun_12'),
 	image('weapons/gun_13', 'gun_13'),
+	image('weapons/gun_14', 'gun_14'),
 	image('weapons/gun_placeholder', 'gun_placeholder'),
 
 	image('weapons/aug_0', 'aug_0'),
@@ -241,6 +243,8 @@ const spritesheets: SpriteSheet[] = [
 	spritesheet("anims/spellhitorange", "spellhitorange", 200, 200),
 	spritesheet("anims/spellhitshadow", "spellhitshadow", 200, 200),
 	spritesheet("anims/stickylight", "stickylight", 256, 256),
+	spritesheet("anims/blue_exp", "blue_exp", 128, 128),
+	spritesheet("anims/blue_grav", "blue_grav", 128, 128),
 	spritesheet("ui/aug", "aug", 48, 64),
 	spritesheet("ui/aug_extra", "aug_extra", 48, 64),
 	spritesheet("ui/aug_button_frame", "aug_button_frame", 64, 64),
@@ -304,8 +308,10 @@ const audios: Audio[] = [
 	sound('weapons/gun_12', 'gun_12', 0.5),
 	sound('weapons/gun_12_multi', 'gun_12_multi', 0.5),
 	sound('weapons/gun_13', 'gun_13', 0.5),
+	sound('weapons/gun_14', 'gun_14', 0.5),
 	
 	sound('weapons/multishrap', 'multishrap', 0.5),
+	sound('weapons/miniblast', 'miniblast', 0.5),
 	sound('weapons/equip', 'equip', 0.5),
 	sound('weapons/crit', 'crit', 0.5),
 	sound('weapons/activate_1', 'activate_1', 0.5),

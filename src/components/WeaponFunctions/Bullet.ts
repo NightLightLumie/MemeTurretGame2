@@ -62,7 +62,7 @@ export class Bullet extends Phaser.GameObjects.Container{
     public pID: number = 0;
     private owner: Weapon;
 
-    public sprSc: number[] = [64,64];
+    public sprSc: number[] = [64,32];
 
     public scene: GameScene;
     public linkedBullets: Bullet[] = [];
@@ -153,7 +153,7 @@ export class Bullet extends Phaser.GameObjects.Container{
         }
     }
 
-    setSprite(s: string, spritesize: number[] = [64,64]){
+    setSprite(s: string, spritesize: number[] = [64,32]){
         this.spr.setTexture(s);
         this.sprSc = spritesize;
     }

@@ -101,10 +101,10 @@ export class LootScene extends BaseScene{
     generateLootTable(q: number): number[]{
         this.lootTable = [];
         if(q == 999){
-            this.lootTable = [0,1,2,3,4,5,6,7,8,9,10];
+            this.lootTable = [0,1,2,3,4,5,6,7,8,9,10,11,12,13];
         }
         if(q == 9999){
-            this.lootTable = [0,1,2,3,4,5,6,7,7,8,9,9,10,10];
+            this.lootTable = [0,1,2,3,4,5,6,7,7,8,9,9,10,10,11,12,12,13,13,14];
         }
         let pr = 0;
         let ir = 4;
@@ -112,7 +112,7 @@ export class LootScene extends BaseScene{
         for(let i = 0; i < this.masterData.gunList.size; i++){
             wp = this.masterData.getGun(i);
             pr = wp.rarity-q;
-            if(pr < 3){
+            if(pr <= 3){
                 pr = Math.abs(pr);
                 ir -= pr;
                 if(ir <= 0){

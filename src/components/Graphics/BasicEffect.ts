@@ -6,12 +6,12 @@ import { Effect } from "./Effect";
 export class BasicEffect extends Effect {
     public scene: BaseScene;
     public sp: Phaser.GameObjects.Sprite;
-    private isLooped: boolean;
-    private frameLength: number;
-    private timer: number = 0;
-    private totalFrames: number;
-    private startingFrame: number;
-    private currentFrame: number = 0;
+    protected isLooped: boolean;
+    protected frameLength: number;
+    protected timer: number = 0;
+    protected totalFrames: number;
+    protected startingFrame: number;
+    protected currentFrame: number = 0;
     public deleteFlag: boolean = false;
     public velocityX: number = 0;
     public velocityY: number = 0;

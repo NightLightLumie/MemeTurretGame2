@@ -149,53 +149,57 @@ export class GlobalVariables {
         [5, {type:5,name:"WS-Cropper",class:"lmg", dmg: 215, spd: 28000, rof: 7, spcd: [-1, 1000, 10, 10000], shots: 1, pen: 2.5, pcd: -999, clip: 75, load: 3, rad: 1,
          width: 1, acc: 7, arpen: [0,0], crit: [0.001,2.75], ele: 1, onhit: 0, weight: 0.25, rarity: 1, burst:[1,1], dot: [], augs: [0,1,1,1, 1,0,1,1, 0,1,1,1, 1,1,0,0, 1,1,0], customaug: {name: "default", index: 18, level: 0, maxlv: 10, lvcap: 10, desc: ""}, 
          passives: [{name: "Shear", desc: "+2 flat rate of fire, +1 flat pierce.",activated:false}]}],
-        [6, {type:6,name:"LOSSNEN",class:"rocket", dmg: 1655, spd: 5000, rof: 1, spcd: [-1, 1000, 10, 10000], shots: 1, pen: 1, pcd: -999, clip: 2, load: 2.5, width: 1, rad: 280,
-         acc: 0.05, arpen: [0,0], crit: [0,1], ele: 1, onhit: 0, weight: 0.3, rarity: 1, burst:[1,1], dot: [], augs: [0,1,1,1, 1,0,1,1, 1,0,1,0, 0,1,0,0, 1,1,0], customaug: {name: "default", index: 0, level: 18, maxlv: 10, lvcap: 10, desc: ""}, passives: [
+        [6, {type:6,name:"LOSSNEN",class:"rocket", dmg: 1655, spd: 5000, rof: 1, spcd: [-1, 1000, 10, 10000], shots: 1, pen: 1, pcd: -999, clip: 2, load: 2.5, width: 1, rad: 320,
+         acc: 0.05, arpen: [0,0], crit: [0,1], ele: 1, onhit: 0, weight: 0.3, rarity: 2, burst:[1,1], dot: [], augs: [0,1,1,1, 1,0,1,1, 1,0,1,0, 0,1,0,0, 1,1,0], customaug: {name: "default", index: 0, level: 18, maxlv: 10, lvcap: 10, desc: ""}, passives: [
             {name: "Wholesale", desc: "+60% total damage",activated:false}]}],
         [7, {type:7,name:"Ottertail",class:"smg", dmg: 235, spd: 22000, rof: 11, spcd: [500, 1000, 25, 10000], shots: 1, pen: 1, pcd: -999, clip: 42, load: 1.75, width: 1, rad: 1,
-         acc: 9, arpen: [0,0], crit: [0.001,1.75], ele: 1, onhit: 0, weight: 0.15, rarity: 1, burst:[1,1], dot: [], augs: [0,1,1,1, 1,0,1,1, 0,1,1,1, 1,1,1,1, 1,1,1], customaug: {name: "Rambunctious", index: 18, level: 0, maxlv: 10, lvcap: 10, desc: "Increased damage when triggering Romp. +25% per upgrade."},
+         acc: 9, arpen: [0,0], crit: [0.001,1.75], ele: 1, onhit: 0, weight: 0.15, rarity: 4, burst:[1,1], dot: [], augs: [0,1,1,1, 1,0,1,1, 0,1,1,1, 1,1,1,1, 1,1,1], customaug: {name: "Rambunctious", index: 18, level: 0, maxlv: 10, lvcap: 10, desc: "Increased damage when triggering Romp. +25% per upgrade."},
         passives: [{name: "Romp", desc: "Hits from this weapon apply a stack of Romp. At 7 stacks, trigger to deal ", activated: true},
             {name: "Screwdriver", desc: "Alt-fire to shoot a rapid burst of 7 accurate shots.", activated: true},
             {name: "Otter Space", desc: "Each shot inflicts an additional stack of Romp.", activated: false}
         ]}],
         [8, {type:8,name:"NTR-141",class:"pistol", dmg: 60, spd: 20000, rof: 16, spcd: [-1, 1000, 10, 10000], shots: 1, pen: 1, pcd: -999, clip: 21, load: 1, width: 1, rad: 1,
-         acc: 2, arpen: [0,0], crit: [0.001,2.75], ele: 1, onhit: 0, weight: 0.05, rarity: 1, burst:[1,1], dot: [], augs: [0,1,1,1, 1,0,1,1, 0,1,1,1, 1,1,0,0, 1,1,0], customaug: {name: "default", index: 18, level: 0, maxlv: 10, lvcap: 10, desc: ""}, 
+         acc: 2, arpen: [0,0], crit: [0.001,2.75], ele: 1, onhit: 0, weight: 0.05, rarity: 2, burst:[1,1], dot: [], augs: [0,1,1,1, 1,0,1,1, 0,1,1,1, 1,1,0,0, 1,1,0], customaug: {name: "default", index: 18, level: 0, maxlv: 10, lvcap: 10, desc: ""}, 
          passives: [{name: "Quality and Quantity", desc: "+22 flat on-hit damage", activated: false}]}],
 
         [9, {type:9,name:"Two-Fanged Wolf",class:"lmg", dmg: 150, spd: 20000, rof: 7, spcd: [-1, 1000, 10, 10000], shots: 2, pen: 2, pcd: -999, clip: 70, load: 1.75, width: 1, rad: 1,
-         acc: 1.5, arpen: [0,0], crit: [0.001,2.75], ele: 1, onhit: 0, weight: 0.2, rarity: 1, burst:[1,1], dot: [], augs: [0,1,1,1, 1,0,1,1, 0,1,1,1, 1,1,0,0, 1,1,0], customaug: {name: "default", index: 18, level: 0, maxlv: 10, lvcap: 10, desc: ""}, 
+         acc: 1.5, arpen: [0,0], crit: [0.001,2.75], ele: 1, onhit: 0, weight: 0.2, rarity: 4, burst:[1,1], dot: [], augs: [0,1,1,1, 1,0,1,1, 0,1,1,1, 1,1,0,0, 1,1,0], customaug: {name: "default", index: 18, level: 0, maxlv: 10, lvcap: 10, desc: ""}, 
          passives: [{name: "Snaggletooth", desc: "50% chance to fire a third, inaccurate shot with 35% increased critical strike chance.", activated: true},
             {name: "Pack Tactics", desc: "All shots will critically strike if any shot rolls a critical strike.", activated: true},
             {name: "Domination", desc: "Third shot fire chance and critical strike chance increased by 35% each.", activated: false},
          ]}],
         [10, {type:10,name:"WS-Crossfade SE",class:"pistol", dmg: 90, spd: 20000, rof: 9, spcd: [-1, 1000, 10, 10000], shots: 1, pen: 1, pcd: -999, clip: 13, load: 1.15, width: 1, rad: 1,
-        acc: 8, arpen: [0,0], crit: [0.001,1.5], ele: 1, onhit: 10, weight: 0.05, rarity: 1, burst:[1,1], dot: [], augs: [0,1,1,1, 1,0,1,1, 0,0,1,1, 1,1,0,0, 1,1,1], customaug: {name: "Split Shot", index: 18, level: 0, maxlv: 10, lvcap: 10, desc: "Additional flat pierce and onhit damage. +0.2 / +2 per level."}, 
+        acc: 8, arpen: [0,0], crit: [0.001,1.5], ele: 1, onhit: 10, weight: 0.05, rarity: 3, burst:[1,1], dot: [], augs: [0,1,1,1, 1,0,1,1, 0,0,1,1, 1,1,0,0, 1,1,1], customaug: {name: "Split Shot", index: 18, level: 0, maxlv: 10, lvcap: 10, desc: "Additional flat pierce and onhit damage. +0.2 / +2 per level."}, 
         passives: [{name: "Flail", desc: "Randomly fire 1, 2 or 3 projectiles per shot.", activated: true},
             {name: "Havoc", desc: "Can also fire 4 projectiles per shot.", activated: false}
         ]}],
         [11, {type:11,name:"WS-Windmill SE",class:"smg", dmg: 98, spd: 20000, rof: 9, spcd: [500, 1000, 25, 15000], shots: 1, pen: 2.25, pcd: -999, clip: 40, load: 1.5, width: 1, rad: 1,
-         acc: 5.5, arpen: [0,0], crit: [0.001,1.75], ele: 1, onhit: 0, weight: 0.025, rarity: 1, burst:[1,1], dot: [], augs: [0,1,1,1, 1,0,1,1, 0,1,1,1, 1,1,1,0, 1,1,0], customaug: {name: "default", index: 18, level: 0, maxlv: 10, lvcap: 10, desc: ""}, 
+         acc: 5.5, arpen: [0,0], crit: [0.001,1.75], ele: 1, onhit: 0, weight: 0.025, rarity: 2, burst:[1,1], dot: [], augs: [0,1,1,1, 1,0,1,1, 0,1,1,1, 1,1,1,0, 1,1,0], customaug: {name: "default", index: 18, level: 0, maxlv: 10, lvcap: 10, desc: ""}, 
          passives: [{name: "Beyond Tilt", desc: "Alt-fire to gain 40% fire rate for 6s.", activated: true}, {name: "Nimble", desc: "Base reload time decreased by 40%.", activated: false}]}
         ],
         [12, {type:12,name:"TJi v33 'Zazamushi'",class:"shotgun", dmg: 162, spd: 15000, rof: 1.5, spcd: [300, 1000, 50, 5000], shots: 11, pen: 2, pcd: -999, clip: 3, load: 1.75, width: 1, rad: 1,
-        acc: 22.5, arpen: [0,0], crit: [0.001,1.5], ele: 1, onhit: 0, weight: 0.2, rarity: 1, burst:[1,1], dot: [], augs: [0,1,0,0, 0,0,1,1, 0,1,1,1, 1,1,1,0, 1,1,1], customaug: {name: "Stinger", index: 18, level: 0, maxlv: 10, lvcap: 10, desc: "Gain 3 on-hit damage per bonus pierce."}, 
-        passives: [{name: "Penetrating Blast", desc: "Alt-fire to consume all current ammo and fire a slug shot that explodes into an equivalent amount of shrapnel. Shrapnel has 1 bonus pierce and instantly refills the magazine after 5 kills.", activated: true}, {name: "Hibachi", desc: "+4 flat clip size.", activated: false}]}
+        acc: 22.5, arpen: [0,0], crit: [0.001,1.5], ele: 1, onhit: 0, weight: 0.2, rarity: 4, burst:[1,1], dot: [], augs: [0,1,0,0, 0,0,1,1, 0,1,1,1, 1,1,1,0, 1,1,1], customaug: {name: "Stinger", index: 18, level: 0, maxlv: 10, lvcap: 10, desc: "Gain 3 on-hit damage per bonus pierce."}, 
+        passives: [{name: "Penetrating Blast", desc: "Alt-fire to consume all current ammo and fire a slug shot that explodes into an equivalent amount of shrapnel. Shrapnel has 1 bonus pierce and instantly refills the magazine after 5 kills.", activated: true}, 
+            {name: "Hibachi", desc: "+4 flat clip size.", activated: false}]}
         ],
         [13, {type:13,name:"NTR-67 PS",class:"assault", dmg: 131, spd: 15000, rof: 12.5, spcd: [-1, 1000, 10, 10000], shots: 1, pen: 2, pcd: -999, clip: 50, load: 2.25, width: 1, rad: 1,
-        acc: 2.25, arpen: [0,0], crit: [0.001,2], ele: 1, onhit: 41, weight: 0.15, rarity: 1, burst:[1,1], dot: [], augs: [0,1,1,1, 1,0,1,1, 0,1,1,1, 1,1,1,0, 1,1,1], customaug: {name: "default", index: 18, level: 0, maxlv: 10, lvcap: 10, desc: ""}, 
-        passives: [{name: "Teamchat", desc: "On-hit damage also benefits from base damage upgrades.", activated: true}, {name: "Against the Flow", desc: "Hitting an enemy restores 25% of the magazine ammo (rounded down) per second for 2 seconds.", activated: false}]}
+        acc: 2.25, arpen: [0,0], crit: [0.001,2], ele: 1, onhit: 41, weight: 0.15, rarity: 3, burst:[1,1], dot: [], augs: [0,1,1,1, 1,0,1,1, 0,1,1,1, 1,1,1,0, 1,1,1], customaug: {name: "default", index: 18, level: 0, maxlv: 10, lvcap: 10, desc: ""}, 
+        passives: [{name: "Teamchat", desc: "On-hit damage also benefits from base damage upgrades.", activated: true}, 
+            {name: "Against the Flow", desc: "Hitting an enemy restores 25% of the magazine ammo (rounded down) per second for 2 seconds.", activated: false}]}
         ],
-
+        [14, {type:14,name:"Azuraeus", class:"assault", dmg: 335, spd: 10000, rof: 6, spcd: [-1, 1000, 10, 10000], shots: 1, pen: 2.5, pcd: -999, clip: 70, load: 2.25, width: 1, rad: 220,
+        acc: 2.25, arpen: [0,0], crit: [0.001,2], ele: 1, onhit: 0, weight: 0.35, rarity: 12, burst:[1,1], dot: [], augs: [0,1,1,1, 1,0,1,1, 1,1,1,1, 1,1,1,0, 1,1,1], customaug: {name: "Draconic Force", index: 18, level: 0, maxlv: 10, lvcap: 10, desc: "Bullets create cluster explosions dealing 40% of the original damage. +10% additional damage per upgrade."}, 
+        passives: [{name: "Blastblight", desc: "Hits with this weapon explode to deal the same damage again.", activated: true},
+            {name: "Radical no.212", desc: "Bullets have a 25% chance to split into 3 upon hit.", activated: true}, 
+            {name: "Blueshift", desc: "Direct hit damage multiplier doubled. Gain 100% direct hit chance.", activated: false}]}
+        ],
         /*
         [14, {type:14,name:"TJi v6 'Rawhide Koba'",class:"assault", dmg: 131, spd: 15000, rof: 12.5, spcd: [-1, 1000, 10, 10000], shots: 1, pen: 2, pcd: -999, clip: 50, load: 2.25, width: 1, rad: 1,
         acc: 2.25, arpen: [0,0], crit: [0.001,2], ele: 1, onhit: 41, weight: 0.15, rarity: 1, burst:[1,1], dot: [], augs: [0,1,1,1, 1,0,1,1, 0,1,1,1, 1,1,1,0, 1,1,1], customaug: {name: "default", index: 18, level: 0, maxlv: 10, lvcap: 10, desc: ""}, 
         passives: [{name: "Teamchat", desc: "On-hit damage also benefits from base damage upgrades.", activated: true}, {name: "Against the Flow", desc: "Hitting an enemy restores 25% of the magazine ammo (rounded down) per second for 2 seconds.", activated: false}]}
         ],
 
-        [14, {type:14,name:"Azuraeus", class:"assault", dmg: 131, spd: 15000, rof: 12.5, spcd: [-1, 1000, 10, 10000], shots: 1, pen: 2, pcd: -999, clip: 50, load: 2.25, width: 1, rad: 1,
-        acc: 2.25, arpen: [0,0], crit: [0.001,2], ele: 1, onhit: 41, weight: 0.15, rarity: 1, burst:[1,1], dot: [], augs: [0,1,1,1, 1,0,1,1, 0,1,1,1, 1,1,1,0, 1,1,1], customaug: {name: "default", index: 18, level: 0, maxlv: 10, lvcap: 10, desc: ""}, 
-        passives: [{name: "Draconic Force", desc: "Hits with this weapon explode to deal the same damage again.", activated: true},{name: "Radical no.212", desc: "Blast damage can critically strike.", activated: true}, {name: "Blue Dawn", desc: "Bullets have a 25% chance to split into 3 upon hit.", activated: false}]}
-        ],
+
 
         [11, {type:11,name:"Luxxrazer",class:"blaster", dmg: 98, spd: 20000, rof: 9, spcd: [500, 1000, 25, 15000], shots: 1, pen: 1.75, pcd: -999, clip: 40, load: 1.5, width: 1, rad: 1,
         acc: 5.5, arpen: [0,0], crit: [0.001,1.75], ele: 1, onhit: 0, weight: 0.025, rarity: 1, burst:[1,1], dot: [], augs: [0,1,1,1, 1,0,1,1, 0,1,1,1, 1,1,1,0, 1,1,0], customaug: {name: "Blast Burn", index: 18, level: 0, maxlv: 10, lvcap: 10, desc: "Burn detonations reapply burn. +0.25s burn per upgrade."}, 
@@ -352,15 +356,15 @@ export class GlobalVariables {
 
     generateMaxGun(ix: number): number{
         let r = this.getNewParams(ix);
+        /*
         for(let p = 0; p < r.passives.length; p++){
             if(!r.passives[p].activated){
                 if(Math.random() < 0.25){
                     r.passives[p].activated = true;
                 }
             }
-        }
+        }*/
         let ap: Augment[] = [];
-        ap.push(this.inv.generateAugment(0,0,10,10));
         ap.push(this.inv.generateAugment(0,0,10,10));
         ap.push(this.inv.generateAugment(0,0,10,10));
         ap.push(this.inv.generateAugment(0,0,10,10));
@@ -369,11 +373,12 @@ export class GlobalVariables {
 
     generateSuperMaxGun(ix: number): number{
         let r = this.getNewParams(ix);
+        /*
         for(let p = 0; p < r.passives.length; p++){
             if(!r.passives[p].activated){
                 r.passives[p].activated = true;
             }
-        }
+        }*/
         let ap: Augment[] = [];
         ap.push(this.inv.generateAugment(0,0,13,13));
         ap.push(this.inv.generateAugment(0,0,13,13));

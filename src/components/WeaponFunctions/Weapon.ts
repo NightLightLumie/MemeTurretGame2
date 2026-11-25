@@ -7,15 +7,6 @@ import { BaseScene } from "@/scenes/BaseScene";
 //up to 3, +1 for augmentation
 //level goes to 10, + 13 for augmentation
 
-
-
-export interface WeaponData {
-    
-    rarity: number;
-    type: number;     
-
-}
-
 export interface BurstTracker{
     amt: number;
     curCD: number;

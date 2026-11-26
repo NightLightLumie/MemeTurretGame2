@@ -42,7 +42,7 @@ export class Thug extends Target{
         this.gx = this.scene.add.graphics();
         this.gx.fillStyle(0x008080,0.85);
         this.add(this.gx);
-        this.hp = 5000;
+        this.hp = 500;
         this.setStackDisplay();
         this.txt = this.scene.addText({
 			x: 0,

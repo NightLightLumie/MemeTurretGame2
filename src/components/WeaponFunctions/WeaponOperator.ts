@@ -484,9 +484,8 @@ export class WeaponOperator{
                             this.p.scene.addBullet(b3);
                         }
                     }
-                    let mult = w.rollDirectHit();
                     let dmg: DamageInstance = {
-                        amt: w.damage*mult,
+                        amt: w.damage*w.rollDirectHit()*b.globalDamageScale,
                         type: "gun",
                         tags: ["gun", "projectile", "aoe"]
                     }
@@ -495,14 +494,19 @@ export class WeaponOperator{
                     this.p.scene.addHitEffect(new BasicEffect(this.p.scene,"blue_grav",bLoc[0], bLoc[1],18,15,false,0,Math.random()*360,[2*w.blast/120,2*w.blast/120]));
                     if(w.specialStat > 0){
                         let dmg2: DamageInstance = {
-                            amt: w.damage*mult*(0.4+(w.specialStat*0.1)),
+                            amt: w.damage*w.rollDirectHit()*(0.4+(w.specialStat*0.1))*b.globalDamageScale,
                             type: "gun",
                             tags: ["gun", "projectile", "aoe"]
                         }
                         let ofs = 100*(1/(1+(0.1*w.augVars[10])));
                         let x1 = new DelayedBlast(this.p.scene,[dmg2],w.blast,"miniblast",125+(Math.random()*75),"blue_grav",bLoc[0]+((-1*ofs)+(Math.random()*2*ofs)), bLoc[1]+((-1*ofs)+(Math.random()*2*ofs)),18,15,false,0,Math.random()*360,[2*w.blast/120,2*w.blast/120]);
                         this.p.scene.addHitEffect(x1);
-                        let x2 = new DelayedBlast(this.p.scene,[structuredClone(dmg2)],w.blast,"miniblast",250+(Math.random()*150),"blue_grav",bLoc[0]+((-1*ofs)+(Math.random()*2*ofs)), bLoc[1]+((-1*ofs)+(Math.random()*2*ofs)),18,15,false,0,Math.random()*360,[2*w.blast/120,2*w.blast/120]);
+                        let dmg3: DamageInstance = {
+                            amt: w.damage*w.rollDirectHit()*(0.4+(w.specialStat*0.1))*b.globalDamageScale,
+                            type: "gun",
+                            tags: ["gun", "projectile", "aoe"]
+                        }
+                        let x2 = new DelayedBlast(this.p.scene,[structuredClone(dmg3)],w.blast,"miniblast",250+(Math.random()*150),"blue_grav",bLoc[0]+((-1*ofs)+(Math.random()*2*ofs)), bLoc[1]+((-1*ofs)+(Math.random()*2*ofs)),18,15,false,0,Math.random()*360,[2*w.blast/120,2*w.blast/120]);
                         this.p.scene.addHitEffect(x2);
                     }
                 }

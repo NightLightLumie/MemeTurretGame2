@@ -27,6 +27,7 @@ import { ScalingEffect } from "@/components/Graphics/ScalingEffect";
 import { ItemShop } from "@/components/GameFunctions/ItemShop";
 import { FlashScreen } from "@/components/Graphics/FlashScreen";
 import { PlayerObject } from "@/components/PlayerObject";
+import { GreenThug } from "@/components/Enemies/GreenThug";
 
 export interface DamageInstance{
 	amt: number;
@@ -97,7 +98,7 @@ export class GameScene extends BaseScene {
 	private shopping: boolean;
 	public enemyCap: number = 500;
 	public score: number = 0;
-	public difficulty: number = 0;
+	public difficulty: number = 20;
 	public closestTarget: Target | null;
 	public closestDist: number = 999999;
 	public initShopTimer: number;
@@ -276,7 +277,7 @@ export class GameScene extends BaseScene {
 		this.zoom = [0.5,0.5];
 		this.enemyCap = 500;
 		this.score = 0;
-		this.difficulty = 0;
+		this.difficulty = 20;
 		this.initShopTimer = 100;
 		this.shopping = false;
 		this.dbTimer = [250,250];
@@ -499,6 +500,11 @@ export class GameScene extends BaseScene {
 				let tu = new Ufo(this,xx,yy);
 				this.ftDisp.add(tu);
 				this.tList.push(tu);
+				break;
+			} case "greenthug": {
+				let tn = new GreenThug(this, xx, yy, cmd);
+				this.tDisp.add(tn);
+				this.tList.push(tn);
 				break;
 			} default: {
 				break;

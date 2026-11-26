@@ -117,7 +117,14 @@ export class LevelParser {
                 }
             } case "endStage": {
                 break;
-            }case "end": {
+            } case "diffGate": {
+                if(this.scene.difficulty > args[0]){
+                    this.index++;
+                } else {
+                    this.index = args[1];
+                }
+                break;
+            } case "end": {
                 this.deleteFlag = true;
                 break;
             } default: {

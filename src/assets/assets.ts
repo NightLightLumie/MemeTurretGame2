@@ -207,6 +207,7 @@ const images: Image[] = [
 
 	// Enemies
 	image('enemies/enemy_1', 'enemy_1'),
+	image('enemies/enemy_3', 'enemy_3'),
 	image('enemies/fragments/e1/f1-0', 'f1-0'),
 	image('enemies/fragments/e1/f1-1', 'f1-1'),
 	image('enemies/fragments/e1/f1-2', 'f1-2'),

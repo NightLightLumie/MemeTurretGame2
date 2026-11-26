@@ -40,7 +40,7 @@ export class StatItem extends Item{
                 this.owner.execute += 0.1;
                 break;
             } case "Sticky Bomb": {
-                this.owner.sticky += 50;
+                this.owner.sticky += 100;
                 break;
             } case "Cast Gun": {
                 this.owner.conversion += 1;
@@ -94,7 +94,7 @@ export class StatItem extends Item{
                 this.owner.execute += 0.01;
                 break;
             } case "Sticky Bomb": {
-                this.owner.sticky += 5;
+                this.owner.sticky += 10;
                 break;
             } case "Cast Gun": {
                 this.owner.conversion += 0.05;

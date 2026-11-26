@@ -9,7 +9,7 @@ import { MagicMissile } from "@/components/WeaponFunctions/MagicMissile";
 
 export class ArcaneMissile extends Item{
     private mode: number = 0;
-    public damage: number = 350;
+    public damage: number = 700;
     private shots: number = 1;
     constructor(scene: GameScene, p: Player, name: string, slot: number){
         super(scene, p, name, slot);
@@ -22,7 +22,7 @@ export class ArcaneMissile extends Item{
     levelUp(){
         if(this.level < this.maxLevel){
             this.level++;
-            this.damage += 40;
+            this.damage += 80;
             this.cooldown = this.cooldown/this.maxCD;
             this.maxCD -= 250;
             this.cooldown *= this.maxCD;

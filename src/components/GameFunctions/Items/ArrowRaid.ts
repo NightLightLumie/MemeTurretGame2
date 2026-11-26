@@ -6,7 +6,7 @@ import { SpellProjectile } from "@/components/WeaponFunctions/SpellProjectile";
 
 export class ArrowRaid extends Item{
     private mode: number = 0;
-    public damage: number = 295;
+    public damage: number = 590;
     private shots: number = 3;
     public dist: number = 0;
     public maxDist: number = 600;

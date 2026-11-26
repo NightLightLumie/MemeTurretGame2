@@ -6,7 +6,7 @@ import { VHLaser } from "@/components/Graphics/VHLaser";
 
 
 export class KoboldMiniNova extends Item{
-    public damage: number = 10;
+    public damage: number = 20;
     constructor(scene: GameScene, p: Player, name: string, slot: number){
         super(scene, p, name, slot);
         this.tileType = "item_rd";
@@ -19,7 +19,7 @@ export class KoboldMiniNova extends Item{
     levelUp(){
         if(this.level < this.maxLevel){
             this.level++;
-            this.damage += 4;
+            this.damage += 8;
         } else {
             console.log("Item already at max level.");
             return;

@@ -7,7 +7,7 @@ import { LavaPool } from "@/components/WeaponFunctions/LavaPool";
 
 
 export class LavaBucket extends Item{
-    public damage: number = 250;
+    public damage: number = 750;
     protected spawnRadius: number = 600;
     constructor(scene: GameScene, p: Player, name: string, slot: number){
         super(scene, p, name, slot);
@@ -20,7 +20,7 @@ export class LavaBucket extends Item{
         if(this.level < this.maxLevel){
             this.level++;
             this.maxCD -= 1000;
-            this.damage += 75;
+            this.damage += 150;
         }
     }
 

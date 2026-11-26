@@ -6,7 +6,7 @@ import { VHLaser } from "@/components/Graphics/VHLaser";
 
 
 export class BasicAttackMagic extends Item{
-    public damage: number = 250;
+    public damage: number = 500;
     public crit: number = 0.2;
     constructor(scene: GameScene, p: Player, name: string, slot: number){
         super(scene, p, name, slot);
@@ -19,10 +19,10 @@ export class BasicAttackMagic extends Item{
     levelUp(){
         if(this.level < this.maxLevel){
             this.level++;
-            this.damage += 20;
+            this.damage += 40;
             this.crit += 0.03;
             this.cooldown = this.cooldown/this.maxCD;
-            this.maxCD -= 400;
+            this.maxCD -= 450;
             this.cooldown *= this.maxCD;
         } else {
             console.log("Item already at max level.");

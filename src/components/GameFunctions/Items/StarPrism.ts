@@ -6,7 +6,7 @@ import { SpellProjectile } from "@/components/WeaponFunctions/SpellProjectile";
 
 export class StarPrism extends Item{
     private mode: number = 0;
-    public damage: number = 175;
+    public damage: number = 350;
     public shots: number = 0;
     public maxShots: number = 5;
     constructor(scene: GameScene, p: Player, name: string, slot: number){
@@ -20,7 +20,7 @@ export class StarPrism extends Item{
     levelUp(){
         if(this.level < this.maxLevel){
             this.level++;
-            this.damage += 25;
+            this.damage += 50;
             this.cooldown = this.cooldown/this.maxCD;
             this.maxCD -= 10;
             this.cooldown *= this.maxCD;

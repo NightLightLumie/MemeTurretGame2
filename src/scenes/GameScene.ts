@@ -103,6 +103,7 @@ export class GameScene extends BaseScene {
 	public closestTarget: Target | null;
 	public closestDist: number = 999999;
 	public initShopTimer: number;
+	public expScale: number = 2;
 	public myShop: ItemShop;
 
 	private nextButton: NextSceneButton;
@@ -281,6 +282,7 @@ export class GameScene extends BaseScene {
 		this.difficulty = 0;
 		this.initShopTimer = 100;
 		this.shopping = false;
+		this.expScale = 2;
 		this.dbTimer = [250,250];
 	}
 
@@ -479,6 +481,7 @@ export class GameScene extends BaseScene {
 		}
 		switch(type){
 			case "carrier":{
+				this.sound.play("bossannounce", {volume: 0.5});
 				let tn = new Carrier(this,npos[0],npos[1]);
 				this.tDisp.add(tn);
 				this.tDisp.bringToTop(tn);
@@ -488,6 +491,11 @@ export class GameScene extends BaseScene {
 				break;
 			}
 		}
+	}
+
+	announceWave(){
+		this.sound.play("vineboom", { volume: 0.4 });
+		this.addPlayerEffect(new TextEffect(this,this.player.x,this.player.y,"Next Wave! Enemies become stronger!", "red", 140, true, "white", 1800, 50, 4, 0));
 	}
 
 	addGroundEnemy(t: Target){
@@ -579,7 +587,9 @@ export class GameScene extends BaseScene {
 		for(let i = (this.tList.length-1); i >= 0; i--){
 			this.tList[i].update(t, d);
 			this.globalDamage.forEach((dm) => {
-				this.tList[i].takeTypedDamage({amt: dm, type: "spell", tags: ["spell", "aoe", "global"]},[20,20]);
+				if((this.tList[i].deleteFlag != true) && (this.tList[i].invuln != true)){
+					this.tList[i].takeTypedDamage({amt: dm, type: "spell", tags: ["spell", "aoe", "global"]},[20,20]);
+				}
 			})
 
 			if(this.tList[i].deleteFlag){
@@ -588,7 +598,7 @@ export class GameScene extends BaseScene {
 			} else {
 				this.tList[i].mychunk = [Math.trunc(this.tList[i].x/this.chunks.divider[0]), Math.trunc(this.tList[i].y/this.chunks.divider[1])];
 				this.chunks.index(this.tList[i]);
-				if(this.tList[i].playerDist() < this.closestDist){
+				if((this.tList[i].playerDist() < this.closestDist) && (this.tList[i].deleteFlag != true) && (this.tList[i].invuln != true)){
 					this.closestDist = this.tList[i].playerDist();
 					this.closestTarget = this.tList[i];
 				}
@@ -636,7 +646,9 @@ export class GameScene extends BaseScene {
 
 			this.bList[i].updatePos(t,d);
 			for(let e = this.tList.length-1; e >= 0; e--) {
-				this.bList[i].hitCheck(this.tList[e]);
+				if((this.tList[e].deleteFlag != true) && (this.tList[e].invuln != true)){
+					this.bList[i].hitCheck(this.tList[e]);
+				}
 			}
 			this.bList[i].updateGFX(t,d);
 
@@ -649,7 +661,9 @@ export class GameScene extends BaseScene {
 		for(let pp = (this.playerProjectiles.length-1); pp >= 0; pp--){
 			this.playerProjectiles[pp].update(t,d);
 			for(let ex = this.tList.length-1; ex >= 0; ex--) {
-				this.playerProjectiles[pp].hitCheck(this.tList[ex]);
+				if((this.tList[ex].deleteFlag != true) && (this.tList[ex].invuln != true)){
+					this.playerProjectiles[pp].hitCheck(this.tList[ex]);
+				}
 			}
 			if(this.playerProjectiles[pp].deleteFlag){
 				this.playerProjectiles[pp].destroy();
@@ -815,7 +829,7 @@ export class GameScene extends BaseScene {
 	
 	simpleExplode(dmg: DamageInstance[], x:number, y:number, radius: number){
 		this.tList.forEach((t)=>{
-			if((t != null) && (t.deleteFlag != true)){
+			if((t != null) && (t.deleteFlag != true) && (t.invuln != true)){
 				if(t.distanceTo(x,y) < (t.radius+radius)){
 					dmg.forEach((d) => {
 						t.takeTypedDamage(d,[20,20]);
@@ -828,7 +842,7 @@ export class GameScene extends BaseScene {
 
 	vExplode(dmg: DamageInstance[], x:number, radius: number, type: string = "explosion"){
 		this.tList.forEach((t)=>{
-			if((t != null) && (t.deleteFlag != true)){
+			if((t != null) && (t.deleteFlag != true) && (t.invuln != true)){
 				if(Math.abs(t.x-x) < (t.radius+radius)){
 					dmg.forEach((d) => {
 						if(d.tags.includes("crit")){
@@ -843,7 +857,7 @@ export class GameScene extends BaseScene {
 
 	hExplode(dmg: DamageInstance[], y:number, radius: number, type: string = "explosion"){
 		this.tList.forEach((t)=>{
-			if((t != null) && (t.deleteFlag != true)){
+			if((t != null) && (t.deleteFlag != true) && (t.invuln != true)){
 				if(Math.abs(t.y-y) < (t.radius+radius)){
 					dmg.forEach((d) => {
 						if(d.tags.includes("crit")){

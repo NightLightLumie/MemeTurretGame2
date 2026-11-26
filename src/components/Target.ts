@@ -22,7 +22,7 @@ export interface ArmorType {
 export class Target extends Phaser.GameObjects.Container{
     public scene: GameScene;
     public radius: number = 100;
-    public deleteFlag: boolean = false;
+    public deleteFlag: boolean;
     public hitStun: number = 0;
     public stackLog: Map<number,DmgStack>;
     public bLog: Map<number,HitLog>;
@@ -60,6 +60,7 @@ export class Target extends Phaser.GameObjects.Container{
 
     constructor(scene:GameScene,x:number,y:number){
         super(scene,x,y);
+        this.deleteFlag = false;
         this.scene = scene;
         this.bLog = new Map(); //log for pierce shots
         this.stackLog = new Map(); //logs of stacks for procs
@@ -452,8 +453,8 @@ export class Target extends Phaser.GameObjects.Container{
                 this.scene.player.leech[0] = (this.scene.player.leech[2]*this.maxHP);
             }
         }
-        this.scene.score += this.value;
-        this.scene.player.addScore(this.value);
+        this.scene.score += this.value*this.scene.expScale;
+        this.scene.player.addScore(this.value*this.scene.expScale);
     }
 
     unSeek(){

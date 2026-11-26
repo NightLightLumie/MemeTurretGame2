@@ -9,7 +9,7 @@ import { Target } from "@/components/Target";
 
 export class DanmakuCharm extends Item{
     private mode: number = 0;
-    public damage: number = 140;
+    public damage: number = 280;
     private shots: number = 16;
     constructor(scene: GameScene, p: Player, name: string, slot: number){
         super(scene, p, name, slot);

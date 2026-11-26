@@ -8,7 +8,7 @@ export class GreenThug extends Thug{
         super(scene,x,y,mode,ofs,seek,diff);
         this.aCD = [0, 200];
         this.v = 400+(Math.random()*100);
-        this.hp = 3000;
+        this.hp = 1500;
         this.spr.setTexture("enemy_3");
         this.setDifficulty(diff);
         this.value = Math.trunc(200*(1+(this.difficulty/10)));

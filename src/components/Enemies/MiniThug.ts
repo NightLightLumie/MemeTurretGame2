@@ -10,10 +10,10 @@ export class MiniThug extends Thug{
     constructor(scene:GameScene,x:number,y:number, mode: string = "x", ofs: number = 0, seek: string = "x", diff: number = -1, arad: number = 0){
         super(scene,x,y,"x",ofs,"x",diff);
         this.aCD = [0, 200];
-        this.v = 300+(Math.random()*100);
+        this.v = 500+(Math.random()*100);
         this.decel = this.v/1.5;
         this.vmax = this.v;
-        this.hp = 400;
+        this.hp = 400;6
         this.spr.setTexture("enemy_worm");
         this.setDifficulty(diff);
         this.value = 0;
@@ -26,7 +26,8 @@ export class MiniThug extends Thug{
         this.a = arad;
         this.value = 0;
         this.unstackFactor = 10*(Math.abs(this.v));
-        this.ghosting = false;
+        this.ghosting = true;
+        this.invuln = true;
         this.aCD = [0,350];
     }
 
@@ -48,6 +49,7 @@ export class MiniThug extends Thug{
                 this.v = 0
                 this.boundState = 1;
                 this.ghosting = false;
+                this.invuln = false;
             }
         } else if (this.boundState == 1){
             this.v += (this.decel*(d/1000));
@@ -107,10 +109,10 @@ export class MiniThug extends Thug{
     }
 
     attack(t: number, d: number){
-        if(this.aCD[0] <= 0) {
+        if((this.aCD[0] <= 0) && (this.boundState != 0)) {
             if(this.playerDist() < (this.scene.player.radius+this.radius+this.aRange))
             {
-                this.scene.sound.play("turret_hit", {volume: 0.5});
+                this.scene.sound.play("turret_hit_high", {volume: 0.5});
                 this.scene.addPlayerEffect(new BoneEffect(this.scene, this.scene.player.x, this.scene.player.y, this.scene.player,2));
                 this.aCD[0] = this.aCD[1];   
                 this.scene.player.takeHit(20*this.debuff*this.buff*Math.trunc(1+(0.05*this.difficulty)));

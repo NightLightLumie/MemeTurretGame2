@@ -4,6 +4,7 @@ import { Target } from "../Target";
 import { EnemyBullet } from "../EnemyBullet";
 import { BoneEffect } from "../Graphics/BoneEffect";
 import { MiniThug } from "./MiniThug";
+import { BasicEffect } from "../Graphics/BasicEffect";
 
 export class Carrier extends Target{
 
@@ -35,7 +36,7 @@ export class Carrier extends Target{
     private linePos: number[] = [0,0];
     private turnRadius: number = 150;
 
-    private sansCD: number[] = [0,100,4,0,10000];
+    private sansCD: number[] = [0,100,4,0,7500];
 
     constructor(scene:GameScene,x:number,y:number, diff: number = -1){
         super(scene,x,y);
@@ -84,6 +85,8 @@ export class Carrier extends Target{
         this.setDifficulty(diff);
         this.value = Math.trunc(100*(1+(this.difficulty/10)));
         this.unstackFactor = 10*(Math.abs(this.v));
+        this.isBoss = true;
+        this.damageScale = 0.5;
         //this.pID = this.scene.getProjID();
     }
 
@@ -218,10 +221,16 @@ export class Carrier extends Target{
         if((this.sansCD[3] <= 0) && (this.boundState != 0)){
             if(this.sansCD[0] <= 0){
                 if(this.sansCD[2] >= 1){
-                    let launch = this.playerAngle()-(Math.PI);
+
+                    let launch = this.playerAngle();
                     for(let n = 0; n < 3; n++){
-                        this.scene.addGroundEnemy(new MiniThug(this.scene, this.x, this.y, "x", 0, "x", this.difficulty, launch-(Math.PI/8)+(Math.random()*Math.PI/4)));
+                        let ofs = (Math.PI/2) + (Math.random()*(Math.PI/4));
+                        if(Math.random()<0.5){
+                            ofs *= -1;
+                        }
+                        this.scene.addGroundEnemy(new MiniThug(this.scene, this.x, this.y, "x", 0, "x", this.difficulty, launch-ofs));
                     }
+                    this.scene.sound.play("launch", {volume: 0.5});
                     this.sansCD[2] -= 1;
                     this.sansCD[0] = this.sansCD[1];
                 } else {
@@ -232,6 +241,8 @@ export class Carrier extends Target{
     }
 
     gib(){
+        this.scene.playSound("meme_explosion",0.5);
+        this.scene.addHitEffect(new BasicEffect(this.scene,"meme_exp",this.x,this.y,18,20,false,0,Math.random()*360,[2,2]));
         for(let n = 1; n <= 7; n++){
             let gib = new GibEffect(this.scene,this.x,this.y,"c"+n,[-2400+Math.random()*4800,-2400+Math.random()*4800],
             [0,0],Math.random()*360,1000+(Math.random()*3000),Math.random()*3600,5000,[2,2]);

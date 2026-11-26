@@ -6,7 +6,7 @@ import { SpellProjectile } from "@/components/WeaponFunctions/SpellProjectile";
 
 export class Fireball extends Item {
     private fired: number[];
-    public damage: number = 350;
+    public damage: number = 750;
     private baseFireballs: number = 6;
     constructor(scene: GameScene, p: Player, name: string, slot: number){
         super(scene, p, name, slot);
@@ -40,7 +40,7 @@ export class Fireball extends Item {
     levelUp(){
         if(this.level < this.maxLevel){
             this.level++;
-            this.damage += 50;
+            this.damage += 100;
         } else {
             console.log("Item already at max level.");
             return;

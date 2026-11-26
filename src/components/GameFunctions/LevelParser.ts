@@ -106,10 +106,10 @@ export class LevelParser {
                 break;
             } case "incDifficulty": {
                 if(args.length > 0){
-                    this.scene.difficulty += args[0];
-                    if(this.scene.difficulty > 100){
-                        this.scene.difficulty = 100;
+                    if(cond[0] == true){
+                        this.scene.announceWave();
                     }
+                    this.scene.difficulty += args[0];
                 }
                 this.index++;
                 break;

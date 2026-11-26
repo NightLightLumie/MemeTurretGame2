@@ -6,7 +6,7 @@ import { SpellProjectile } from "@/components/WeaponFunctions/SpellProjectile";
 import { ScalingEffect } from "@/components/Graphics/ScalingEffect";
 
 export class RuneCircle extends Item{
-    public percent: number = 0.5;
+    public percent: number = 1;
     private dmgRadius: number = 750;
     private fRad: number = 144; //super hacky
     constructor(scene: GameScene, p: Player, name: string, slot: number){
@@ -20,7 +20,7 @@ export class RuneCircle extends Item{
     levelUp(){
         if(this.level < this.maxLevel){
             this.level++;
-            this.percent += 0.2;
+            this.percent += 0.4;
             this.cooldown = this.cooldown/this.maxCD;
             this.maxCD -= 200;
             this.cooldown *= this.maxCD;

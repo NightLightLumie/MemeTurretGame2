@@ -37,7 +37,7 @@ export class VHLaser extends Effect{
         this.add(this.spr);
         this.damage = dmg[0];
         this.gdmg = dmg[1];
-        if(Math.random()<dmg[3]){
+        if(Math.random()<dmg[2]){
             this.dtype = "spellcrit";
             this.damage *= 2;
         }

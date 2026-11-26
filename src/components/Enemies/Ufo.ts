@@ -53,6 +53,7 @@ export class Ufo extends Target{
         this.gx = this.scene.add.graphics();
         this.gx.fillStyle(0x008080,0.85);
         this.add(this.gx);
+        this.ghosting = true;
 
         if(this.scene.tracing){
             this.gx.beginPath();
@@ -107,7 +108,9 @@ export class Ufo extends Target{
         imod += 1;
         this.curAngle += this.mod*this.av*d/1000*(imod/2);
         if(this.curAngle >= (4*Math.PI)){
-            this.curAngle -= (4*Math.PI);
+            this.curAngle -= 4*Math.PI;
+        } else if (this.curAngle <= (-4*Math.PI)){
+            this.curAngle += 4*Math.PI;
         }
         this.tether -= this.mod*this.rv*d/1000*(imod/2);
         if(this.tether <= this.bound) {
@@ -138,12 +141,14 @@ export class Ufo extends Target{
                         this.boundState = 1;
                     }
                 }
+                break;
             } case 1: {
                 if((this.x >= 4140) || (this.x <= -4140)){
                     if((this.y >= 2460) || (this.y <= -2460)){
                         this.deleteFlag = true;
                     }
                 }
+                break;
             }
         }
     }
@@ -158,9 +163,11 @@ export class Ufo extends Target{
                 this.aCD[0] = this.aCD[1];   
             }
         } else {
-            this.aCD[0] -= d;
-            if(this.aCD[0] <= 0) {
-                this.aCD[0] = 0;
+            if(this.aCD[0] > 0){
+                this.aCD[0] -= d;
+                if(this.aCD[0] <= 0) {
+                    this.aCD[0] = 0;
+                }
             }
         }
     }

@@ -32,6 +32,7 @@ export class Target extends Phaser.GameObjects.Container{
     public colrad: number = 75;
     public ghosting: boolean = false;
     public smited: boolean = false;
+    public weight: number = 1;
     protected seeking: boolean = false;
     protected tpr: number[] = [];
     protected dots: DotTracker[];
@@ -45,9 +46,12 @@ export class Target extends Phaser.GameObjects.Container{
     protected armor: number[] = [0,0];
     protected value: number = 20;
     public damageScale: number = 1;
+    public appliedExecute: number = 0;
+    public debuffScale: number = 1;
     public debuff: number = 1;
     public buff: number = 1;
     public killTracked: boolean = false;
+    public isBoss: boolean = false;
 
     public batchedDamage: DamageBatch[];
     public totalBatchedDamage: number;
@@ -195,13 +199,16 @@ export class Target extends Phaser.GameObjects.Container{
         }
     }
 
-    playerCollide(){
+    playerCollide(): boolean{
         let r  = this.playerDist();
         let ct = 0;
         if(r < (this.radius+this.scene.player.radius)){
             ct = Math.atan2(this.y-this.scene.player.y,this.x-this.scene.player.x);
             this.x = this.scene.player.x+((this.scene.player.radius+this.radius)*Math.cos(ct));
-            this.y = this.scene.player.y+((this.scene.player.radius+this.radius)*Math.sin(ct));   
+            this.y = this.scene.player.y+((this.scene.player.radius+this.radius)*Math.sin(ct));
+            return true;   
+        } else {
+            return false;
         }
 
     }
@@ -285,7 +292,7 @@ export class Target extends Phaser.GameObjects.Container{
         if(this.hp <= 0) {
             this.die();
         } else {
-            if(this.hp < (this.scene.player.execute*this.maxHP*this.damageScale)){
+            if(this.hp < ((this.scene.player.execute*this.maxHP*this.damageScale)+this.appliedExecute)){
                 this.die();
                 this.scene.addHitEffect(new DamageText(this.scene,(this.x-40)+(2*Math.random()*40),(this.y-40)+(2*Math.random()*40),""+(this.smartRound(this.hp))+"!", "execute"));
                 this.scene.sound.play("execute", {volume:0.5});
@@ -295,7 +302,7 @@ export class Target extends Phaser.GameObjects.Container{
 
             }
         }
-        if(this.totalBatchedDamage > (this.hp-(this.scene.player.execute*this.maxHP*this.damageScale))){
+        if(this.totalBatchedDamage > (this.hp-((this.scene.player.execute*this.maxHP*this.damageScale)+this.appliedExecute))){
             this.forceBatchedDamage();
         }
         return true;
@@ -325,10 +332,16 @@ export class Target extends Phaser.GameObjects.Container{
 
 
 
-    updateUnstacking(t:number,d:number){
+    updateUnstacking(t:number,d:number): boolean {
         this.x += (this.unstack[0]*this.unstackFactor*d/1000);
         this.y += (this.unstack[1]*this.unstackFactor*d/1000);
-        this.unstack = [0,0];
+        if((this.unstack[0] != 0) || (this.unstack[1] != 0)){
+            this.unstack = [0,0];
+            return true;
+        } else {
+            return false;
+        }
+
     }
 
     playerDist(): number{
@@ -341,6 +354,10 @@ export class Target extends Phaser.GameObjects.Container{
 
     playerAngle(): number {
         return Math.atan2(this.scene.player.y-this.y,this.scene.player.x-this.x);
+    }
+
+    angleToPlayer(x: number, y: number): number {
+        return Math.atan2(this.scene.player.y-y,this.scene.player.x-x);
     }
 
     update(t:number,d:number){

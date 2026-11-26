@@ -64,6 +64,10 @@ export class LevelParser {
                         break;
                     }
                 }
+            } case "spawnBoss":{
+                this.scene.spawnBoss(str[1],str[2],args[0]);
+                    this.index++;
+                break;
             } case "wait": {
                 if((this.iTimer[0] <= 0) && (this.iVar <= 0)) {
                     this.iTimer = [args[0], args[0]];
@@ -117,7 +121,10 @@ export class LevelParser {
                 }
             } case "endStage": {
                 break;
-            } case "diffGate": {
+            } case "skip": {
+                this.index = args[0];
+                break;
+            }case "diffGate": {
                 if(this.scene.difficulty > args[0]){
                     this.index++;
                 } else {

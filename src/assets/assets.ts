@@ -208,6 +208,8 @@ const images: Image[] = [
 	// Enemies
 	image('enemies/enemy_1', 'enemy_1'),
 	image('enemies/enemy_3', 'enemy_3'),
+	image('enemies/carrierbase', 'carrierbase'),
+	image('enemies/enemy_worm', 'enemy_worm'),
 	image('enemies/fragments/e1/f1-0', 'f1-0'),
 	image('enemies/fragments/e1/f1-1', 'f1-1'),
 	image('enemies/fragments/e1/f1-2', 'f1-2'),
@@ -226,6 +228,14 @@ const images: Image[] = [
 	image('enemies/fragments/e2/u6', 'u6'),
 	image('enemies/fragments/e2/u7', 'u7'),
 
+	image('enemies/fragments/b1/c1', 'c1'),
+	image('enemies/fragments/b1/c2', 'c2'),
+	image('enemies/fragments/b1/c3', 'c3'),
+	image('enemies/fragments/b1/c4', 'c4'),
+	image('enemies/fragments/b1/c5', 'c5'),
+	image('enemies/fragments/b1/c6', 'c6'),
+	image('enemies/fragments/b1/c7', 'c7'),
+
 
 	image('enemies/ufobullet', 'ufobullet'),
 
@@ -237,6 +247,7 @@ const spritesheets: SpriteSheet[] = [
 	spritesheet("anims/splash", "splash", 64, 64),
 	spritesheet("anims/exp", "exp", 256, 256),
 	spritesheet("enemies/enemy_2", "enemy_2", 360, 360),
+	spritesheet("enemies/carriertop", "carriertop", 360, 360),
 	spritesheet("anims/hit_spark", "hit_spark", 128, 128),
 	spritesheet("anims/hit_purple", "hit_purple", 128, 128),
 	spritesheet("anims/spellhitpink", "spellhitpink", 200, 200),
@@ -264,6 +275,7 @@ const spritesheets: SpriteSheet[] = [
 	spritesheet("ui/sellbutton", "sellbutton", 160, 120),
 	spritesheet("items/boxlight", "boxlight", 720, 600),
 	spritesheet("anims/boneattack", "boneattack", 128, 128),
+	spritesheet("anims/spikeboneattack", "spikeboneattack", 128, 128),
 	spritesheet("anims/lava", "lava", 256, 256),
 	spritesheet("anims/fireshot", "fireshot", 320, 280),
 	spritesheet("anims/cementblocks", "cementblocks", 280, 280),

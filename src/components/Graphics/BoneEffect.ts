@@ -21,18 +21,11 @@ export class BoneEffect extends Effect{
     private ofs: number[];
     public owner: Player;
 
-    constructor(scene: BaseScene, x: number, y: number, p: Player){
+    constructor(scene: BaseScene, x: number, y: number, p: Player, type: number = 0){
         super(scene, x, y);
         this.scene = scene;
-		this.sp = this.scene.add.sprite(0, 0, "boneattack");
-		this.sp.setOrigin(0.5, 0.5);
-        this.sp.setScale(1.5,1.5);
-        this.sp.setAngle(0);
+        this.parseType(type);
         this.isLooped = false;
-        this.frameLength = 25;
-        this.startingFrame = 0;
-        this.currentFrame = 0;
-        this.totalFrames = 4;
         this.sp.setFrame(this.startingFrame);
         this.add(this.sp);
         this.setDepth(2);
@@ -40,6 +33,45 @@ export class BoneEffect extends Effect{
         this.ofs = [(-1+(Math.random()*2))*0.5*p.radius, (-1+(Math.random()*2))*0.5*p.radius];
         this.x = this.owner.x+this.ofs[0];
         this.y = this.owner.y+this.ofs[1];
+    }
+
+    parseType(n: number){
+
+        switch(n){
+            case 0: {
+                this.sp = this.scene.add.sprite(0, 0, "boneattack");
+                this.sp.setOrigin(0.5, 0.5);
+                this.sp.setScale(1.5,1.5);
+                this.sp.setAngle(0);
+                break;
+            } case 1: {
+                this.sp = this.scene.add.sprite(0, 0, "spikeboneattack");
+                this.sp.setOrigin(0.5, 0.5);
+                this.sp.setScale(1.75,1.75);
+                this.sp.setAngle(-15+(Math.random()*30));
+            } case 2: {
+                this.sp = this.scene.add.sprite(0, 0, "boneattack");
+                this.sp.setOrigin(0.5, 0.5);
+                this.sp.setScale(0.75,0.75);
+                this.sp.setTint(0xA0AB2B);
+                this.sp.setAngle(0);
+                break;
+            } default: {
+                break;
+            }
+        }
+        this.frameLength = 25;
+        this.startingFrame = 0;
+        this.currentFrame = 0;
+        this.totalFrames = 4;
+    }
+
+    setSprite(s: string){
+        this.sp.setTexture(s);
+    }
+
+    rescale(n: number){
+        this.sp.setScale(n,n);
     }
 
     setVelocityX(v: number){

@@ -7,11 +7,12 @@ export class GreenThug extends Thug{
     constructor(scene:GameScene,x:number,y:number, mode: string = "x", ofs: number = 0, seek: string = "x", diff: number = -1){
         super(scene,x,y,mode,ofs,seek,diff);
         this.aCD = [0, 200];
-        this.v = 300+(Math.random()*200);
+        this.v = 400+(Math.random()*100);
         this.hp = 3000;
         this.spr.setTexture("enemy_3");
         this.setDifficulty(diff);
         this.value = Math.trunc(200*(1+(this.difficulty/10)));
+        this.unstackFactor = 10*(Math.abs(this.v));
     }
 
     attack(t: number, d: number){
@@ -24,9 +25,11 @@ export class GreenThug extends Thug{
                 this.scene.player.takeHit(75*this.debuff*this.buff*Math.trunc(1+(0.05*this.difficulty)));
             }
         } else {
-            this.aCD[0] -= d;
-            if(this.aCD[0] <= 0) {
-                this.aCD[0] = 0;
+            if(this.aCD[0] > 0){
+                this.aCD[0] -= d;
+                if(this.aCD[0] <= 0) {
+                    this.aCD[0] = 0;
+                }
             }
         }
     }

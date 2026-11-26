@@ -26,12 +26,13 @@ export class Thug extends Target{
 
     public gx: Phaser.GameObjects.Graphics;
     protected radOfs: number = 0;
+    protected phase: number = 400;
 
     constructor(scene:GameScene,x:number,y:number, mode: string = "x", ofs: number = 0, seek: string = "x", diff: number = -1){
         super(scene,x,y);
         this.spr = this.scene.add.sprite(0,0,"enemy_1");
         this.spr.setOrigin(0.5,0.5);
-        this.v = 200+(Math.random()*200);
+        this.v = 250+(Math.random()*100);
         this.initializeAngle(mode, ofs);
         this.add(this.spr);
         this.ofss = Math.random()*2*Math.PI; //random offset for oscillating motion
@@ -57,6 +58,7 @@ export class Thug extends Target{
         }
         this.setDifficulty(diff);
         this.value = Math.trunc(20*(1+(this.difficulty/10)));
+        this.unstackFactor = 10*(Math.abs(this.v));
         //this.pID = this.scene.getProjID();
     }
 
@@ -105,7 +107,7 @@ export class Thug extends Target{
         if(this.radOfs > 200000){
             this.radOfs -= 200000;
         }
-        let rmod = 1+(Math.sin(this.ofss+(this.radOfs/400)));
+        let rmod = 1+(Math.sin(this.ofss+(this.radOfs/this.phase)));
         let tmod = 0.25+(rmod*.75);
         this.spr.setScale(0.8+(rmod/5),1+((1-rmod)/10));
         this.x += (this.mod*this.v*tmod*Math.cos(this.a)*d/1000);
@@ -160,12 +162,14 @@ export class Thug extends Target{
                         this.boundState = 1;
                     }
                 }
+                break;
             } case 1: {
                 if((this.x >= 4140) || (this.x <= -4140)){
                     if((this.y >= 2460) || (this.y <= -2460)){
                         this.deleteFlag = true;
                     }
                 }
+                break;
             }
         }
     }
@@ -180,9 +184,11 @@ export class Thug extends Target{
                 this.scene.player.takeHit(75*this.debuff*this.buff*Math.trunc(1+(0.05*this.difficulty)));
             }
         } else {
-            this.aCD[0] -= d;
-            if(this.aCD[0] <= 0) {
-                this.aCD[0] = 0;
+            if(this.aCD[0] > 0){
+                this.aCD[0] -= d;
+                if(this.aCD[0] <= 0) {
+                    this.aCD[0] = 0;
+                }
             }
         }
     }

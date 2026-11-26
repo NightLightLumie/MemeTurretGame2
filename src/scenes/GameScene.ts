@@ -28,6 +28,7 @@ import { ItemShop } from "@/components/GameFunctions/ItemShop";
 import { FlashScreen } from "@/components/Graphics/FlashScreen";
 import { PlayerObject } from "@/components/PlayerObject";
 import { GreenThug } from "@/components/Enemies/GreenThug";
+import { Carrier } from "@/components/Enemies/Carrier";
 
 export interface DamageInstance{
 	amt: number;
@@ -98,7 +99,7 @@ export class GameScene extends BaseScene {
 	private shopping: boolean;
 	public enemyCap: number = 500;
 	public score: number = 0;
-	public difficulty: number = 20;
+	public difficulty: number = 0;
 	public closestTarget: Target | null;
 	public closestDist: number = 999999;
 	public initShopTimer: number;
@@ -277,7 +278,7 @@ export class GameScene extends BaseScene {
 		this.zoom = [0.5,0.5];
 		this.enemyCap = 500;
 		this.score = 0;
-		this.difficulty = 20;
+		this.difficulty = 0;
 		this.initShopTimer = 100;
 		this.shopping = false;
 		this.dbTimer = [250,250];
@@ -454,6 +455,49 @@ export class GameScene extends BaseScene {
 			}
 			return true;
 		}
+	}
+
+	spawnBoss(type: string, cmd: string, dist: number){
+		let npos = [0,0];
+		let a = Math.random()*2*Math.PI;
+		switch(cmd){
+			case "rel":{
+				npos = [this.player.x+dist*Math.cos(a), this.player.y+dist*Math.sin(a)];
+				break;
+			} case "far": {
+				let a1 = Math.atan2(0-this.player.y, 0-this.player.x);
+				a1 += ((-1*Math.PI/16)+(Math.random()*(-1*Math.PI/8)));
+				npos = [this.player.x+dist*Math.cos(a1), this.player.y+dist*Math.sin(a1)];
+				break;
+			} case "abs": {
+				npos = [dist*Math.cos(a), dist*Math.sin(a)];	
+				break;
+			} default: {
+				npos = [0,0];
+				break;
+			}
+		}
+		switch(type){
+			case "carrier":{
+				let tn = new Carrier(this,npos[0],npos[1]);
+				this.tDisp.add(tn);
+				this.tDisp.bringToTop(tn);
+				this.tList.push(tn);
+				break;
+			} default: {
+				break;
+			}
+		}
+	}
+
+	addGroundEnemy(t: Target){
+		this.tDisp.add(t);
+		this.tList.push(t);
+	}
+
+	addAirEnemy(t: Target){
+		this.ftDisp.add(t);
+		this.tList.push(t);
 	}
 
 	createEnemyFromList(cmd: string, etype: string = "thug", difficulty: number = 0){
@@ -671,6 +715,12 @@ export class GameScene extends BaseScene {
 		this.addPlayerEffect(new TextEffect(this,this.player.x-100+(Math.random()*200),this.player.y-100+(Math.random()*200),"Found a widget!", "aqua", 60, true, "white", 1200,50, 2, 0));
 	}
 
+	dropWidgetPack(n: number){
+		this.masterData.widgets+= n;
+		this.playSound("dropbox", 0.5);
+		this.addPlayerEffect(new TextEffect(this,this.player.x-100+(Math.random()*200),this.player.y-100+(Math.random()*200),"Found " + n + " widgets!!!", "aqua", 80, true, "white", 1500,50, 3, 0));
+	}
+
 	dropNormalBox(){
 		this.playSound("dropbox", 0.5);
 		this.addPlayerEffect(new TextEffect(this,this.player.x,this.player.y,"Loot Box Obtained!", "yellow", 60, true, "white", 1200,50, 2, 0));
@@ -697,6 +747,12 @@ export class GameScene extends BaseScene {
 				return 0.025;
 			} case "gthug": {
 				return 0.01;
+			} case "carrier": {
+				if(this.difficulty < 10){
+					return 1;
+				} else {
+					return 0.25;
+				}
 			} default: {
 				return 0.01;
 			}
@@ -711,6 +767,8 @@ export class GameScene extends BaseScene {
 				return 0.2;
 			} case "gthug": {
 				return 0.01;
+			} case "carrier": {
+				return 1;
 			} default: {
 				return 0.01;
 			}
@@ -748,8 +806,8 @@ export class GameScene extends BaseScene {
 				if(at < (targets[i].colrad + c.colrad)){
 					zr = Math.atan2((targets[i].y-c.y),(targets[i].x-c.x));
 					//console.log("collision distance: " + at + " mypos: " + c.x + "," + c.y + " tpos: " + targets[i].x + "," + targets[i].y);
-					targets[i].unstack[0] += Math.cos(zr);
-					targets[i].unstack[1] += Math.sin(zr);
+					targets[i].unstack[0] += Math.cos(zr)*(1/targets[i].weight);
+					targets[i].unstack[1] += Math.sin(zr)*(1/targets[i].weight);
 				}
 			}
 		}

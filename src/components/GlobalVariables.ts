@@ -187,7 +187,7 @@ export class GlobalVariables {
         passives: [{name: "Teamchat", desc: "On-hit damage also benefits from base damage upgrades.", activated: true}, 
             {name: "Against the Flow", desc: "Hitting an enemy restores 25% of the magazine ammo (rounded down) per second for 2 seconds.", activated: false}]}
         ],
-        [14, {type:14,name:"Azuraeus", class:"assault", dmg: 335, spd: 10000, rof: 6, spcd: [-1, 1000, 10, 10000], shots: 1, pen: 2.5, pcd: -999, clip: 70, load: 2.25, width: 1, rad: 220,
+        [14, {type:14,name:"Azuraeus", class:"assault", dmg: 345, spd: 10000, rof: 6, spcd: [-1, 1000, 10, 10000], shots: 1, pen: 2.5, pcd: -999, clip: 70, load: 2.25, width: 1, rad: 220,
         acc: 2.25, arpen: [0,0], crit: [0.001,2], ele: 1, onhit: 0, weight: 0.35, rarity: 12, burst:[1,1], dot: [], augs: [0,1,1,1, 1,0,1,1, 1,1,1,1, 1,1,1,0, 1,1,1], customaug: {name: "Draconic Force", index: 18, level: 0, maxlv: 10, lvcap: 10, desc: "Bullets create cluster explosions dealing 40% of the original damage. +10% additional damage per upgrade."}, 
         passives: [{name: "Blastblight", desc: "Hits with this weapon explode to deal the same damage again.", activated: true},
             {name: "Radical no.212", desc: "Bullets have a 25% chance to split into 3 upon hit.", activated: true}, 
@@ -336,18 +336,14 @@ export class GlobalVariables {
         let r = this.getNewParams(ix);
         let ap: Augment[] = [];
         let ac = Math.random();
-        if(ac < 0.75) {
+        if(ac < 0.6) {
             ap.push(this.getRandomAugment(r.type, ap));
             ac = Math.random();
             if(ac < 0.5) {
                 ap.push(this.getRandomAugment(r.type, ap));
                 ac = Math.random(); 
-                if(ac < 0.5) {
+                if(ac < 0.4) {
                     ap.push(this.getRandomAugment(r.type, ap));
-                    ac = Math.random(); 
-                    if(ac < 0.5){
-                        ap.push(this.getRandomAugment(r.type, ap));
-                    } 
                 } 
             }
         }
@@ -525,10 +521,10 @@ export class GlobalVariables {
     makeBox(): number{
         let e = 0;
         this.boxCount++;
-        if((this.boxCount % 10) == 0){
+        if((this.boxCount % 20) == 0){
             e = 999;
         }
-        if(this.boxCount == 50){
+        if(this.boxCount == 100){
             e = 9999;
             this.boxCount = 0;
         }

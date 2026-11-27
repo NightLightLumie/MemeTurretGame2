@@ -10,7 +10,7 @@ export class MiniThug extends Thug{
     constructor(scene:GameScene,x:number,y:number, mode: string = "x", ofs: number = 0, seek: string = "x", diff: number = -1, arad: number = 0){
         super(scene,x,y,"x",ofs,"x",diff);
         this.aCD = [0, 200];
-        this.v = 500+(Math.random()*100);
+        this.v = 550+(Math.random()*100);
         this.decel = this.v/1.5;
         this.vmax = this.v;
         this.hp = 400;

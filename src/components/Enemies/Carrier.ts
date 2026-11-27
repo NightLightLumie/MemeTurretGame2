@@ -83,7 +83,7 @@ export class Carrier extends Target{
 
         this.setStackDisplay();
         this.setDifficulty();
-        this.value = Math.trunc(100*(1+(this.difficulty/10)));
+        this.value = Math.trunc(3000*(1+(this.difficulty/10)));
         this.unstackFactor = 5*(Math.abs(this.v));
         this.isBoss = true;
         this.damageScale = 0.5;

@@ -15,6 +15,12 @@ export class EnemyBullet extends Phaser.GameObjects.Container{
     public deleteFlag: boolean = false; 
     public vangle: number = 0;
     private mod: number = 1;
+    private sprInfo: {
+        amtFrames: number;
+        curFrame: number;
+        timer: number[];
+        loop: boolean;
+    }
     constructor(scene: GameScene, x: number, y: number, name: string, difficulty: number, angle: number, mod: number = 1){
         super(scene,x,y);
         this.scene = scene;
@@ -26,7 +32,13 @@ export class EnemyBullet extends Phaser.GameObjects.Container{
         this.vangle = angle;
         //console.log("BULLET ANGLE: " + this.angle);
         this.setAngle(this.vangle*(180/Math.PI));
-        this.mod = mod
+        this.mod = mod;
+        this.sprInfo = {
+            amtFrames: 1,
+            curFrame: 0,
+            timer: [0,1000],
+            loop: true,
+        }
         this.initiateParams();
     }
 
@@ -40,6 +52,21 @@ export class EnemyBullet extends Phaser.GameObjects.Container{
                 this.v[1] *= 1000;
                 this.radius = 16;
                 break;
+            } case "uforocket": {
+                this.damage = 250 * Math.trunc(1+(0.05*this.diff)) * this.mod;
+                this.hitAnim = "meme_exp";
+                this.hitAnimFrames = 18;
+                this.spr.setScale(2,2);
+                this.v[0] *= 1600;
+                this.v[1] *= 1600;
+                this.radius = 24;
+                this.sprInfo = {
+                    amtFrames: 2,
+                    curFrame: 0,
+                    timer: [0,150],
+                    loop: true,
+                }
+                break;
             } default: {
                 break;
             }
@@ -49,7 +76,29 @@ export class EnemyBullet extends Phaser.GameObjects.Container{
     update(t: number, d: number){
         this.x += this.v[0]*(d/1000);
         this.y += this.v[1]*(d/1000);
+        this.adjustSprite(t,d);
         this.checkBounds();
+    }
+
+    adjustSprite(t: number, d: number){
+        if(this.sprInfo.amtFrames > 1){
+            if(this.sprInfo.timer[0] > 0){
+                this.sprInfo.timer[0] -= d;
+                if(this.sprInfo.timer[0] <= 0){
+                    this.sprInfo.curFrame++;
+                    this.sprInfo.timer[0] = 0;
+                    if(this.sprInfo.curFrame >= this.sprInfo.amtFrames){
+                        if(this.sprInfo.loop){
+                            this.sprInfo.curFrame = 0;
+                            this.sprInfo.timer[0] = this.sprInfo.timer[1];
+                        } else {
+                            this.spr.setVisible(false);
+                        }
+                    }
+
+                }
+            }
+        }
     }
 
     checkBounds(){
@@ -62,9 +111,24 @@ export class EnemyBullet extends Phaser.GameObjects.Container{
         let r = this.playerDist();
         if(r < (this.radius+(this.scene.player.hitsize*(1-this.scene.player.shrink)))){
             this.scene.playSound("turret_hit", 0.5);
+            this.spawnHitAnim();
             this.scene.player.takeHit(this.damage);
-            this.scene.addPlayerEffect(new BasicEffect(this.scene,this.hitAnim,this.x,this.y,this.hitAnimFrames,150,false,0,Math.random()*360,[1,1]));
             this.deleteFlag = true;
+        }
+    }
+
+    spawnHitAnim(){
+        switch(this.key){
+            case "ufobullet": {
+                this.scene.addPlayerEffect(new BasicEffect(this.scene,this.hitAnim,this.x,this.y,this.hitAnimFrames,150,false,0,Math.random()*360,[1,1]));
+                break;
+            } case "uforocket": {
+                this.scene.sound.play("meme_explosion", {volume: 0.75});
+                this.scene.addPlayerEffect(new BasicEffect(this.scene,this.hitAnim,this.x,this.y,this.hitAnimFrames,20,false,0,Math.random()*360,[1.5,1.5]));
+                break;
+            } default: {
+                break;
+            }
         }
     }
 

@@ -5,33 +5,33 @@ import { EnemyBullet } from "../EnemyBullet";
 
 export class Ufo extends Target{
 
-    private spr: Phaser.GameObjects.Sprite;
+    protected spr: Phaser.GameObjects.Sprite;
 
-    private v: number = 0;
-    private a: number = 0;
-    private mod: number = 1;
-    private ofss: number = 0;
+    protected v: number = 0;
+    protected a: number = 0;
+    protected mod: number = 1;
+    protected ofss: number = 0;
 
     protected atype: number = 0;
     protected cd: number = 0;
     protected maxcd: number = 1000;
 
-    private aCD: number[] = [0, 1000];
-    private aRange: number = 800;
+    protected aCD: number[] = [0, 1000];
+    protected aRange: number = 800;
 
-    private boundState: number = 0;
+    protected boundState: number = 0;
 
     protected seekType: string = "x";
     protected seekRad: number = 800;
 
     public gx: Phaser.GameObjects.Graphics;
-    private radOfs: number = 0;
-    private av: number = (2*Math.PI)/8;
-    private tether: number = 0;
-    private rv: number = 800;
-    private bound: number = 600;
-    private curAngle: number = 0;
-    private spin: number = 0;
+    protected radOfs: number = 0;
+    protected av: number = (2*Math.PI)/8;
+    protected tether: number = 0;
+    protected rv: number = 800;
+    protected bound: number = 600;
+    protected curAngle: number = 0;
+    protected spin: number = 0;
 
     constructor(scene:GameScene,x:number,y:number, ofs: number = 0, diff: number = -1){
         super(scene,x,y);
@@ -54,6 +54,8 @@ export class Ufo extends Target{
         this.gx.fillStyle(0x008080,0.85);
         this.add(this.gx);
         this.ghosting = true;
+        this.setAlpha(0.6);
+        this.invuln = true;
 
         if(this.scene.tracing){
             this.gx.beginPath();
@@ -136,10 +138,10 @@ export class Ufo extends Target{
     updateBounds(){
         switch(this.boundState){
             case 0: {
-                if((this.x <= 3840) && (this.x >= -3840)){
-                    if((this.y <= 2160) && (this.y >= -2160)){
-                        this.boundState = 1;
-                    }
+                if(this.playerDist() < 1600){
+                    this.boundState = 1;
+                    this.setAlpha(1);
+                    this.invuln = false;
                 }
                 break;
             } case 1: {

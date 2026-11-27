@@ -29,6 +29,7 @@ import { FlashScreen } from "@/components/Graphics/FlashScreen";
 import { PlayerObject } from "@/components/PlayerObject";
 import { GreenThug } from "@/components/Enemies/GreenThug";
 import { Carrier } from "@/components/Enemies/Carrier";
+import { GreenUfo } from "@/components/Enemies/GreenUfo";
 
 export interface DamageInstance{
 	amt: number;
@@ -98,7 +99,7 @@ export class GameScene extends BaseScene {
 	private ended: boolean = false;
 	private zoom: number[] = [0.5,0.5];
 	private shopping: boolean;
-	public enemyCap: number = 500;
+	public enemyCap: number = 600;
 	public score: number = 0;
 	public difficulty: number = 0;
 	public closestTarget: Target | null;
@@ -109,6 +110,7 @@ export class GameScene extends BaseScene {
 	private musicList: Phaser.Sound.WebAudioSound[];
 	private queuedMusic: MusicKey;
 	private musicVolume: number = 0.6;
+	public curWave: number = 1;
 
 	private nextButton: NextSceneButton;
 
@@ -283,7 +285,7 @@ export class GameScene extends BaseScene {
 		this.dead = false;
 		this.eTimer = [1000,1000];
 		this.zoom = [0.5,0.5];
-		this.enemyCap = 500;
+		this.enemyCap = 600;
 		this.score = 0;
 		this.curMusicIndex = 0;
 		this.morder = 0;
@@ -294,6 +296,7 @@ export class GameScene extends BaseScene {
 		this.dbTimer = [250,250];
 		this.queuedMusic = "m_lv1";
 		this.musicVolume = 0.8;
+		this.curWave = 1;
 	}
 
 	initiateTestObjects(){
@@ -519,6 +522,7 @@ export class GameScene extends BaseScene {
 
 	announceWave(){
 		this.sound.play("vineboom", { volume: 0.4 });
+		this.curWave++;
 		this.addPlayerEffect(new TextEffect(this,this.player.x,this.player.y,"Next Wave! Enemies become stronger!", "red", 140, true, "white", 1800, 50, 4, 0));
 	}
 
@@ -581,6 +585,11 @@ export class GameScene extends BaseScene {
 				let tn = new GreenThug(this, xx, yy, cmd);
 				this.tDisp.add(tn);
 				this.tList.push(tn);
+				break;
+			} case "greenufo": {
+				let tu = new GreenUfo(this,xx,yy);
+				this.ftDisp.add(tu);
+				this.tList.push(tu);
 				break;
 			} default: {
 				break;
@@ -782,9 +791,11 @@ export class GameScene extends BaseScene {
 			case "thug": {
 				return 0.005;
 			} case "ufo": {
-				return 0.025;
+				return 0.015;
 			} case "gthug": {
 				return 0.01;
+			} case "greenufo":{
+				return 0.02;
 			} case "carrier": {
 				if(this.difficulty < 10){
 					return 1;
@@ -805,6 +816,8 @@ export class GameScene extends BaseScene {
 				return 0.2;
 			} case "gthug": {
 				return 0.01;
+			} case "greenufo": {
+				return 0.1;
 			} case "carrier": {
 				return 1;
 			} default: {
@@ -1028,6 +1041,11 @@ export class GameScene extends BaseScene {
 	}
 
 	swapMusic(m: MusicKey){
+		if(this.musicList[0] != null){
+			this.musicList[0].stop();
+			this.musicList[0] = new Music(this,m,{volume: this.musicVolume});
+			this.musicList[0].play();
+		}
 	}
 
 	progress(){

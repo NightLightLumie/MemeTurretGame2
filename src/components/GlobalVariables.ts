@@ -15,7 +15,7 @@ export interface ItemParams{
 
 export class GlobalVariables {
 
-    public version: string = "alpha_0.1";
+    public version: string = "alpha_0.1.2";
     public curGunID: number = -999999999;
     public inv: Armory;
     public maxAugOverLevel: number = 13;

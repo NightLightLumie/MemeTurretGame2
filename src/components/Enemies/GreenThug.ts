@@ -7,11 +7,11 @@ export class GreenThug extends Thug{
     constructor(scene:GameScene,x:number,y:number, mode: string = "x", ofs: number = 0, seek: string = "x", diff: number = -1){
         super(scene,x,y,mode,ofs,seek,diff);
         this.aCD = [0, 200];
-        this.v = 400+(Math.random()*100);
+        this.v = 475+(Math.random()*100);
         this.hp = 1500;
         this.spr.setTexture("enemy_3");
         this.setDifficulty(diff);
-        this.value = Math.trunc(200*(1+(this.difficulty/10)));
+        this.value = Math.trunc(150*(1+(this.difficulty/10)));
         this.unstackFactor = 5*(Math.abs(this.v));
     }
 

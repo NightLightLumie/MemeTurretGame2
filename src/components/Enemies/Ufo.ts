@@ -123,6 +123,7 @@ export class Ufo extends Target{
         //this.refactor();
         //this.txt.setText("{" + this.unstack[0] + ", "+ this.unstack[1] + "}");
         this.attack(t,d);
+        this.updateBounds();
         this.updateLogs(t,d);
     }
 

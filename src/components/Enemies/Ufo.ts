@@ -139,7 +139,7 @@ export class Ufo extends Target{
     updateBounds(){
         switch(this.boundState){
             case 0: {
-                if(this.playerDist() < 1600){
+                if(this.playerDist() < 1900){
                     this.boundState = 1;
                     this.setAlpha(1);
                     this.invuln = false;

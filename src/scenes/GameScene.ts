@@ -111,6 +111,7 @@ export class GameScene extends BaseScene {
 	private queuedMusic: MusicKey;
 	private musicVolume: number = 0.6;
 	public curWave: number = 1;
+	public tempBoxes: number[] = [];;
 
 	private nextButton: NextSceneButton;
 
@@ -297,6 +298,7 @@ export class GameScene extends BaseScene {
 		this.queuedMusic = "m_lv1";
 		this.musicVolume = 0.8;
 		this.curWave = 1;
+		this.tempBoxes = [];
 	}
 
 	initiateTestObjects(){
@@ -771,31 +773,31 @@ export class GameScene extends BaseScene {
 	dropNormalBox(){
 		this.playSound("dropbox", 0.5);
 		this.addPlayerEffect(new TextEffect(this,this.player.x,this.player.y,"Loot Box Obtained!", "yellow", 60, true, "white", 1200,50, 2, 0));
-		this.masterData.lootBoxes.push(0);
+		this.tempBoxes.push(0);
 	}
 
 	dropMaxBox(){
 		this.playSound("dropbox", 0.5);
 		this.addPlayerEffect(new TextEffect(this,this.player.x,this.player.y,"MEGA Loot Box Obtained!!", "teal", 70, true, "white", 1200,50, 2, 0));
-		this.masterData.lootBoxes.push(999);
+		this.tempBoxes.push(999);
 	}
 
 	dropSuperMaxBox(){
 		this.playSound("dropbox", 0.5);
 		this.addPlayerEffect(new TextEffect(this,this.player.x,this.player.y,"SUPER MEGA Loot Box Obtained!!!", "blue", 80, true, "white", 1200,50, 2, 0));
-		this.masterData.lootBoxes.push(9999);
+		this.tempBoxes.push(9999);
 	}
 
 	getDropChance(name: string): number{
 		switch(name){
 			case "thug": {
-				return 0.005;
+				return 0.001;
 			} case "ufo": {
-				return 0.015;
+				return 0.003;
 			} case "gthug": {
-				return 0.01;
+				return 0.002;
 			} case "greenufo":{
-				return 0.02;
+				return 0.01;
 			} case "carrier": {
 				if(this.difficulty < 10){
 					return 1;
@@ -803,7 +805,7 @@ export class GameScene extends BaseScene {
 					return 0.25;
 				}
 			} default: {
-				return 0.01;
+				return 0.0001;
 			}
 		}
 	}
@@ -1052,6 +1054,7 @@ export class GameScene extends BaseScene {
 		this.masterData.money += this.score;
 		this.musicList.forEach((m) => {m.stop();})
 		this.sound.stopAll();
+		this.masterData.lootBoxes = this.masterData.lootBoxes.concat(this.tempBoxes);
 		this.addEvent(1050, () => {
 			//this.musicTitle.stop();
 			this.masterData.saveGame();

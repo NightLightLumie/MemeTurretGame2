@@ -85,7 +85,7 @@ export class GlobalVariables {
         [18, 2], // special augment
     ];
 
-    public lootBoxes: number[] = [0,99];
+    public lootBoxes: number[] = [0,999];
 
     public lootTable: number[][] = [
 

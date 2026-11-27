@@ -58,7 +58,7 @@ export class Thug extends Target{
         }
         this.setDifficulty(diff);
         this.value = Math.trunc(20*(1+(this.difficulty/10)));
-        this.unstackFactor = 10*(Math.abs(this.v));
+        this.unstackFactor = 5*(Math.abs(this.v));
         //this.pID = this.scene.getProjID();
     }
 

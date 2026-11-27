@@ -12,7 +12,7 @@ export class GreenThug extends Thug{
         this.spr.setTexture("enemy_3");
         this.setDifficulty(diff);
         this.value = Math.trunc(200*(1+(this.difficulty/10)));
-        this.unstackFactor = 10*(Math.abs(this.v));
+        this.unstackFactor = 5*(Math.abs(this.v));
     }
 
     attack(t: number, d: number){

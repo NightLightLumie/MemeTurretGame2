@@ -25,7 +25,7 @@ export class MiniThug extends Thug{
         this.setAngle((180/Math.PI)*arad);
         this.a = arad;
         this.value = 0;
-        this.unstackFactor = 10*(Math.abs(this.v));
+        this.unstackFactor = 5*(Math.abs(this.v));
         this.ghosting = true;
         this.invuln = true;
         this.aCD = [0,350];

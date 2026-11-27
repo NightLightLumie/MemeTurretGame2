@@ -52,6 +52,38 @@ const Data = {
 		end: 11948032 / 44100,
 
 	},
+	m_lv3: {
+		offset: 0,
+		bpm: 206,
+		loop: true,
+		start: 1008382 / 44100,
+		end: 9072896 / 44100,
+
+	},
+	m_lv4: {
+		offset: 0,
+		bpm: 206,
+		loop: true,
+		start: 1558624 / 44100,
+		end: 4415665 / 44100,
+
+	},
+	m_lv5: {
+		offset: 0,
+		bpm: 206,
+		loop: true,
+		start: 1387367 / 44100,
+		end: 14491944 / 44100,
+
+	},	
+	m_lv6: {
+		offset: 0,
+		bpm: 206,
+		loop: true,
+		start: 275336 / 44100,
+		end:  8372737 / 44100,
+
+	},
 	m_loot: {
 		offset: 0,
 		bpm: 206,

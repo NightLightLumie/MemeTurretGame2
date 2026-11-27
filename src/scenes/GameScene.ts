@@ -80,6 +80,7 @@ export class GameScene extends BaseScene {
 
 	private sCD: number = 500;
 	public masterData: GlobalVariables;
+	public curMusicIndex: number = 0;
 
 	public tracing: boolean = false;
 	public boundary: [number,number,number,number] = [-5000,5000,-5000,5000];
@@ -87,8 +88,8 @@ export class GameScene extends BaseScene {
 	private chunks: TileChecker;
 	private paused: boolean = false;
 	private upgrading: boolean = false;
+	private morder: number = 0;
 	private dead: boolean = false;
-	private stageMusic: Phaser.Sound.WebAudioSound;
 	public dbTimer: number[] = [0,0];
 	private dbScreen: Phaser.GameObjects.Rectangle;
 	private shopShader: Phaser.GameObjects.Rectangle;
@@ -105,6 +106,9 @@ export class GameScene extends BaseScene {
 	public initShopTimer: number;
 	public expScale: number = 2;
 	public myShop: ItemShop;
+	private musicList: Phaser.Sound.WebAudioSound[];
+	private queuedMusic: MusicKey;
+	private musicVolume: number = 0.6;
 
 	private nextButton: NextSceneButton;
 
@@ -123,8 +127,10 @@ export class GameScene extends BaseScene {
 	create(): void {
 		this.fade(false, 200, 0x000000);
 		this.resetVariables();
-		this.stageMusic = new Music(this,"m_lv1",{volume:0.4});
-		this.stageMusic.play();
+		this.musicList = [];
+		this.musicList.push(new Music(this,"m_lv1",{volume: this.musicVolume}));
+		this.musicList[0].setSeek(0);
+		this.musicList[0].play();
 		this.background = this.add.image(0, 0, "tempbkg");
 		this.background.setOrigin(0.5,0.5);
 		this.background.setScale(4);
@@ -279,11 +285,15 @@ export class GameScene extends BaseScene {
 		this.zoom = [0.5,0.5];
 		this.enemyCap = 500;
 		this.score = 0;
+		this.curMusicIndex = 0;
+		this.morder = 0;
 		this.difficulty = 0;
 		this.initShopTimer = 100;
 		this.shopping = false;
 		this.expScale = 2;
 		this.dbTimer = [250,250];
+		this.queuedMusic = "m_lv1";
+		this.musicVolume = 0.8;
 	}
 
 	initiateTestObjects(){
@@ -367,6 +377,20 @@ export class GameScene extends BaseScene {
 		const worldX = this.cameras.main.getWorldPoint(pointer.x, pointer.y).x;
  		const worldY = this.cameras.main.getWorldPoint(pointer.x, pointer.y).y;
 		this.fScreen.update(time, delta);
+		if(this.musicList[0] != null){
+			if(this.musicList[0] instanceof Music){
+				this.musicList[0].updateFades(delta);
+				if(this.musicList[0].toSwap){
+					this.musicList[0] = new Music(this,this.queuedMusic, {volume: 0});
+					this.musicList[0].setSeek(0);
+					if(this.musicList[0] instanceof Music){
+						this.musicList[0].startFade("in", 2000, this.musicVolume);
+					}
+					this.musicList[0].play();
+
+				}
+			}
+		}
 		if(this.dead){
 			if(this.dbTimer[0] > 0){
 				this.dbTimer[0] -= delta;
@@ -841,33 +865,45 @@ export class GameScene extends BaseScene {
 	}
 
 	vExplode(dmg: DamageInstance[], x:number, radius: number, type: string = "explosion"){
+		let dmged: boolean = false;
+		let crt: boolean = false;
 		this.tList.forEach((t)=>{
 			if((t != null) && (t.deleteFlag != true) && (t.invuln != true)){
 				if(Math.abs(t.x-x) < (t.radius+radius)){
+					dmged = true;
 					dmg.forEach((d) => {
 						if(d.tags.includes("crit")){
-							this.sound.play("crit",{volume: 0.35});
+							crt = true;
 						}
 						t.takeTypedDamage(d,[20,20]);
 					});
 				}
 			}
 		})
+		if(dmged){
+			this.sound.play("crit",{volume: 0.75});
+		}
 	}
 
 	hExplode(dmg: DamageInstance[], y:number, radius: number, type: string = "explosion"){
+		let dmged: boolean = false;
+		let crt: boolean = false;
 		this.tList.forEach((t)=>{
 			if((t != null) && (t.deleteFlag != true) && (t.invuln != true)){
 				if(Math.abs(t.y-y) < (t.radius+radius)){
+					dmged = true;
 					dmg.forEach((d) => {
 						if(d.tags.includes("crit")){
-							this.sound.play("crit",{volume: 0.35});
+							crt = true;
 						}
 						t.takeTypedDamage(d,[20,20]);
 					});
 				}
 			}
 		})
+		if(dmged){
+			this.sound.play("crit",{volume: 0.75});
+		}
 	}
 
 	initTouchControls() {
@@ -992,14 +1028,11 @@ export class GameScene extends BaseScene {
 	}
 
 	swapMusic(m: MusicKey){
-		this.stageMusic.stop();
-		this.stageMusic = new Music(this, m, { volume: 0.4 });
-		this.stageMusic.play();
 	}
 
 	progress(){
 		this.masterData.money += this.score;
-		this.stageMusic.stop();
+		this.musicList.forEach((m) => {m.stop();})
 		this.sound.stopAll();
 		this.addEvent(1050, () => {
 			//this.musicTitle.stop();
@@ -1017,6 +1050,62 @@ export class GameScene extends BaseScene {
 			p.destroy();
 			//console.log("destroyed emitter")
 		}, this);
+	}
+
+	getNextMusic(): MusicKey{
+		switch(this.curMusicIndex){
+			case 0: {
+				return "m_lv1"; // aoe2
+				break;
+			} case 1: {
+				return "m_lv2"; // machina
+				break;
+			} case 2: {
+				return "m_lv3"; // feast of stars
+				break;
+			} case 3: {
+				return "m_lv4"; // flap toward the hope
+				break;
+			} case 4: {
+				return "m_lv5"; // tatara the furnace
+				break;
+			} case 5: {
+				return "m_lv6"; // bell of avici
+				break;
+			} default: {
+				return "m_lv1";
+				break;
+			}
+		}
+	}
+
+	advanceMusic(){
+		let curix = 0;
+		if(this.difficulty > 49){
+			curix = 5;
+		} else if (this.difficulty > 39) {
+			curix = 4;
+		} else if (this.difficulty > 29) {
+			curix = 3;
+		} else if (this.difficulty > 19) {
+			curix = 2;
+		} else if (this.difficulty > 9) {
+			curix = 1;
+		}
+		//console.log("at difficulty: " + this.difficulty + " with current index: " + this.curMusicIndex + " to " + curix);
+		if(curix <= this.curMusicIndex){
+			return;
+		} else {
+			this.curMusicIndex = curix;
+		}
+
+		if(this.musicList[0] instanceof Music){
+			this.musicList[0].startFade("out", 2000, 0.6);
+		}
+
+		this.queuedMusic = this.getNextMusic();
+		console.log("next music" + this.queuedMusic);
+
 	}
 
 	cFlash(){

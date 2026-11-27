@@ -13,7 +13,7 @@ export class MiniThug extends Thug{
         this.v = 500+(Math.random()*100);
         this.decel = this.v/1.5;
         this.vmax = this.v;
-        this.hp = 400;6
+        this.hp = 400;
         this.spr.setTexture("enemy_worm");
         this.setDifficulty(diff);
         this.value = 0;

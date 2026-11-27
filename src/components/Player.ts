@@ -491,6 +491,16 @@ implements Notifiable {
 		return rt;
 	}
 
+	getUnmaxedItems(): string[]{
+		let rt: string[] = [];
+		this.items.forEach((it) => {
+			if(it.level < it.maxLevel){
+				rt.push(it.key);
+			}
+		})
+		return rt;
+	}
+
 
 	addScore(n: number){
 		this.curExp += n;
@@ -503,7 +513,7 @@ implements Notifiable {
 	}
 
 	calcNextLevel(){
-		this.nextLevel = Math.trunc(this.level*800)+(200*(Math.pow(1.05,this.level)));
+		this.nextLevel = Math.trunc(this.level*600)+(300*(Math.pow(1.05,this.level)));
 		this.level++;
 	}
 

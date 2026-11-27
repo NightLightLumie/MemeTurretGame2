@@ -28,7 +28,7 @@ export class StatItem extends Item{
                 this.owner.dmgCap = 0.25;
                 break;
             } case "Vaccine": {
-                this.owner.maxIFrames += 100;
+                this.owner.maxIFrames += 200;
                 break;
             } case "Disproportionation": {
                 this.owner.deferDamage += 0.2;
@@ -82,7 +82,7 @@ export class StatItem extends Item{
                 this.owner.dmgCap -= 0.01;
                 break;
             } case "Vaccine": {
-                this.owner.maxIFrames += 15;
+                this.owner.maxIFrames += 30;
                 break;
             } case "Disproportionation": {
                 this.owner.deferDamage += 0.03;

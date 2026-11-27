@@ -42,7 +42,7 @@ export class GlobalVariables {
         {id: 11, name: "Gun-Fu", spr: ["item_gr", "gunfu"], curLevel:0, maxLevel:10, desc:"Gain a shield after reloading. The more ammo reloaded, the larger the shield, starting at 2 shield points per ammo. 30s cd.", upgradeDesc: "+0.2 shield per ammo. -1.5s cd."},
         {id: 12, name: "Focus Sash", spr: ["item_gr", "focussash"], curLevel:0, maxLevel:10, desc:"The next lethal hit is negated if you are above 25% hp. Become invulnerable for 3s on activation. 180s cd.", upgradeDesc: "-2.5% hp required to be active. -3s cd."},
         {id: 13, name: "Eat Cement", spr: ["item_gr", "eatcement"], curLevel:0, maxLevel:10, desc:"Every 10 spell casts stores a stack, 15s cd. On hit, consume a stack to brace the attack and receive -50% damage.", upgradeDesc: "+3% damage mitigation. -0.5s cd."},
-        {id: 14, name: "Vaccine", spr: ["item_gr", "vaccine"], curLevel:0, maxLevel:10, desc:"Grants invulnerability frames upon taking a hit, 0.1s duration.", upgradeDesc: "+15 ms duration."},
+        {id: 14, name: "Vaccine", spr: ["item_gr", "vaccine"], curLevel:0, maxLevel:10, desc:"Grants invulnerability frames upon taking a hit, 0.2s duration.", upgradeDesc: "+30 ms duration."},
         {id: 15, name: "Disproportionation", spr: ["item_gr", "disproportionation"], curLevel:0, maxLevel:10, desc:"20% of damage taken to HP is converted to red health. Red health regenerates slowly but is lost if further damage is taken.", upgradeDesc: "+3% damage converted to red health."},
 
         {id: 16, name: "Explosive Magazine", spr: ["item_rd", "fireball"], curLevel:0, maxLevel:10, desc:"Release a random spread of 6 firebsalls when reloading, dealing 750 damage each.", upgradeDesc: "+100 damage per fireball."},

@@ -85,7 +85,7 @@ export class Target extends Phaser.GameObjects.Container{
         } else {
             this.difficulty = this.scene.difficulty;
         }
-        this.hp = Math.trunc((1+(0.15*this.difficulty))*this.hp);
+        this.hp = Math.trunc((1+(0.25*this.difficulty))*this.hp);
         this.maxHP = this.hp;
     }
     
@@ -174,7 +174,6 @@ export class Target extends Phaser.GameObjects.Container{
                 //console.log("boom");
                 this.scene.sound.play(value.sound,{volume: 1});
                 this.scene.addHitEffect(new BasicEffect(this.scene,"hit_spark",this.x,this.y,3,100,false,0,Math.random()*360));
-                this.scene.addHitEffect(new DamageText(this.scene,this.x,this.y,(""+this.smartRound(value.damage*(1+this.scene.player.bonusGunDamage))),"stack"));
                 if(tmpr >= 0){
                     value.curhits = tmpr;
                     value.bop = true;

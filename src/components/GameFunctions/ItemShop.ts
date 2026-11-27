@@ -159,9 +159,10 @@ export class ItemShop extends Phaser.GameObjects.Container{
                     st++;
                 }
             }
-        } else {
+        } else { //own less than 8 items
             let unowned: string[] = [];
             let owned = this.scene.player.getOwnedItems();
+            let unmaxed = this.scene.player.getUnmaxedItems();
             this.scene.masterData.itemList.forEach((il) => {
                 if(!(owned.includes(il.name))){
                     if(!infbuy.includes(il.name)){
@@ -170,9 +171,9 @@ export class ItemShop extends Phaser.GameObjects.Container{
                 }
             })
             let stt = 1;
-            if(owned.length > 0){
-                owned = Phaser.Utils.Array.Shuffle(owned);
-                this.tButtons[0].loadItem(owned[0],true);
+            if(unmaxed.length > 0){
+                unmaxed = Phaser.Utils.Array.Shuffle(unmaxed);
+                this.tButtons[0].loadItem(unmaxed[0],true);
             } else {
                 stt = 0;
             }

@@ -1,4 +1,10 @@
 import MusicData, { MusicKey } from "@/components/MusicData";
+export interface MusicFade {
+	type: string;
+	cur: number;
+	max: number;
+	volume: number;
+}
 
 export class Music extends Phaser.Sound.WebAudioSound {
 	public _prevBarTime: number;
@@ -11,6 +17,8 @@ export class Music extends Phaser.Sound.WebAudioSound {
 	public speed: number;
 	public start: number;
 	public loopSum: number;
+	public toSwap: boolean = false;
+	public fades: MusicFade[];
 
 	constructor(scene: any, myKey: MusicKey, config = {}) {
 		super(scene.sound, myKey, config);
@@ -39,15 +47,17 @@ export class Music extends Phaser.Sound.WebAudioSound {
 		this.speed = 60 / this.bpm;
 		this.maxBar = Math.round((this.end - this.start) / this.speed);
 		this.loopSum = 0;
+		this.fades = [];
 	}
 
 	update() {
 		super.update();
-
 		if (this.isPlaying) {
 			if (this.myLoop) {
 				if (this.currentTime > this.end) {
-					this.setSeek(this.currentTime - (this.end - this.start));
+					console.log("going to: " + this.start);
+					this.setSeek(this.start);
+					console.log("now at: " + this.seek);
 					this.loopSum += this.end - this.start;
 					this.emit("loop");
 				}
@@ -61,11 +71,56 @@ export class Music extends Phaser.Sound.WebAudioSound {
 			}
 			this._prevBarTime = barTime;
 		}
+
+	}
+
+	updateFades(d: number){
+		if(this.fades.length > 0){
+			switch(this.fades[0].type){
+				case "out": {
+					if(this.fades[0].cur > 0){
+						this.fades[0].cur -= d;
+						if(this.fades[0].cur <= 0){
+							this.fades = [];
+							this.stop();
+							this.toSwap = true;
+							this.destroy();
+						} else {
+							this.setVolume(this.fades[0].volume*this.fades[0].cur/this.fades[0].max);
+						}
+					}
+					break;
+				} case "in": {
+					if(this.fades[0].cur > 0){
+						this.fades[0].cur -= d;
+						if(this.fades[0].cur <= 0){
+							this.setVolume(this.fades[0].volume);
+							this.fades = [];
+						} else {
+							this.setVolume(this.fades[0].volume*(1-(this.fades[0].cur/this.fades[0].max)));
+						}
+					}
+					break;
+				} default: {
+					this.fades = [];
+					break;
+				}
+			}
+		}
 	}
 
 	getBarTime() {
 		let time = this.currentTime - this.offset;
 		return time / this.speed;
+	}
+
+	startFade(mode: string, time: number, startvolume: number){
+		this.fades.push({
+			type: mode,
+			cur: time,
+			max: time,
+			volume: startvolume,
+		})
 	}
 
 	getBar() {

@@ -793,7 +793,7 @@ export class GameScene extends BaseScene {
 			case "thug": {
 				return 0.001;
 			} case "ufo": {
-				return 0.003;
+				return 0.002;
 			} case "gthug": {
 				return 0.002;
 			} case "greenufo":{

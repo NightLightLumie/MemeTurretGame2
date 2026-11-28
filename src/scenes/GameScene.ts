@@ -895,7 +895,7 @@ export class GameScene extends BaseScene {
 				}
 			}
 		})
-		if(dmged){
+		if(dmged && crt){
 			this.sound.play("crit",{volume: 0.75});
 		}
 	}
@@ -916,7 +916,7 @@ export class GameScene extends BaseScene {
 				}
 			}
 		})
-		if(dmged){
+		if(dmged && crt){
 			this.sound.play("crit",{volume: 0.75});
 		}
 	}

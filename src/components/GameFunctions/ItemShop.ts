@@ -135,12 +135,23 @@ export class ItemShop extends Phaser.GameObjects.Container{
         //can't buy more items
         let infbuy = this.scene.masterData.getInfiniteItems();
         infbuy = Phaser.Utils.Array.Shuffle(infbuy);
+        let appinf = structuredClone(infbuy);
+        if(this.scene.player.health >= this.scene.player.maxHP){
+            for(let n = (appinf.length-1); n >= 0; n--){
+                if(appinf[n] == "Medkit") {
+                    appinf.splice(n,1);
+                }
+            }
+        }
         if(this.scene.player.items.length >= 8){
             if(ixs.length <= 0){
                 // all items maxed out, just spawn infinite stack items
                 this.tButtons[0].loadItem("Spinach", false);
                 this.tButtons[1].loadItem("Hi-Power Rounds", false);
                 this.tButtons[2].loadItem("Huge Rod", false);
+                if(this.scene.player.health < this.scene.player.maxHP){
+                    this.tButtons[3].loadItem("Medkit", false);
+                }
             } else {
                 //load up to 4 items
                 let nmx = ixs.length;
@@ -153,8 +164,8 @@ export class ItemShop extends Phaser.GameObjects.Container{
                 //fill rest with infinite stack items;
                 let st = 0;
                 for(let xn = nmx; xn < this.tButtons.length; xn++){
-                    if(st < infbuy.length) {
-                        this.tButtons[xn].loadItem(infbuy[st],false);
+                    if(st < appinf.length) {
+                        this.tButtons[xn].loadItem(appinf[st],false);
                     }
                     st++;
                 }
@@ -185,7 +196,7 @@ export class ItemShop extends Phaser.GameObjects.Container{
                 }
                 bg++;
             }
-            this.tButtons[this.tButtons.length-1].loadItem(infbuy[0],false);
+            this.tButtons[this.tButtons.length-1].loadItem(appinf[0],false);
         }
 
 

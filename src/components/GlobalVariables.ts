@@ -45,7 +45,7 @@ export class GlobalVariables {
         {id: 14, name: "Vaccine", spr: ["item_gr", "vaccine"], curLevel:0, maxLevel:10, desc:"Grants invulnerability frames upon taking a hit, 0.2s duration.", upgradeDesc: "+30 ms duration."},
         {id: 15, name: "Disproportionation", spr: ["item_gr", "disproportionation"], curLevel:0, maxLevel:10, desc:"20% of damage taken to HP is converted to red health. Red health regenerates slowly but is lost if further damage is taken.", upgradeDesc: "+3% damage converted to red health."},
 
-        {id: 16, name: "Explosive Magazine", spr: ["item_rd", "fireball"], curLevel:0, maxLevel:10, desc:"Release a random spread of 6 firebsalls when reloading, dealing 750 damage each.", upgradeDesc: "+100 damage per fireball."},
+        {id: 16, name: "Explosive Magazine", spr: ["item_rd", "fireball"], curLevel:0, maxLevel:10, desc:"Release a random spread of 6 fireballs when reloading, dealing 750 damage each.", upgradeDesc: "+100 damage per fireball."},
         {id: 17, name: "Rune Circle", spr: ["item_rd", "runecircle"], curLevel:0, maxLevel:10, desc:"Deals damage equal to 100% of your current health every 5 seconds in a moderate radius around you.", upgradeDesc: "+40% current health as damage. -0.2s cd."},
         {id: 18, name: "Hi-Power Rounds", spr: ["item_rd", "hipowerrounds"], curLevel:-1, maxLevel:-1, desc:"Increases gun damage by 5%. Can be stacked indefinitely and does not consume an item slot.", upgradeDesc: ""},
         {id: 19, name: "Huge Rod", spr: ["item_rd", "hugerod"], curLevel:-1, maxLevel:-1, desc:"Increases spell damage by 10%. Can be stacked indefinitely and does not consume an item slot.", upgradeDesc: ""},
@@ -58,9 +58,13 @@ export class GlobalVariables {
         {id: 26, name: "Arrow Raid", spr: ["item_rd", "arrowraid"], curLevel:0, maxLevel:10, desc:"Fires a spread of 3 arrows from your gun every 600 pixels moved, up to twice per second. Each arrow deals 590 damage and penetrates up to 3 enemies.", upgradeDesc: "+1 arrows per cast."},
         {id: 27, name: "Basic Attack Magic", spr: ["item_rd", "basicmagic"], curLevel:0, maxLevel:10, desc:"Fires a vertical or horizontal magic blast through cursor every 5s, dealing 500 damage and piercing enemies. 20% chance to critically strike for double damage.", upgradeDesc: "+40 dmg per blast. -0.45s cd. +3% crit chance."},
         {id: 28, name: "Lava Bucket", spr: ["item_rd", "lavabucket"], curLevel:0, maxLevel:10, desc:"Randomly spawns a lava puddle within a moderate radius every 15 seconds. The puddle deals 750 damage per second to enemies touching it.", upgradeDesc: "+150 damage per second. -1s cd."},
-        {id: 29, name: "Ultravibration", spr: ["item_rd", "ultravibration"], curLevel:0, maxLevel:10, desc:"Enemies under 5% hp are executed upon taking damage and grant extra gold. 50% effectiveness on bosses.", upgradeDesc: "+1% execute threshold."},
+        {id: 29, name: "Ultravibration", spr: ["item_rd", "ultravibration"], curLevel:0, maxLevel:10, desc:"Enemies under 10% hp are executed upon taking damage and grant extra gold. 50% effectiveness on bosses.", upgradeDesc: "+1% execute threshold."},
         {id: 30, name: "Arcane Missile", spr: ["item_rd", "arcanemissile"], curLevel:0, maxLevel:10, desc:"Automatically attack the closest enemy in range with magic missiles. Each missile deals 700 damage. 3s cd.", upgradeDesc: "+80 damage. -0.25s cd."},
         {id: 31, name: "Danmaku Charm", curLevel:0, spr: ["item_rd", "danmakucharm"], maxLevel:10, desc:"Empowers your next gunshot to explode in a ring of 16 random bullets. The enemy directly struck can only be hit by 50% of the bullets. Each bullet does 280 damage. 8s cd.", upgradeDesc: "+1 bullets fired. -0.65s cd."},
+
+        {id: 32, name: "Medkit", curLevel:-1, spr: ["item_gr", "medkit"], maxLevel:-1, desc:"Fully restore your HP.", upgradeDesc: ""},
+
+
     ];
 
     public augmentWeights: number[][] = [
@@ -606,6 +610,9 @@ export class GlobalVariables {
         for(let ns = 0; ns < sk.length; ns++){
             this.inv.gunList.set(sk[ns], sv[ns]);
         }
+    }
+
+    fixAugDescription(w: WeaponEntry){
     }
 
     newGame(){

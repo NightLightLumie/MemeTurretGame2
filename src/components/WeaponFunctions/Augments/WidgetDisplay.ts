@@ -28,6 +28,9 @@ export class WidgetDisplay extends Phaser.GameObjects.Container{
         if(this.scene.masterData.widgets <= 0){
             this.txt.setColor("red");
             this.setAlpha(0.35);
+        } else {
+            this.txt.setColor("white");
+            this.setAlpha(1);
         }
     }
 }

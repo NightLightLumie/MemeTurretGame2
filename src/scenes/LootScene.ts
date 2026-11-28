@@ -150,7 +150,7 @@ export class LootScene extends BaseScene{
             this.blink(250,0xFFFFFF);
             this.state = "transition";
             this.waitTime[0] = 500;
-            let r = this.masterData.generateGun(this.curBox.selectedGun);
+            let r: number = 0;
             switch(this.curBox.lv){
                 case 999: {
                     r = this.masterData.generateMaxGun(this.curBox.selectedGun);
@@ -159,6 +159,7 @@ export class LootScene extends BaseScene{
                     r = this.masterData.generateSuperMaxGun(this.curBox.selectedGun);
                     break;
                 } default: {
+                    r = this.masterData.generateGun(this.curBox.selectedGun);
                     break;
                 }
             }

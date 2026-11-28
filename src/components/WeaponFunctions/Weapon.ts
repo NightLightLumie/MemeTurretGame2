@@ -319,7 +319,7 @@ implements Notifiable {
                 this.pierce += 1;
                 break;
             } case "Long Bolts": {
-                this.crit[1] += 0.4;
+                this.crit[0] += 0.4;
                 break;
             } case "Wholesale": {
                 this.damage *= 1.6;

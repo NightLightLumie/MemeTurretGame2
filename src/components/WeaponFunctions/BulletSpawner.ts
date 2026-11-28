@@ -25,6 +25,7 @@ export class BulletSpawner extends PlayerObject{
         y: number;
     };
     public timer: number[] = [0,0];
+    public endTimer: number[] = [0,500];
     private bstr: string;
     private hasKill: boolean = false;
     private kills: number = 0;
@@ -68,7 +69,7 @@ export class BulletSpawner extends PlayerObject{
             case "kill": {
                 if(this.params.w.type == 12){
                     this.kills++;
-                    if((this.kills >= 3) && (!this.hasKill)){
+                    if((this.kills >= 5) && (!this.hasKill)){
                         this.hasKill = true;
                         console.log(this.kills);
                         this.params.w.instantLoad();
@@ -91,7 +92,14 @@ export class BulletSpawner extends PlayerObject{
                 this.shoot();
                 this.timer[0] += this.timer[1];
             }
-        }       
+        }     
+        
+        if(this.endTimer[0] > 0){
+            this.endTimer[0] -= d;
+            if(this.endTimer[0] <= 0){
+                this.deleteFlag = true;
+            }
+        }
     }
 
     shoot(){
@@ -113,7 +121,7 @@ export class BulletSpawner extends PlayerObject{
 
             this.params.rp -= 1;
             if(this.params.rp <= 1){
-                this.deleteFlag = true;
+                this.endTimer[0] = this.endTimer[1];
             }
         }
     }

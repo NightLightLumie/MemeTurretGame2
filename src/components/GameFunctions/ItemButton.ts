@@ -116,6 +116,12 @@ export class ItemButton extends Button {
                     } case "Huge Rod": {
                         this.scene.player.bonusSpellDamage += 0.1;
                         break;
+                    } case "Medkit": {
+                        this.scene.player.health += (0.5*this.scene.player.maxHP);
+                        if(this.scene.player.health > this.scene.player.maxHP){
+                            this.scene.player.health = this.scene.player.maxHP;
+                        }
+                        break;
                     } default: {
                         console.log ("Idiot programmer forgot to add functionality for this item: "+ this.key);
                         break;
